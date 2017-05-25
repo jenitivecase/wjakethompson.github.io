@@ -1,0 +1,146 @@
+---
+title: Recreating the Datasaurus Dozen Using tweenr and ggplot2
+author: Jake Thompson
+date: '2017-05-05'
+slug: datasaurus-dozen
+categories:
+  - rstats
+tags:
+  - ggplot2
+---
+
+```{r setup, include = FALSE, message = FALSE}
+library(knitr)
+library(animation)
+library(tidyverse)
+library(forcats)
+library(tweenr)
+library(gganimate)
+animation::ani.options(
+  autobrowse = FALSE,
+  interval = 0.2
+)
+
+knitr::opts_knit$set(animation.fun = function(x, options, format = "gif") {
+  x = c(knitr:::sans_ext(x), knitr:::file_ext(x))
+  fig.num = options$fig.num
+  format = sub("^[.]", "", format)
+  fig.fname = paste0(sub(paste0(fig.num, "$"), "*", x[1]),
+                     ".", x[2])
+  mov.fname = paste0(sub(paste0(fig.num, "$"), "", x[1]), ".",
+                     format)
+
+  # order correctly
+  figs <- Sys.glob(fig.fname)
+  figs <- figs[order(as.numeric(stringr::str_match(figs,
+    paste0("(\\d+)\\.", x[2]))[, 2]))]
+
+  animation::im.convert(figs, output = mov.fname)
+
+  # For Github output
+  # sprintf("![%s](%s)", options$label, paste0(opts_knit$get("base.url"),
+  #   mov.fname))
+  
+  # For HTML output
+  sprintf('<div class="figure %s"><img src="%s"></div>', options$fig.align,
+    mov.fname)
+})
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  comment = "#>",
+  echo = TRUE,
+  cache = FALSE,
+  fig.align = "center",
+  fig.width = 6,
+  fig.asp = 0.7,
+  out.width = "80%",
+  fig.path = "datasaurus-fig/"
+)
+```
+
+If you haven't seen it yet, there's a great example of why it's always important to visualize your data making its way around the Twitter-verse.
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">A great demonstration of why we need to plot the data and never trust statistics tables! <a href="https://t.co/JyUb57v0or">https://t.co/JyUb57v0or</a> <a href="https://t.co/hsivGZdpZ1">pic.twitter.com/hsivGZdpZ1</a></p>&mdash; Taha Yasseri (@TahaYasseri) <a href="https://twitter.com/TahaYasseri/status/859084459127316480">May 1, 2017</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+Despite looking very different, all of these datasets have the same summary statistics to two decimal places. You can download the datasets, get details about the project, and read the whole paper by Justin Matejka and George Fitzmaurice [here](https://www.autodeskresearch.com/publications/samestats). In this post, I'll show how we can recreate the GIF from the above tweet using [**tweenr**](https://github.com/thomasp85/tweenr) and [**gganimate**](https://github.com/dgrtwo/gganimate).
+
+## Creating the plots
+
+The first step is to read in the data. The data has three variables: the dataset name, x, and y. I'll define dataset as a factor so that the datasets will appear in the correct order in the animation.
+
+```{r read-data}
+library(tidyverse)
+library(forcats)
+
+datasaurus <- read_table2("datafiles/DatasaurusDozen.tsv",
+  col_names = TRUE, col_types = "cnn") %>%
+  mutate(dataset = as_factor(dataset))
+datasaurus
+```
+
+We can view all of the datasets at once using `facet_wrap` in [**ggplot2**](http://ggplot2.tidyverse.org/).
+
+```{r all-vis}
+ggplot(datasaurus, aes(x = x, y = y)) +
+  facet_wrap(~ dataset, nrow = 3) +
+  geom_point()
+```
+
+Hard to believe all of these datasets have the same summary statistics!
+
+## Animating the plots
+
+For a first pass at animating these datasets, I'll use the **gganimate** package. This works just like **ggplot** code above, just with an added `frame` aesthetic and no `facet_wrap`.
+
+```{r gganimate, fig.show="animate", cache = TRUE}
+library(gganimate)
+
+p <- ggplot(datasaurus, aes(x = x, y = y)) +
+  geom_point(aes(frame = dataset))
+
+animation::ani.options(interval = 1)
+gganimate(p, title_frame = FALSE)
+```
+
+This is close, but not quite what I was looking for. This does indeed animate all of the datasets, but in order to duplicate the GIF above, I really want to see the points moving into their new positions for each dataset. To get this effect, I'll use the **tweenr** package. **tweenr** takes in a list of dataframes, and then interpolates the transitions between the states.
+
+First, I'll create a list of the datasets.
+
+```{r create-list}
+n_datasaurus <- datasaurus %>%
+  group_by(dataset) %>%
+  nest() %>%
+  add_row(dataset = "dino", data = list(.$data[[1]]))
+n_datasaurus
+```
+
+I've also added the dino dataset again at the bottom so that the GIF with start and end with that dataset, making it seamless. I'll then use `tween_states`, sending it the list of dataframes, and specifying the length of each state and transitions (I had to play around a bit with the numbers until I was happy with the final animation).
+
+```{r tween, cache = TRUE}
+tween_datasaurus <- tween_states(n_datasaurus$data, tweenlength = 1,
+  statelength = 0.5, ease = "sine-out", nframe = 200) %>%
+  as.tibble()
+tween_datasaurus
+```
+
+This creates a new dataframe with the added `.frame` variable. I can then use the same **gganimate** code from above, just specifying `.frame` as the frame aesthetic instead of `dataset`.
+
+```{r tweenr-animation, fig.show="animate", cache = TRUE}
+p <- ggplot(tween_datasaurus, aes(x = x, y = y)) +
+  geom_point(aes(frame = .frame))
+
+animation::ani.options(interval = 1 / 15)
+gganimate(p, title_frame = FALSE)
+```
+
+And there you have it! Now we can see all of the points moving between each dataset!
+
+<details><summary>Session info</summary>
+```{r new_session}
+devtools::session_info()
+```
+</details>
