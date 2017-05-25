@@ -1,0 +1,205 @@
+---
+title: Recreating the Datasaurus Dozen Using tweenr and ggplot2
+author: Jake Thompson
+date: '2017-05-05'
+slug: datasaurus-dozen
+categories:
+  - rstats
+tags:
+  - ggplot2
+---
+
+<!-- BLOGDOWN-HEAD -->
+<!-- /BLOGDOWN-HEAD -->
+
+
+<p>If you haven’t seen it yet, there’s a great example of why it’s always important to visualize your data making its way around the Twitter-verse.</p>
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="en" dir="ltr">
+A great demonstration of why we need to plot the data and never trust statistics tables! <a href="https://t.co/JyUb57v0or">https://t.co/JyUb57v0or</a> <a href="https://t.co/hsivGZdpZ1">pic.twitter.com/hsivGZdpZ1</a>
+</p>
+— Taha Yasseri (<span class="citation">@TahaYasseri</span>) <a href="https://twitter.com/TahaYasseri/status/859084459127316480">May 1, 2017</a>
+</blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>Despite looking very different, all of these datasets have the same summary statistics to two decimal places. You can download the datasets, get details about the project, and read the whole paper by Justin Matejka and George Fitzmaurice <a href="https://www.autodeskresearch.com/publications/samestats">here</a>. In this post, I’ll show how we can recreate the GIF from the above tweet using <a href="https://github.com/thomasp85/tweenr"><strong>tweenr</strong></a> and <a href="https://github.com/dgrtwo/gganimate"><strong>gganimate</strong></a>.</p>
+<div id="creating-the-plots" class="section level2">
+<h2>Creating the plots</h2>
+<p>The first step is to read in the data. The data has three variables: the dataset name, x, and y. I’ll define dataset as a factor so that the datasets will appear in the correct order in the animation.</p>
+<pre class="r"><code>library(tidyverse)
+library(forcats)
+
+datasaurus &lt;- read_table2(&quot;datafiles/DatasaurusDozen.tsv&quot;,
+  col_names = TRUE, col_types = &quot;cnn&quot;) %&gt;%
+  mutate(dataset = as_factor(dataset))
+datasaurus
+#&gt; # A tibble: 1,846 x 3
+#&gt;    dataset       x       y
+#&gt;     &lt;fctr&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1    dino 55.3846 97.1795
+#&gt;  2    dino 51.5385 96.0256
+#&gt;  3    dino 46.1538 94.4872
+#&gt;  4    dino 42.8205 91.4103
+#&gt;  5    dino 40.7692 88.3333
+#&gt;  6    dino 38.7179 84.8718
+#&gt;  7    dino 35.6410 79.8718
+#&gt;  8    dino 33.0769 77.5641
+#&gt;  9    dino 28.9744 74.4872
+#&gt; 10    dino 26.1538 71.4103
+#&gt; # ... with 1,836 more rows</code></pre>
+<p>We can view all of the datasets at once using <code>facet_wrap</code> in <a href="http://ggplot2.tidyverse.org/"><strong>ggplot2</strong></a>.</p>
+<pre class="r"><code>ggplot(datasaurus, aes(x = x, y = y)) +
+  facet_wrap(~ dataset, nrow = 3) +
+  geom_point()</code></pre>
+<p><img src="#####content/post/2017-05-05-datasaurus-dozen_files/figure-html/all-vis-1.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Hard to believe all of these datasets have the same summary statistics!</p>
+</div>
+<div id="animating-the-plots" class="section level2">
+<h2>Animating the plots</h2>
+<p>For a first pass at animating these datasets, I’ll use the <strong>gganimate</strong> package. This works just like <strong>ggplot</strong> code above, just with an added <code>frame</code> aesthetic and no <code>facet_wrap</code>.</p>
+<pre class="r"><code>library(gganimate)
+
+p &lt;- ggplot(datasaurus, aes(x = x, y = y)) +
+  geom_point(aes(frame = dataset))
+
+animation::ani.options(interval = 1)
+gganimate(p, title_frame = FALSE)</code></pre>
+<div class="figure center">
+<img src="#####content/post/2017-05-05-datasaurus-dozen_files/figure-html/gganimate-.gif">
+</div>
+<p>This is close, but not quite what I was looking for. This does indeed animate all of the datasets, but in order to duplicate the GIF above, I really want to see the points moving into their new positions for each dataset. To get this effect, I’ll use the <strong>tweenr</strong> package. <strong>tweenr</strong> takes in a list of dataframes, and then interpolates the transitions between the states.</p>
+<p>First, I’ll create a list of the datasets.</p>
+<pre class="r"><code>n_datasaurus &lt;- datasaurus %&gt;%
+  group_by(dataset) %&gt;%
+  nest() %&gt;%
+  add_row(dataset = &quot;dino&quot;, data = list(.$data[[1]]))
+n_datasaurus
+#&gt; # A tibble: 14 x 2
+#&gt;       dataset               data
+#&gt;        &lt;fctr&gt;             &lt;list&gt;
+#&gt;  1       dino &lt;tibble [142 x 2]&gt;
+#&gt;  2       away &lt;tibble [142 x 2]&gt;
+#&gt;  3    h_lines &lt;tibble [142 x 2]&gt;
+#&gt;  4    v_lines &lt;tibble [142 x 2]&gt;
+#&gt;  5    x_shape &lt;tibble [142 x 2]&gt;
+#&gt;  6       star &lt;tibble [142 x 2]&gt;
+#&gt;  7 high_lines &lt;tibble [142 x 2]&gt;
+#&gt;  8       dots &lt;tibble [142 x 2]&gt;
+#&gt;  9     circle &lt;tibble [142 x 2]&gt;
+#&gt; 10   bullseye &lt;tibble [142 x 2]&gt;
+#&gt; 11   slant_up &lt;tibble [142 x 2]&gt;
+#&gt; 12 slant_down &lt;tibble [142 x 2]&gt;
+#&gt; 13 wide_lines &lt;tibble [142 x 2]&gt;
+#&gt; 14       dino &lt;tibble [142 x 2]&gt;</code></pre>
+<p>I’ve also added the dino dataset again at the bottom so that the GIF with start and end with that dataset, making it seamless. I’ll then use <code>tween_states</code>, sending it the list of dataframes, and specifying the length of each state and transitions (I had to play around a bit with the numbers until I was happy with the final animation).</p>
+<pre class="r"><code>tween_datasaurus &lt;- tween_states(n_datasaurus$data, tweenlength = 1,
+  statelength = 0.5, ease = &quot;sine-out&quot;, nframe = 200) %&gt;%
+  as.tibble()
+tween_datasaurus
+#&gt; # A tibble: 28,400 x 3
+#&gt;          x       y .frame
+#&gt;      &lt;dbl&gt;   &lt;dbl&gt;  &lt;int&gt;
+#&gt;  1 55.3846 97.1795      1
+#&gt;  2 51.5385 96.0256      1
+#&gt;  3 46.1538 94.4872      1
+#&gt;  4 42.8205 91.4103      1
+#&gt;  5 40.7692 88.3333      1
+#&gt;  6 38.7179 84.8718      1
+#&gt;  7 35.6410 79.8718      1
+#&gt;  8 33.0769 77.5641      1
+#&gt;  9 28.9744 74.4872      1
+#&gt; 10 26.1538 71.4103      1
+#&gt; # ... with 28,390 more rows</code></pre>
+<p>This creates a new dataframe with the added <code>.frame</code> variable. I can then use the same <strong>gganimate</strong> code from above, just specifying <code>.frame</code> as the frame aesthetic instead of <code>dataset</code>.</p>
+<pre class="r"><code>p &lt;- ggplot(tween_datasaurus, aes(x = x, y = y)) +
+  geom_point(aes(frame = .frame))
+
+animation::ani.options(interval = 1 / 15)
+gganimate(p, title_frame = FALSE)</code></pre>
+<div class="figure center">
+<img src="#####content/post/2017-05-05-datasaurus-dozen_files/figure-html/tweenr-animation-.gif">
+</div>
+<p>And there you have it! Now we can see all of the points moving between each dataset!</p>
+<p><details><summary>Session info</summary></p>
+<pre class="r"><code>devtools::session_info()
+#&gt;  setting  value                       
+#&gt;  version  R version 3.4.0 (2017-04-21)
+#&gt;  system   x86_64, darwin15.6.0        
+#&gt;  ui       X11                         
+#&gt;  language (EN)                        
+#&gt;  collate  en_US.UTF-8                 
+#&gt;  tz       America/Chicago             
+#&gt;  date     2017-05-25                  
+#&gt; 
+#&gt;  package    * version    date       source                            
+#&gt;  animation  * 2.5        2017-05-25 Github (yihui/animation@98edc0d)  
+#&gt;  assertthat   0.2.0      2017-04-11 CRAN (R 3.4.0)                    
+#&gt;  backports    1.0.5      2017-01-18 CRAN (R 3.4.0)                    
+#&gt;  base       * 3.4.0      2017-04-21 local                             
+#&gt;  bindr        0.1        2016-11-13 cran (@0.1)                       
+#&gt;  bindrcpp   * 0.1        2016-12-11 cran (@0.1)                       
+#&gt;  blogdown     0.0.41     2017-05-23 Github (rstudio/blogdown@a367835) 
+#&gt;  bookdown     0.4        2017-05-23 Github (rstudio/bookdown@b9f0e40) 
+#&gt;  broom        0.4.2      2017-02-13 CRAN (R 3.4.0)                    
+#&gt;  cellranger   1.1.0      2016-07-27 CRAN (R 3.4.0)                    
+#&gt;  codetools    0.2-15     2016-10-05 CRAN (R 3.4.0)                    
+#&gt;  colorspace   1.3-2      2016-12-14 CRAN (R 3.4.0)                    
+#&gt;  compiler     3.4.0      2017-04-21 local                             
+#&gt;  datasets   * 3.4.0      2017-04-21 local                             
+#&gt;  devtools     1.13.1     2017-05-13 CRAN (R 3.4.0)                    
+#&gt;  digest       0.6.12     2017-01-27 CRAN (R 3.4.0)                    
+#&gt;  dplyr      * 0.6.0      2017-05-23 Github (tidyverse/dplyr@c7ca374)  
+#&gt;  evaluate     0.10       2016-10-11 CRAN (R 3.4.0)                    
+#&gt;  forcats    * 0.2.0      2017-01-23 CRAN (R 3.4.0)                    
+#&gt;  foreign      0.8-67     2016-09-13 CRAN (R 3.4.0)                    
+#&gt;  gganimate  * 0.1.0.9000 2017-05-23 Github (dgrtwo/gganimate@bf82002) 
+#&gt;  ggplot2    * 2.2.1      2016-12-30 CRAN (R 3.4.0)                    
+#&gt;  glue         1.0.0      2017-04-17 cran (@1.0.0)                     
+#&gt;  graphics   * 3.4.0      2017-04-21 local                             
+#&gt;  grDevices  * 3.4.0      2017-04-21 local                             
+#&gt;  grid         3.4.0      2017-04-21 local                             
+#&gt;  gtable       0.2.0      2016-02-26 CRAN (R 3.4.0)                    
+#&gt;  haven        1.0.0      2016-09-23 CRAN (R 3.4.0)                    
+#&gt;  hms          0.3        2016-11-22 CRAN (R 3.4.0)                    
+#&gt;  htmltools    0.3.6      2017-04-28 CRAN (R 3.4.0)                    
+#&gt;  httr         1.2.1      2016-07-03 CRAN (R 3.4.0)                    
+#&gt;  jsonlite     1.4        2017-04-08 CRAN (R 3.4.0)                    
+#&gt;  knitr      * 1.16       2017-05-18 CRAN (R 3.4.0)                    
+#&gt;  labeling     0.3        2014-08-23 CRAN (R 3.4.0)                    
+#&gt;  lattice      0.20-35    2017-03-25 CRAN (R 3.4.0)                    
+#&gt;  lazyeval     0.2.0      2016-06-12 CRAN (R 3.4.0)                    
+#&gt;  lubridate    1.6.0      2016-09-13 CRAN (R 3.4.0)                    
+#&gt;  magrittr     1.5        2014-11-22 CRAN (R 3.4.0)                    
+#&gt;  memoise      1.1.0      2017-04-21 CRAN (R 3.4.0)                    
+#&gt;  methods      3.4.0      2017-04-21 local                             
+#&gt;  mnormt       1.5-5      2016-10-15 CRAN (R 3.4.0)                    
+#&gt;  modelr       0.1.0      2016-08-31 CRAN (R 3.4.0)                    
+#&gt;  munsell      0.4.3      2016-02-13 CRAN (R 3.4.0)                    
+#&gt;  nlme         3.1-131    2017-02-06 CRAN (R 3.4.0)                    
+#&gt;  parallel     3.4.0      2017-04-21 local                             
+#&gt;  plyr         1.8.4      2016-06-08 CRAN (R 3.4.0)                    
+#&gt;  psych        1.7.3.21   2017-03-22 CRAN (R 3.4.0)                    
+#&gt;  purrr      * 0.2.2.2    2017-05-11 CRAN (R 3.4.0)                    
+#&gt;  R6           2.2.1      2017-05-10 cran (@2.2.1)                     
+#&gt;  Rcpp         0.12.11    2017-05-22 CRAN (R 3.4.0)                    
+#&gt;  readr      * 1.1.0      2017-03-22 CRAN (R 3.4.0)                    
+#&gt;  readxl       1.0.0      2017-04-18 CRAN (R 3.4.0)                    
+#&gt;  reshape2     1.4.2      2016-10-22 CRAN (R 3.4.0)                    
+#&gt;  rlang        0.1.1.9000 2017-05-23 Github (hadley/rlang@7c2f7e8)     
+#&gt;  rmarkdown    1.5.9000   2017-05-23 Github (rstudio/rmarkdown@54bf8fc)
+#&gt;  rprojroot    1.2        2017-01-16 CRAN (R 3.4.0)                    
+#&gt;  rvest        0.3.2      2016-06-17 CRAN (R 3.4.0)                    
+#&gt;  scales       0.4.1      2016-11-09 CRAN (R 3.4.0)                    
+#&gt;  stats      * 3.4.0      2017-04-21 local                             
+#&gt;  stringi      1.1.5      2017-04-07 CRAN (R 3.4.0)                    
+#&gt;  stringr      1.2.0      2017-02-18 CRAN (R 3.4.0)                    
+#&gt;  tibble     * 1.3.1      2017-05-17 CRAN (R 3.4.0)                    
+#&gt;  tidyr      * 0.6.3      2017-05-15 CRAN (R 3.4.0)                    
+#&gt;  tidyverse  * 1.1.1      2017-01-27 CRAN (R 3.4.0)                    
+#&gt;  tools        3.4.0      2017-04-21 local                             
+#&gt;  tweenr     * 0.1.5      2016-10-10 CRAN (R 3.4.0)                    
+#&gt;  utils      * 3.4.0      2017-04-21 local                             
+#&gt;  withr        1.0.2      2016-06-20 CRAN (R 3.4.0)                    
+#&gt;  xml2         1.1.1      2017-01-24 CRAN (R 3.4.0)                    
+#&gt;  yaml         2.1.14     2016-11-12 CRAN (R 3.4.0)</code></pre>
+<p></details></p>
+</div>
