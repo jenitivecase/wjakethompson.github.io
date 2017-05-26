@@ -1,0 +1,14 @@
+base
+knitr
+animation
+tidyverse
+ggplot2
+tibble
+tidyr
+readr
+purrr
+dplyr
+xml2
+rvest
+gganimate
+bindrcpp

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2 on J. Thompson</title>
+    <link>https://wjakethompson.github.io/publication_types/2/</link>
+    <description>Recent content in 2 on J. Thompson</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2017 W. Jake Thompson</copyright>
+    <lastBuildDate>Thu, 01 Jun 2017 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/publication_types/2/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Visualizing different levels of compensation in multidimensional item response theory models</title>
+      <link>https://wjakethompson.github.io/publication/2017-emip-graphic/</link>
+      <pubDate>Thu, 01 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/publication/2017-emip-graphic/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Assessing cognitive and affective empathy through the interpersonal reactivity index: An argument against a two-factor model</title>
+      <link>https://wjakethompson.github.io/publication/2016-iri/</link>
+      <pubDate>Thu, 01 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/publication/2016-iri/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Dynamic Assessment Routing</title>
+      <link>https://wjakethompson.github.io/publication/2016-emip-graphic/</link>
+      <pubDate>Wed, 01 Jun 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/publication/2016-emip-graphic/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
