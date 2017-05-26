@@ -1,7 +1,6 @@
 language: R
 pandoc_version: 1.17.2
-cache:
-  packages: true
+cache: packages
 repos:
   CRAN: https://cran.rstudio.com/
   KRAN: http://rweb.crmda.ku.edu/kran/
