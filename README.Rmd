@@ -1,14 +1,24 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-wjakethompson.github.io
-=======================
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# wjakethompson.github.io
 
 [![Travis-CI Build Status](https://travis-ci.org/wjakethompson/wjakethompson.github.io.svg?branch=sources)](https://travis-ci.com/wjakethompson/wjakethompson.github.io)
 
 This is source code and document text for [wjakethompson.github.io](https://wjakethompson.github.io/). Blog posts can be found in the `content/post/` directory.
 
-Project Requirements
---------------------
+## Project Requirements
 
 This site is built with the [**blogdown** package](https://github.com/rstudio/blogdown), and [Hugo](https://gohugo.io/), which can be installed using `blogdown::install_hugo()`.
 
