@@ -3,7 +3,7 @@
 wjakethompson.github.io
 =======================
 
-[![Travis-CI Build Status](https://travis-ci.org/wjakethompson/wjakethompson.github.io.svg?branch=sources)](https://travis-ci.com/wjakethompson/wjakethompson.github.io)
+[![Travis-CI Build Status](https://travis-ci.org/wjakethompson/wjakethompson.github.io.svg?branch=sources)](https://travis-ci.org/wjakethompson/wjakethompson.github.io)
 
 This is source code and document text for [wjakethompson.github.io](https://wjakethompson.github.io/). Blog posts can be found in the `content/post/` directory.
 
