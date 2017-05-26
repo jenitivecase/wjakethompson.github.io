@@ -12,5 +12,5 @@ git clone -b master https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git blo
 cd blog-output
 cp -r ../public/* ./
 git add --all *
-git commit -m "Update the book" || true
+git commit -m "Update the blog" || true
 git push -q origin master
