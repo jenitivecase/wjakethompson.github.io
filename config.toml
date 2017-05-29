@@ -1,5 +1,5 @@
 baseurl = "https://wjakethompson.github.io/"
-title = "J. Thompson"
+title = "Jake Thompson"
 copyright = "&copy; 2017 W. Jake Thompson"
 theme = "hugo-academic"
 enableEmoji = true
