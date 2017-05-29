@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ggplot2 on J. Thompson</title>
+    <title>Ggplot2 on Jake Thompson</title>
     <link>https://wjakethompson.github.io/tags/ggplot2/</link>
-    <description>Recent content in Ggplot2 on J. Thompson</description>
+    <description>Recent content in Ggplot2 on Jake Thompson</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 W. Jake Thompson</copyright>
@@ -135,7 +135,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       Etc/UTC                     
-#&amp;gt;  date     2017-05-26                  
+#&amp;gt;  date     2017-05-29                  
 #&amp;gt; 
 #&amp;gt;  package    * version    date       source                            
 #&amp;gt;  animation  * 2.5        2017-05-26 Github (yihui/animation@98edc0d)  
