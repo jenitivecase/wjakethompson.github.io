@@ -10,3 +10,5 @@ image = ""
 caption = ""
 
 +++
+
+For other R-related blogs and resources, checkout the [blogroll](/#blogroll).
