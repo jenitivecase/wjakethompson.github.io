@@ -12,6 +12,7 @@ Imports:
   devtools,
   forcats,
   gganimate,
+  ggplot2,
   knitr,
   MASS,
   readxl,
