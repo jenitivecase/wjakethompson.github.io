@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Travis Ci on Jake Thompson</title>
+    <link>https://wjakethompson.github.io/tags/travis-ci/</link>
+    <description>Recent content in Travis Ci on Jake Thompson</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2017 W. Jake Thompson</copyright>
+    <lastBuildDate>Wed, 31 May 2017 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/tags/travis-ci/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Integrating Blogdown with GitHub Pages and Travis-CI</title>
+      <link>https://wjakethompson.github.io/post/blogdown-gh-pages-travis-ci/</link>
+      <pubDate>Wed, 31 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/post/blogdown-gh-pages-travis-ci/</guid>
+      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
+&lt;!-- /BLOGDOWN-HEAD --&gt;
+
+
+&lt;p&gt;I recently converted my website from &lt;a href=&#34;https://jekyllrb.com/&#34;&gt;Jekyll&lt;/a&gt; to &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt; with &lt;a href=&#34;https://github.com/rstudio/blogdown&#34;&gt;&lt;strong&gt;blogdown&lt;/strong&gt;&lt;/a&gt;. If you haven’t tried out &lt;strong&gt;blogdown&lt;/strong&gt; yet, Yihui Xie just hosted a &lt;a href=&#34;https://www.rstudio.com/resources/webinars/introducing-blogdown/&#34;&gt;webinar&lt;/a&gt; that does a great job of introducing the package. This post won’t focus on how to use &lt;strong&gt;blogdown&lt;/strong&gt; to create a website, but rather how to host that website on GitHub pages and use Travis-CI to automatically update the website. For this post, I’m assuming that you’re making a user or organization site. However, the changes for a project site are fairly straightforward, and I’ll point those out as we go through the example.&lt;/p&gt;
+&lt;div id=&#34;step-1-create-your-website&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Step 1: Create your website&lt;/h2&gt;
+&lt;p&gt;This is probably the most important and time consuming step, so naturally I’ll be spending the least amount of time on it. There are extensive resources already for how to create and modify a &lt;strong&gt;blogdown&lt;/strong&gt; website (for example &lt;a href=&#34;https://www.rstudio.com/resources/webinars/introducing-blogdown/&#34;&gt;here&lt;/a&gt; and &lt;a href=&#34;https://bookdown.org/yihui/blogdown/&#34;&gt;here&lt;/a&gt;). I will note two specific settings that are important. First, when creating the &lt;strong&gt;blogdown&lt;/strong&gt; project in RStudio, initialize a git repository. Second, because Hugo never cleans up the &lt;code&gt;public/&lt;/code&gt; directory, old pages that you no longer wish to be published will still be present in that directory. Therefore, I suggest adding “public” to the .gitignore file. If you aren’t using RStudio, you can accomplish these tasks by executing the following commands in your terminal (assuming you are in the directory of your project)&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# Initialize git repository
+git init
+
+# Create .gitignore with &amp;quot;public&amp;quot;
+echo &amp;quot;public&amp;quot; &amp;gt; .gitignore
+
+# Commit .gitignore
+git add .gitignore
+git commit -m &amp;quot;add .gitignore&amp;quot;
+
+# Commit website files
+git add --all
+git commit -m &amp;quot;initial website commit&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;At the end of this step, you should have a directory with all of the website files (e.g., &lt;code&gt;blogdown/&lt;/code&gt;, &lt;code&gt;content/&lt;/code&gt;, &lt;code&gt;public/&lt;/code&gt;, &lt;code&gt;themes/&lt;/code&gt;, etc.), and a local git repository that you’ve committed all of the files to. Note that we haven’t pushed anything to a remote repository on GitHub yet. That is what comes next!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-2-push-files-to-github&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Step 2: Push files to GitHub&lt;/h2&gt;
+&lt;p&gt;Now that you have a website that is ready to be published, we can push the files to GitHub. However, we face a complication in that for user or organization pages, the content has to be built from the &lt;code&gt;master&lt;/code&gt; branch. This means that we’ll have to do a little extra work to make things publish correctly. I should note that there is more than one way to do this. Amber Thomas outlined one way this can be accomplished &lt;a href=&#34;https://proquestionasker.github.io/blog/Making_Site/&#34;&gt;here&lt;/a&gt;. However, this involves creating sub-branches inside the public folder. As someone is far from an expert in git and GitHub I found this process to be very confusing, and despite my best efforts, I always ended up with merge conflicts that were difficult for me to trace. So here I outline a different strategy based on the instructions Yihui provided for &lt;a href=&#34;https://bookdown.org/yihui/bookdown/github.html&#34;&gt;hosting a &lt;strong&gt;bookdown&lt;/strong&gt; book&lt;/a&gt; that I think is more straightforward.&lt;/p&gt;
+&lt;p&gt;First, we need to create a new repository by logging into GitHub and going to &lt;a href=&#34;https://github.com/new&#34; class=&#34;uri&#34;&gt;https://github.com/new&lt;/a&gt;. For user and organization pages, the repository name must be &lt;code&gt;&amp;lt;username&amp;gt;.github.io&lt;/code&gt; (for me this is &lt;code&gt;wjakethompson.github.io&lt;/code&gt;). For project pages, this can be anything you want. Add a description if you want, and then accept the default settings of the repository (i.e., don’t initialize with a README, .gitignore, or license).&lt;/p&gt;
+&lt;p&gt;Now, back on our local machine, we’ll make a new branch called &lt;code&gt;sources&lt;/code&gt;, and make this the default branch. Then, delete the &lt;code&gt;master&lt;/code&gt; branch. To push the &lt;code&gt;sources&lt;/code&gt; branch to GitHub, we’ll add the remote repository, and then push (you may have to authenticate GitHub if you haven’t done this before).&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# Create sources branch
+git branch -b sources
+
+# Make sources the default branch
+git symbolic-ref HEAD refs/heads/sources
+
+# Delete the master branch
+git branch -d master
+
+# Add remote repository
+git remote add origin https://github.com/&amp;lt;username&amp;gt;/&amp;lt;repo-name&amp;gt;.git
+
+# Verify remote
+git remote -v
+
+# Push sources to remote
+git push -u origin sources&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now if you go look at the repository on GitHub, you should see that there is one branch (&lt;code&gt;sources&lt;/code&gt;), that has all of the files in your local directory (except for the &lt;code&gt;public/&lt;/code&gt; directory and any other files in your .gitignore).&lt;/p&gt;
+&lt;p&gt;Now we need to publish the static files from the public folder to a new master branch. We create a new branch called &lt;code&gt;master&lt;/code&gt; and then remove all files from this branch. Then we can add a file called .nojekyll that tell GitHub pages not to use Jekyll to build the website (Hugo has already generated the static files for us). We can then commit this file and push to the master branch in our remote repository.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;# Create master branch and clean all files
+git checkout --orphan master
+git rm -rf .
+
+# Create file to tell GitHub not to use Jekyll
+touch .nojekyll
+
+# Push master branch to remote
+git add .nojekyll
+git commit -m &amp;quot;initial commit&amp;quot;
+git push origin master&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now when you look at the GitHub repository, you should see there are two branches, and when you look at the &lt;code&gt;master&lt;/code&gt; branch, you’ll only see the .nojekyll file.&lt;/p&gt;
+&lt;p&gt;If you’re creating a project page instead of a user or organization page, you can skip moving everything to a &lt;code&gt;sources&lt;/code&gt; branch and just leave in on the &lt;code&gt;master&lt;/code&gt; branch. Then, instead of creating a new branch called &lt;code&gt;master&lt;/code&gt; containing the .nojekyll file, name the new branch &lt;code&gt;gh-pages&lt;/code&gt;, and in the last line use &lt;code&gt;git push origin gh-pages&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-3-let-travis-ci-build-the-website&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Step 3: Let Travis-CI build the website&lt;/h2&gt;
+&lt;p&gt;Travis is a continuous integration software. Essentially, it’s a virtual machine that can run commands for you, and it’s free for public GitHub repositories. To activate Travis for your website, log in to &lt;a href=&#34;https://travis-ci.org/&#34; class=&#34;uri&#34;&gt;https://travis-ci.org/&lt;/a&gt; using your GitHub account. Then under your name at the top, click “Accounts”, and then turn on your website’s repository.&lt;/p&gt;
+&lt;p&gt;There a few things you’ll need to do in order to make Travis work for building your website. First, you need to grant Travis write access to your repository. To do this, create a &lt;a href=&#34;https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/&#34;&gt;personal access token&lt;/a&gt; on GitHub. Then go to &lt;a href=&#34;https://travis-ci.org/username/repo-name/settings&#34; class=&#34;uri&#34;&gt;https://travis-ci.org/username/repo-name/settings&lt;/a&gt;, and create a new environment variable called &lt;code&gt;GITHUB_PAT&lt;/code&gt; with the personal access token you just generated. Alternatively, you can use the Travis command line tool to encrypt your GitHub token using &lt;code&gt;travis encrypt GITHUB_PAT=TOKEN&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Finally, there are four files that you’ll need to add to the top level of your website directory. The first two are &lt;code&gt;_build.sh&lt;/code&gt; and &lt;code&gt;_deploy.sh&lt;/code&gt;. These are the scripts that Travis will execute to build and deploy your website whenever you push changes to GitHub. Because the &lt;code&gt;public/&lt;/code&gt; directory isn’t in your git repository (by design), we have to build the website on Travis. This can be done with build script that looks like this:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;#!/bin/sh
+
+Rscript -e &amp;quot;blogdown::install_hugo(); blogdown::build_site(local = FALSE,
+  method = &amp;#39;html_encoded&amp;#39;)&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We first make sure that Hugo is installed on Travis, and then build the website using &lt;code&gt;blogdown::build_site&lt;/code&gt;. For my website I use &lt;code&gt;method = &#39;html_encoded&#39;&lt;/code&gt;, but you can change this to whichever method you prefer. This will create a &lt;code&gt;public/&lt;/code&gt; directory on the virtual Travis machine. We can then publish the files in this directory to our &lt;code&gt;master&lt;/code&gt; branch on GitHub using the deploy script.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;#!/bin/sh
+
+set -e
+
+[ -z &amp;quot;${GITHUB_PAT}&amp;quot; ] &amp;amp;&amp;amp; exit 0
+[ &amp;quot;${TRAVIS_BRANCH}&amp;quot; != &amp;quot;sources&amp;quot; ] &amp;amp;&amp;amp; exit 0
+
+# Configure GitHub username and email
+git config --global user.email &amp;quot;your_email@email.com&amp;quot;
+git config --global user.name &amp;quot;Your Name&amp;quot;
+
+# Clone repository into blog-output directory
+git clone -b master \
+  https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git \
+  blog-output
+
+# Move to blog-output directory
+cd blog-output
+
+# Copy website files from public/ to blog-output/
+cp -r ../public/* ./
+
+# Add and commit files to the master branch
+git add --all *
+git commit -m &amp;quot;Update the blog&amp;quot; || true
+git push -q origin master&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the deploy script we first do some checks to make sure the script should run (e.g., &lt;code&gt;GITHUB_PAT&lt;/code&gt; is defined, the &lt;code&gt;sources&lt;/code&gt; branch is being built). Then we configure our username and email for GitHub, these should match what you used to set up your GitHub account. Once the setup is complete, we clone the &lt;code&gt;master&lt;/code&gt; branch into a new &lt;code&gt;blog-output/&lt;/code&gt; directory, and copy the contents of the &lt;code&gt;public/&lt;/code&gt; directory (which was created in the build script) to the &lt;code&gt;blog-output/&lt;/code&gt; directory as well. Finally we add, commit, and push all of these files to the &lt;code&gt;master&lt;/code&gt; branch. Once the files are on the &lt;code&gt;master&lt;/code&gt; branch, the website will be hosted!&lt;/p&gt;
+&lt;p&gt;There are two more files that need to be in place for this to work. The first is a DESCRIPTION file. Because Travis is normally used for checking &lt;em&gt;R&lt;/em&gt; packages, it requires a DESCRIPTION file to be present in order to know what packages to install as dependencies. This doesn’t need to be a full DESCRIPTION file given that this is only being used for Travis, so you might have a file that looks like this:&lt;/p&gt;
+&lt;pre class=&#34;dcf&#34;&gt;&lt;code&gt;Package: username.github.io
+Title: My blog!
+Version: 1.0
+URL: https://github.com/username/username.github.io
+Imports:
+  blogdown,
+  ggplot2,
+  knitr
+Remotes:
+  rstudio/blogdown,
+  tidyverse/ggplot2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The most important thing to note is that if a dependency isn’t on CRAN (like &lt;strong&gt;blogdown&lt;/strong&gt; for instance) it needs to be listed under &lt;code&gt;Remotes&lt;/code&gt;. Any package listed under &lt;code&gt;Remotes&lt;/code&gt; will be installed from GitHub using &lt;strong&gt;devtools&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;The final file you need is a &lt;code&gt;.travis.yml&lt;/code&gt; file. This is the file tells Travis what it’s supposed to be doing. The &lt;code&gt;travis.yml&lt;/code&gt; file for my website looks like this:&lt;/p&gt;
+&lt;pre class=&#34;yaml&#34;&gt;&lt;code&gt;language: R
+pandoc_version: 1.17.2
+cache: packages
+repos:
+  CRAN: https://cran.rstudio.com/
+  KRAN: http://rweb.crmda.ku.edu/kran/
+
+before_script:
+  - chmod +x ./_build.sh
+  - chmod +x ./_deploy.sh
+
+script:
+  - ./_build.sh
+  - ./_deploy.sh&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first section of commands sets up the Travis environment. Here we define the language we’re using, the version of &lt;em&gt;pandoc&lt;/em&gt; that we want, and the CRAN repositories that we want to use to download packages. We can also tell Travis to cache our packages so that they don’t have to be installed every time the website is built. If you used &lt;code&gt;travis encrypt&lt;/code&gt; for you GitHub token, you’ll need to add a section to define the encrypted token that looks like this:&lt;/p&gt;
+&lt;pre class=&#34;yaml&#34;&gt;&lt;code&gt;env:
+  global:
+    - secure: ENCRYPTED_GITHUB_TOKEN&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In &lt;code&gt;before_script&lt;/code&gt; we run two commands that ensure the &lt;code&gt;_build.sh&lt;/code&gt; and &lt;code&gt;_deploy.sh&lt;/code&gt; scripts can be run. Then in &lt;code&gt;script&lt;/code&gt;, we tell Travis to first run the build script and then the deploy script. Once all four of these files have been created, add and commit them using RStudio or the command line terminal (make sure you’re on the &lt;code&gt;sources&lt;/code&gt; branch), and then push to GitHub. Once you push you can go to the Travis repository and watch your build happen in real time. Once it completes, your website will be live!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-4-update-your-website&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Step 4: Update your website&lt;/h2&gt;
+&lt;p&gt;Once you have GitHub and Travis set up, adding posts to your website or making changes is super easy. Just create new posts or edit old files, commit the changes, and when you’re ready to publish your changes, push to GitHub. Travis will automatically build and deploy every time you push. As an added perk, if you happen to make a change that breaks everything (as I have been known to do), Travis will send you an email letting you know that your build failed so you can go back and fix it.&lt;/p&gt;
+&lt;p&gt;For an example of what the GitHub repository and all the scripts should look like to make this work, checkout the repository for my website at &lt;a href=&#34;https://github.com/wjakethompson/wjakethompson.github.io&#34; class=&#34;uri&#34;&gt;https://github.com/wjakethompson/wjakethompson.github.io&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

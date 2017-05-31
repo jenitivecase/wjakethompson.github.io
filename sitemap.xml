@@ -32,6 +32,15 @@
     
     <url>
     
+      <loc>https://wjakethompson.github.io/post/blogdown-gh-pages-travis-ci/</loc>
+      <lastmod>2017-05-31T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>https://wjakethompson.github.io/post/datasaurus-dozen/</loc>
       <lastmod>2017-05-05T00:00:00+00:00</lastmod>
     </url>
@@ -306,6 +315,16 @@
     
     <url>
     
+      <loc>https://wjakethompson.github.io/tags/blogdown/</loc>
+      <lastmod>2017-05-31T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>https://wjakethompson.github.io/categories/</loc>
       <priority>0</priority>
     </url>
@@ -317,6 +336,16 @@
     
       <loc>https://wjakethompson.github.io/tags/ggplot2/</loc>
       <lastmod>2017-05-05T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>https://wjakethompson.github.io/tags/gh-pages/</loc>
+      <lastmod>2017-05-31T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -375,8 +404,8 @@
     
     <url>
     
-      <loc>https://wjakethompson.github.io/tags/rstats/</loc>
-      <lastmod>2017-05-05T00:00:00+00:00</lastmod>
+      <loc>https://wjakethompson.github.io/categories/rstats/</loc>
+      <lastmod>2017-05-31T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -385,7 +414,7 @@
     
     <url>
     
-      <loc>https://wjakethompson.github.io/categories/rstats/</loc>
+      <loc>https://wjakethompson.github.io/tags/rstats/</loc>
       <lastmod>2017-05-05T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -407,6 +436,16 @@
     
       <loc>https://wjakethompson.github.io/tags/</loc>
       <lastmod>2017-03-13T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>https://wjakethompson.github.io/tags/travis-ci/</loc>
+      <lastmod>2017-05-31T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
