@@ -16,11 +16,7 @@
       <pubDate>Wed, 31 May 2017 00:00:00 +0000</pubDate>
       
       <guid>https://wjakethompson.github.io/post/blogdown-gh-pages-travis-ci/</guid>
-      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
-&lt;!-- /BLOGDOWN-HEAD --&gt;
-
-
-&lt;p&gt;I recently converted my website from &lt;a href=&#34;https://jekyllrb.com/&#34;&gt;Jekyll&lt;/a&gt; to &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt; with &lt;a href=&#34;https://github.com/rstudio/blogdown&#34;&gt;&lt;strong&gt;blogdown&lt;/strong&gt;&lt;/a&gt;. If you haven’t tried out &lt;strong&gt;blogdown&lt;/strong&gt; yet, Yihui Xie just hosted a &lt;a href=&#34;https://www.rstudio.com/resources/webinars/introducing-blogdown/&#34;&gt;webinar&lt;/a&gt; that does a great job of introducing the package. This post won’t focus on how to use &lt;strong&gt;blogdown&lt;/strong&gt; to create a website, but rather how to host that website on GitHub pages and use Travis-CI to automatically update the website. For this post, I’m assuming that you’re making a user or organization site. However, the changes for a project site are fairly straightforward, and I’ll point those out as we go through the example.&lt;/p&gt;
+      <description>&lt;p&gt;I recently converted my website from &lt;a href=&#34;https://jekyllrb.com/&#34;&gt;Jekyll&lt;/a&gt; to &lt;a href=&#34;https://gohugo.io/&#34;&gt;Hugo&lt;/a&gt; with &lt;a href=&#34;https://github.com/rstudio/blogdown&#34;&gt;&lt;strong&gt;blogdown&lt;/strong&gt;&lt;/a&gt;. If you haven’t tried out &lt;strong&gt;blogdown&lt;/strong&gt; yet, Yihui Xie just hosted a &lt;a href=&#34;https://www.rstudio.com/resources/webinars/introducing-blogdown/&#34;&gt;webinar&lt;/a&gt; that does a great job of introducing the package. This post won’t focus on how to use &lt;strong&gt;blogdown&lt;/strong&gt; to create a website, but rather how to host that website on GitHub pages and use Travis-CI to automatically update the website. For this post, I’m assuming that you’re making a user or organization site. However, the changes for a project site are fairly straightforward, and I’ll point those out as we go through the example.&lt;/p&gt;
 &lt;div id=&#34;step-1-create-your-website&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Step 1: Create your website&lt;/h2&gt;
 &lt;p&gt;This is probably the most important and time consuming step, so naturally I’ll be spending the least amount of time on it. There are extensive resources already for how to create and modify a &lt;strong&gt;blogdown&lt;/strong&gt; website (for example &lt;a href=&#34;https://www.rstudio.com/resources/webinars/introducing-blogdown/&#34;&gt;here&lt;/a&gt; and &lt;a href=&#34;https://bookdown.org/yihui/blogdown/&#34;&gt;here&lt;/a&gt;). I will note two specific settings that are important. First, when creating the &lt;strong&gt;blogdown&lt;/strong&gt; project in RStudio, initialize a git repository. Second, because Hugo never cleans up the &lt;code&gt;public/&lt;/code&gt; directory, old pages that you no longer wish to be published will still be present in that directory. Therefore, I suggest adding “public” to the .gitignore file. If you aren’t using RStudio, you can accomplish these tasks by executing the following commands in your terminal (assuming you are in the directory of your project)&lt;/p&gt;
@@ -162,11 +158,7 @@ script:
       <pubDate>Fri, 05 May 2017 00:00:00 +0000</pubDate>
       
       <guid>https://wjakethompson.github.io/post/datasaurus-dozen/</guid>
-      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
-&lt;!-- /BLOGDOWN-HEAD --&gt;
-
-
-&lt;p&gt;If you haven’t seen it yet, there’s a great example of why it’s always important to visualize your data making its way around the Twitter-verse.&lt;/p&gt;
+      <description>&lt;p&gt;If you haven’t seen it yet, there’s a great example of why it’s always important to visualize your data making its way around the Twitter-verse.&lt;/p&gt;
 &lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;
 &lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;
 A great demonstration of why we need to plot the data and never trust statistics tables! &lt;a href=&#34;https://t.co/JyUb57v0or&#34;&gt;https://t.co/JyUb57v0or&lt;/a&gt; &lt;a href=&#34;https://t.co/hsivGZdpZ1&#34;&gt;pic.twitter.com/hsivGZdpZ1&lt;/a&gt;
@@ -203,7 +195,7 @@ datasaurus
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(datasaurus, aes(x = x, y = y)) +
   facet_wrap(~ dataset, nrow = 3) +
   geom_point()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/datasaurus-dozen/figures/all-vis-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-05-05-datasaurus-dozen_files/figure-html/all-vis-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Hard to believe all of these datasets have the same summary statistics!&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;animating-the-plots&#34; class=&#34;section level2&#34;&gt;
@@ -217,7 +209,7 @@ p &amp;lt;- ggplot(datasaurus, aes(x = x, y = y)) +
 animation::ani.options(interval = 1)
 gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure center&#34;&gt;
-&lt;img src=&#34;https://wjakethompson.github.io/post/datasaurus-dozen/figures/gganimate-.gif&#34;&gt;
+&lt;img src=&#34;https://wjakethompson.github.io/post/2017-05-05-datasaurus-dozen_files/figure-html/gganimate-.gif&#34;&gt;
 &lt;/div&gt;
 &lt;p&gt;This is close, but not quite what I was looking for. This does indeed animate all of the datasets, but in order to duplicate the GIF above, I really want to see the points moving into their new positions for each dataset. To get this effect, I’ll use the &lt;strong&gt;tweenr&lt;/strong&gt; package. &lt;strong&gt;tweenr&lt;/strong&gt; takes in a list of dataframes, and then interpolates the transitions between the states.&lt;/p&gt;
 &lt;p&gt;First, I’ll create a list of the datasets.&lt;/p&gt;
@@ -269,86 +261,90 @@ tween_datasaurus
 animation::ani.options(interval = 1 / 15)
 gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure center&#34;&gt;
-&lt;img src=&#34;https://wjakethompson.github.io/post/datasaurus-dozen/figures/tweenr-animation-.gif&#34;&gt;
+&lt;img src=&#34;https://wjakethompson.github.io/post/2017-05-05-datasaurus-dozen_files/figure-html/tweenr-animation-.gif&#34;&gt;
 &lt;/div&gt;
 &lt;p&gt;And there you have it! Now we can see all of the points moving between each dataset!&lt;/p&gt;
 &lt;p&gt;&lt;details&gt;&lt;summary&gt;Session info&lt;/summary&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::session_info()
 #&amp;gt;  setting  value                       
-#&amp;gt;  version  R version 3.4.0 (2017-04-21)
+#&amp;gt;  version  R version 3.4.1 (2017-06-30)
 #&amp;gt;  system   x86_64, linux-gnu           
 #&amp;gt;  ui       X11                         
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       Etc/UTC                     
-#&amp;gt;  date     2017-05-31                  
+#&amp;gt;  date     2017-08-30                  
 #&amp;gt; 
 #&amp;gt;  package    * version    date       source                            
-#&amp;gt;  animation  * 2.5        2017-05-26 Github (yihui/animation@98edc0d)  
+#&amp;gt;  animation  * 2.5        2017-08-30 Github (yihui/animation@60f50e3)  
 #&amp;gt;  assertthat   0.2.0      2017-04-11 cran (@0.2.0)                     
 #&amp;gt;  backports    1.1.0      2017-05-22 cran (@1.1.0)                     
-#&amp;gt;  base       * 3.4.0      2017-04-21 local                             
-#&amp;gt;  blogdown     0.0.41     2017-05-31 Github (rstudio/blogdown@c4b4434) 
-#&amp;gt;  bookdown     0.4        2017-05-31 Github (rstudio/bookdown@39bae16) 
+#&amp;gt;  base       * 3.4.1      2017-07-20 local                             
+#&amp;gt;  bindr        0.1        2016-11-13 cran (@0.1)                       
+#&amp;gt;  bindrcpp   * 0.2        2017-06-17 cran (@0.2)                       
+#&amp;gt;  blogdown     0.1.3      2017-08-30 Github (rstudio/blogdown@45860c7) 
+#&amp;gt;  bookdown     0.5        2017-08-20 cran (@0.5)                       
 #&amp;gt;  broom        0.4.2      2017-02-13 cran (@0.4.2)                     
 #&amp;gt;  cellranger   1.1.0      2016-07-27 cran (@1.1.0)                     
 #&amp;gt;  colorspace   1.3-2      2016-12-14 cran (@1.3-2)                     
-#&amp;gt;  compiler     3.4.0      2017-04-21 local                             
-#&amp;gt;  datasets   * 3.4.0      2017-04-21 local                             
-#&amp;gt;  DBI          0.6-1      2017-04-01 cran (@0.6-1)                     
-#&amp;gt;  devtools     1.13.1     2017-05-13 CRAN (R 3.4.0)                    
-#&amp;gt;  digest       0.6.12     2017-01-27 CRAN (R 3.4.0)                    
-#&amp;gt;  dplyr      * 0.5.0      2016-06-24 cran (@0.5.0)                     
-#&amp;gt;  evaluate     0.10       2016-10-11 cran (@0.10)                      
+#&amp;gt;  compiler     3.4.1      2017-07-20 local                             
+#&amp;gt;  datasets   * 3.4.1      2017-07-20 local                             
+#&amp;gt;  devtools     1.13.3     2017-08-02 CRAN (R 3.4.1)                    
+#&amp;gt;  digest       0.6.12     2017-01-27 CRAN (R 3.4.1)                    
+#&amp;gt;  dplyr      * 0.7.2      2017-07-20 cran (@0.7.2)                     
+#&amp;gt;  evaluate     0.10.1     2017-06-24 cran (@0.10.1)                    
 #&amp;gt;  forcats    * 0.2.0      2017-01-23 cran (@0.2.0)                     
-#&amp;gt;  foreign      0.8-67     2016-09-13 CRAN (R 3.4.0)                    
-#&amp;gt;  gganimate  * 0.1.0.9000 2017-05-26 Github (dgrtwo/gganimate@bf82002) 
+#&amp;gt;  foreign      0.8-69     2017-06-22 CRAN (R 3.4.1)                    
+#&amp;gt;  gganimate  * 0.1.0.9000 2017-08-30 Github (dgrtwo/gganimate@bf82002) 
 #&amp;gt;  ggplot2    * 2.2.1      2016-12-30 cran (@2.2.1)                     
-#&amp;gt;  graphics   * 3.4.0      2017-04-21 local                             
-#&amp;gt;  grDevices  * 3.4.0      2017-04-21 local                             
-#&amp;gt;  grid         3.4.0      2017-04-21 local                             
+#&amp;gt;  glue         1.1.1      2017-06-21 cran (@1.1.1)                     
+#&amp;gt;  graphics   * 3.4.1      2017-07-20 local                             
+#&amp;gt;  grDevices  * 3.4.1      2017-07-20 local                             
+#&amp;gt;  grid         3.4.1      2017-07-20 local                             
 #&amp;gt;  gtable       0.2.0      2016-02-26 cran (@0.2.0)                     
-#&amp;gt;  haven        1.0.0      2016-09-23 cran (@1.0.0)                     
+#&amp;gt;  haven        1.1.0      2017-07-09 cran (@1.1.0)                     
 #&amp;gt;  hms          0.3        2016-11-22 cran (@0.3)                       
 #&amp;gt;  htmltools    0.3.6      2017-04-28 cran (@0.3.6)                     
-#&amp;gt;  httr         1.2.1      2016-07-03 CRAN (R 3.4.0)                    
-#&amp;gt;  jsonlite     1.4        2017-04-08 CRAN (R 3.4.0)                    
-#&amp;gt;  knitr      * 1.16       2017-05-18 cran (@1.16)                      
+#&amp;gt;  httr         1.3.1      2017-08-20 CRAN (R 3.4.1)                    
+#&amp;gt;  jsonlite     1.5        2017-06-01 CRAN (R 3.4.1)                    
+#&amp;gt;  knitr      * 1.17       2017-08-10 cran (@1.17)                      
 #&amp;gt;  labeling     0.3        2014-08-23 cran (@0.3)                       
-#&amp;gt;  lattice      0.20-35    2017-03-25 CRAN (R 3.4.0)                    
+#&amp;gt;  lattice      0.20-35    2017-03-25 CRAN (R 3.4.1)                    
 #&amp;gt;  lazyeval     0.2.0      2016-06-12 cran (@0.2.0)                     
 #&amp;gt;  lubridate    1.6.0      2016-09-13 cran (@1.6.0)                     
 #&amp;gt;  magrittr     1.5        2014-11-22 cran (@1.5)                       
-#&amp;gt;  memoise      1.1.0      2017-04-21 CRAN (R 3.4.0)                    
-#&amp;gt;  methods      3.4.0      2017-04-21 local                             
+#&amp;gt;  memoise      1.1.0      2017-04-21 CRAN (R 3.4.1)                    
+#&amp;gt;  methods    * 3.4.1      2017-07-20 local                             
 #&amp;gt;  mnormt       1.5-5      2016-10-15 cran (@1.5-5)                     
-#&amp;gt;  modelr       0.1.0      2016-08-31 cran (@0.1.0)                     
+#&amp;gt;  modelr       0.1.1      2017-07-24 cran (@0.1.1)                     
 #&amp;gt;  munsell      0.4.3      2016-02-13 cran (@0.4.3)                     
-#&amp;gt;  nlme         3.1-131    2017-02-06 CRAN (R 3.4.0)                    
-#&amp;gt;  parallel     3.4.0      2017-04-21 local                             
+#&amp;gt;  nlme         3.1-131    2017-02-06 CRAN (R 3.4.1)                    
+#&amp;gt;  parallel     3.4.1      2017-07-20 local                             
+#&amp;gt;  pkgconfig    2.0.1      2017-03-21 cran (@2.0.1)                     
 #&amp;gt;  plyr         1.8.4      2016-06-08 cran (@1.8.4)                     
 #&amp;gt;  psych        1.7.5      2017-05-03 cran (@1.7.5)                     
-#&amp;gt;  purrr      * 0.2.2.2    2017-05-11 cran (@0.2.2.2)                   
-#&amp;gt;  R6           2.2.1      2017-05-10 CRAN (R 3.4.0)                    
-#&amp;gt;  Rcpp         0.12.11    2017-05-22 cran (@0.12.11)                   
+#&amp;gt;  purrr      * 0.2.3      2017-08-02 cran (@0.2.3)                     
+#&amp;gt;  R6           2.2.2      2017-06-17 CRAN (R 3.4.1)                    
+#&amp;gt;  Rcpp         0.12.12    2017-07-15 cran (@0.12.12)                   
 #&amp;gt;  readr      * 1.1.1      2017-05-16 cran (@1.1.1)                     
 #&amp;gt;  readxl       1.0.0      2017-04-18 cran (@1.0.0)                     
 #&amp;gt;  reshape2     1.4.2      2016-10-22 cran (@1.4.2)                     
-#&amp;gt;  rlang        0.1.1      2017-05-18 cran (@0.1.1)                     
-#&amp;gt;  rmarkdown    1.5.9000   2017-05-26 Github (rstudio/rmarkdown@1ba5b8f)
+#&amp;gt;  rlang        0.1.2      2017-08-09 cran (@0.1.2)                     
+#&amp;gt;  rmarkdown    1.6.0.9001 2017-08-30 Github (rstudio/rmarkdown@e22703a)
 #&amp;gt;  rprojroot    1.2        2017-01-16 cran (@1.2)                       
 #&amp;gt;  rvest        0.3.2      2016-06-17 cran (@0.3.2)                     
-#&amp;gt;  scales       0.4.1      2016-11-09 cran (@0.4.1)                     
-#&amp;gt;  stats      * 3.4.0      2017-04-21 local                             
+#&amp;gt;  scales       0.5.0      2017-08-24 cran (@0.5.0)                     
+#&amp;gt;  stats      * 3.4.1      2017-07-20 local                             
 #&amp;gt;  stringi      1.1.5      2017-04-07 cran (@1.1.5)                     
 #&amp;gt;  stringr      1.2.0      2017-02-18 cran (@1.2.0)                     
-#&amp;gt;  tibble     * 1.3.1      2017-05-17 cran (@1.3.1)                     
-#&amp;gt;  tidyr      * 0.6.3      2017-05-15 cran (@0.6.3)                     
+#&amp;gt;  tibble     * 1.3.4      2017-08-22 cran (@1.3.4)                     
+#&amp;gt;  tidyr      * 0.7.0      2017-08-16 cran (@0.7.0)                     
+#&amp;gt;  tidyselect   0.2.0      2017-08-30 cran (@0.2.0)                     
 #&amp;gt;  tidyverse  * 1.1.1      2017-01-27 cran (@1.1.1)                     
-#&amp;gt;  tools        3.4.0      2017-04-21 local                             
+#&amp;gt;  tools        3.4.1      2017-07-20 local                             
 #&amp;gt;  tweenr     * 0.1.5      2016-10-10 cran (@0.1.5)                     
-#&amp;gt;  utils      * 3.4.0      2017-04-21 local                             
-#&amp;gt;  withr        1.0.2      2016-06-20 CRAN (R 3.4.0)                    
+#&amp;gt;  utils      * 3.4.1      2017-07-20 local                             
+#&amp;gt;  withr        2.0.0      2017-07-28 CRAN (R 3.4.1)                    
 #&amp;gt;  xml2         1.1.1      2017-01-24 cran (@1.1.1)                     
 #&amp;gt;  yaml         2.1.14     2016-11-12 cran (@2.1.14)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;/details&gt;&lt;/p&gt;
@@ -362,11 +358,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Mon, 13 Mar 2017 00:00:00 +0000</pubDate>
       
       <guid>https://wjakethompson.github.io/post/2017-03-13-march-madness-preview/</guid>
-      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
-&lt;!-- /BLOGDOWN-HEAD --&gt;
-
-
-&lt;p&gt;March Madness officially tips off tomorrow with the First Four games in Dayton before the round of 64 begins on Thursday. In this post, we’ll look at each team’s chance of advancing and winning the national title. We’ll also look at who was help and hurt most by how the committee seeded the tournament.&lt;/p&gt;
+      <description>&lt;p&gt;March Madness officially tips off tomorrow with the First Four games in Dayton before the round of 64 begins on Thursday. In this post, we’ll look at each team’s chance of advancing and winning the national title. We’ll also look at who was help and hurt most by how the committee seeded the tournament.&lt;/p&gt;
 &lt;p&gt;As always, the code and data for this post are available on my &lt;a href=&#34;https://github.com/wjakethompson/wjakethompson.github.io&#34;&gt;Github&lt;/a&gt; page.&lt;/p&gt;
 &lt;div id=&#34;the-ratings&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;The Ratings&lt;/h2&gt;
@@ -1307,58 +1299,59 @@ knitr::kable(head(seeding), digits = 3, align = &amp;quot;c&amp;quot;, booktabs 
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::session_info()
 #&amp;gt; Session info -------------------------------------------------------------
 #&amp;gt;  setting  value                       
-#&amp;gt;  version  R version 3.4.0 (2017-04-21)
+#&amp;gt;  version  R version 3.4.1 (2017-06-30)
 #&amp;gt;  system   x86_64, darwin15.6.0        
 #&amp;gt;  ui       X11                         
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       America/Chicago             
-#&amp;gt;  date     2017-05-25
+#&amp;gt;  date     2017-08-30
 #&amp;gt; Packages -----------------------------------------------------------------
 #&amp;gt;  package    * version    date       source                            
 #&amp;gt;  assertthat   0.2.0      2017-04-11 CRAN (R 3.4.0)                    
-#&amp;gt;  backports    1.0.5      2017-01-18 CRAN (R 3.4.0)                    
-#&amp;gt;  base       * 3.4.0      2017-04-21 local                             
+#&amp;gt;  backports    1.1.0      2017-05-22 CRAN (R 3.4.0)                    
+#&amp;gt;  base       * 3.4.1      2017-07-07 local                             
 #&amp;gt;  bindr        0.1        2016-11-13 cran (@0.1)                       
-#&amp;gt;  bindrcpp   * 0.1        2016-12-11 cran (@0.1)                       
-#&amp;gt;  blogdown     0.0.41     2017-05-23 Github (rstudio/blogdown@a367835) 
-#&amp;gt;  bookdown     0.4        2017-05-23 Github (rstudio/bookdown@b9f0e40) 
-#&amp;gt;  codetools    0.2-15     2016-10-05 CRAN (R 3.4.0)                    
+#&amp;gt;  bindrcpp   * 0.2        2017-06-17 cran (@0.2)                       
+#&amp;gt;  blogdown     0.1.3      2017-08-30 Github (rstudio/blogdown@45860c7) 
+#&amp;gt;  bookdown     0.5        2017-08-20 CRAN (R 3.4.1)                    
+#&amp;gt;  codetools    0.2-15     2016-10-05 CRAN (R 3.4.1)                    
 #&amp;gt;  colorspace   1.3-2      2016-12-14 CRAN (R 3.4.0)                    
-#&amp;gt;  compiler     3.4.0      2017-04-21 local                             
-#&amp;gt;  datasets   * 3.4.0      2017-04-21 local                             
-#&amp;gt;  devtools     1.13.1     2017-05-13 CRAN (R 3.4.0)                    
+#&amp;gt;  compiler     3.4.1      2017-07-07 local                             
+#&amp;gt;  datasets   * 3.4.1      2017-07-07 local                             
+#&amp;gt;  devtools     1.13.3     2017-08-02 cran (@1.13.3)                    
 #&amp;gt;  digest       0.6.12     2017-01-27 CRAN (R 3.4.0)                    
-#&amp;gt;  dplyr      * 0.6.0      2017-05-23 Github (tidyverse/dplyr@c7ca374)  
-#&amp;gt;  evaluate     0.10       2016-10-11 CRAN (R 3.4.0)                    
-#&amp;gt;  ggplot2    * 2.2.1      2016-12-30 CRAN (R 3.4.0)                    
-#&amp;gt;  glue         1.0.0      2017-04-17 cran (@1.0.0)                     
-#&amp;gt;  graphics   * 3.4.0      2017-04-21 local                             
-#&amp;gt;  grDevices  * 3.4.0      2017-04-21 local                             
-#&amp;gt;  grid         3.4.0      2017-04-21 local                             
+#&amp;gt;  dplyr      * 0.7.2      2017-07-20 CRAN (R 3.4.1)                    
+#&amp;gt;  evaluate     0.10.1     2017-06-24 cran (@0.10.1)                    
+#&amp;gt;  ggplot2    * 2.2.1      2016-12-30 CRAN (R 3.3.2)                    
+#&amp;gt;  glue         1.1.1      2017-06-21 cran (@1.1.1)                     
+#&amp;gt;  graphics   * 3.4.1      2017-07-07 local                             
+#&amp;gt;  grDevices  * 3.4.1      2017-07-07 local                             
+#&amp;gt;  grid         3.4.1      2017-07-07 local                             
 #&amp;gt;  gtable       0.2.0      2016-02-26 CRAN (R 3.4.0)                    
 #&amp;gt;  highr        0.6        2016-05-09 CRAN (R 3.4.0)                    
 #&amp;gt;  htmltools    0.3.6      2017-04-28 CRAN (R 3.4.0)                    
-#&amp;gt;  knitr      * 1.16       2017-05-18 CRAN (R 3.4.0)                    
+#&amp;gt;  knitr      * 1.17       2017-08-10 cran (@1.17)                      
 #&amp;gt;  lazyeval     0.2.0      2016-06-12 CRAN (R 3.4.0)                    
 #&amp;gt;  magrittr     1.5        2014-11-22 CRAN (R 3.4.0)                    
 #&amp;gt;  memoise      1.1.0      2017-04-21 CRAN (R 3.4.0)                    
-#&amp;gt;  methods      3.4.0      2017-04-21 local                             
+#&amp;gt;  methods    * 3.4.1      2017-07-07 local                             
 #&amp;gt;  munsell      0.4.3      2016-02-13 CRAN (R 3.4.0)                    
+#&amp;gt;  pkgconfig    2.0.1      2017-03-21 cran (@2.0.1)                     
 #&amp;gt;  plyr         1.8.4      2016-06-08 CRAN (R 3.4.0)                    
-#&amp;gt;  R6           2.2.1      2017-05-10 cran (@2.2.1)                     
-#&amp;gt;  Rcpp         0.12.11    2017-05-22 CRAN (R 3.4.0)                    
-#&amp;gt;  rlang        0.1.1.9000 2017-05-23 Github (hadley/rlang@7c2f7e8)     
-#&amp;gt;  rmarkdown    1.5.9000   2017-05-23 Github (rstudio/rmarkdown@54bf8fc)
+#&amp;gt;  R6           2.2.2      2017-06-17 cran (@2.2.2)                     
+#&amp;gt;  Rcpp         0.12.12    2017-07-15 CRAN (R 3.4.1)                    
+#&amp;gt;  rlang        0.1.2.9000 2017-08-30 Github (hadley/rlang@f20124b)     
+#&amp;gt;  rmarkdown    1.6.0.9001 2017-08-30 Github (rstudio/rmarkdown@e22703a)
 #&amp;gt;  rprojroot    1.2        2017-01-16 CRAN (R 3.4.0)                    
-#&amp;gt;  scales       0.4.1      2016-11-09 CRAN (R 3.4.0)                    
-#&amp;gt;  stats      * 3.4.0      2017-04-21 local                             
+#&amp;gt;  scales       0.5.0.9000 2017-08-30 Github (hadley/scales@d767915)    
+#&amp;gt;  stats      * 3.4.1      2017-07-07 local                             
 #&amp;gt;  stringi      1.1.5      2017-04-07 CRAN (R 3.4.0)                    
 #&amp;gt;  stringr      1.2.0      2017-02-18 CRAN (R 3.4.0)                    
-#&amp;gt;  tibble       1.3.1      2017-05-17 CRAN (R 3.4.0)                    
-#&amp;gt;  tools        3.4.0      2017-04-21 local                             
-#&amp;gt;  utils      * 3.4.0      2017-04-21 local                             
-#&amp;gt;  withr        1.0.2      2016-06-20 CRAN (R 3.4.0)                    
+#&amp;gt;  tibble       1.3.4      2017-08-22 cran (@1.3.4)                     
+#&amp;gt;  tools        3.4.1      2017-07-07 local                             
+#&amp;gt;  utils      * 3.4.1      2017-07-07 local                             
+#&amp;gt;  withr        2.0.0      2017-08-13 Github (jimhester/withr@190d293)  
 #&amp;gt;  yaml         2.1.14     2016-11-12 CRAN (R 3.4.0)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;/details&gt;&lt;/p&gt;
 &lt;/div&gt;
@@ -1371,11 +1364,7 @@ knitr::kable(head(seeding), digits = 3, align = &amp;quot;c&amp;quot;, booktabs 
       <pubDate>Fri, 27 Jan 2017 00:00:00 +0000</pubDate>
       
       <guid>https://wjakethompson.github.io/post/2017-01-27-big12-sec-simulation/</guid>
-      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
-&lt;!-- /BLOGDOWN-HEAD --&gt;
-
-
-&lt;p&gt;The Big 12/SEC challenge tips off tomorrow. This will be the 4th year of this competition, and the Big 12 has &lt;a href=&#34;https://en.wikipedia.org/wiki/Big_12/SEC_Challenge#Series_History&#34;&gt;never lost&lt;/a&gt;. In this post, we’ll use a Monte Carlo simulation to estimate the Big 12’s chances of continuing this streak for another year.&lt;/p&gt;
+      <description>&lt;p&gt;The Big 12/SEC challenge tips off tomorrow. This will be the 4th year of this competition, and the Big 12 has &lt;a href=&#34;https://en.wikipedia.org/wiki/Big_12/SEC_Challenge#Series_History&#34;&gt;never lost&lt;/a&gt;. In this post, we’ll use a Monte Carlo simulation to estimate the Big 12’s chances of continuing this streak for another year.&lt;/p&gt;
 &lt;p&gt;As always, the code and data for this post are available on my &lt;a href=&#34;https://github.com/wjakethompson/wjakethompson.github.io&#34;&gt;Github&lt;/a&gt; page.&lt;/p&gt;
 &lt;div id=&#34;the-ratings&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;The Ratings&lt;/h2&gt;
@@ -1489,7 +1478,7 @@ outcome
   theme_minimal() +
   theme(legend.position = &amp;quot;bottom&amp;quot;) +
   guides(fill = guide_legend(title.position = &amp;quot;top&amp;quot;, title.hjust = 0.5))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-27-big12-sec-simulation/figures/plot-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-27-big12-sec-simulation_files/figure-html/plot-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;conclusion&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Conclusion&lt;/h2&gt;
@@ -1498,62 +1487,63 @@ outcome
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::session_info()
 #&amp;gt; Session info -------------------------------------------------------------
 #&amp;gt;  setting  value                       
-#&amp;gt;  version  R version 3.4.0 (2017-04-21)
+#&amp;gt;  version  R version 3.4.1 (2017-06-30)
 #&amp;gt;  system   x86_64, darwin15.6.0        
 #&amp;gt;  ui       X11                         
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       America/Chicago             
-#&amp;gt;  date     2017-05-25
+#&amp;gt;  date     2017-08-30
 #&amp;gt; Packages -----------------------------------------------------------------
 #&amp;gt;  package      * version    date       source                            
-#&amp;gt;  animation    * 2.5        2017-03-30 CRAN (R 3.4.0)                    
+#&amp;gt;  animation    * 2.5        2017-06-06 Github (yihui/animation@21f635c)  
 #&amp;gt;  assertthat     0.2.0      2017-04-11 CRAN (R 3.4.0)                    
-#&amp;gt;  backports      1.0.5      2017-01-18 CRAN (R 3.4.0)                    
-#&amp;gt;  base         * 3.4.0      2017-04-21 local                             
+#&amp;gt;  backports      1.1.0      2017-05-22 CRAN (R 3.4.0)                    
+#&amp;gt;  base         * 3.4.1      2017-07-07 local                             
 #&amp;gt;  bindr          0.1        2016-11-13 cran (@0.1)                       
-#&amp;gt;  bindrcpp     * 0.1        2016-12-11 cran (@0.1)                       
-#&amp;gt;  blogdown       0.0.41     2017-05-23 Github (rstudio/blogdown@a367835) 
-#&amp;gt;  bookdown       0.4        2017-05-23 Github (rstudio/bookdown@b9f0e40) 
-#&amp;gt;  codetools      0.2-15     2016-10-05 CRAN (R 3.4.0)                    
+#&amp;gt;  bindrcpp     * 0.2        2017-06-17 cran (@0.2)                       
+#&amp;gt;  blogdown       0.1.3      2017-08-30 Github (rstudio/blogdown@45860c7) 
+#&amp;gt;  bookdown       0.5        2017-08-20 CRAN (R 3.4.1)                    
+#&amp;gt;  codetools      0.2-15     2016-10-05 CRAN (R 3.4.1)                    
 #&amp;gt;  colorspace     1.3-2      2016-12-14 CRAN (R 3.4.0)                    
-#&amp;gt;  compiler       3.4.0      2017-04-21 local                             
-#&amp;gt;  datasets     * 3.4.0      2017-04-21 local                             
-#&amp;gt;  devtools       1.13.1     2017-05-13 CRAN (R 3.4.0)                    
+#&amp;gt;  compiler       3.4.1      2017-07-07 local                             
+#&amp;gt;  datasets     * 3.4.1      2017-07-07 local                             
+#&amp;gt;  devtools       1.13.3     2017-08-02 cran (@1.13.3)                    
 #&amp;gt;  digest         0.6.12     2017-01-27 CRAN (R 3.4.0)                    
-#&amp;gt;  dplyr        * 0.6.0      2017-05-23 Github (tidyverse/dplyr@c7ca374)  
-#&amp;gt;  evaluate       0.10       2016-10-11 CRAN (R 3.4.0)                    
-#&amp;gt;  ggplot2      * 2.2.1      2016-12-30 CRAN (R 3.4.0)                    
-#&amp;gt;  glue           1.0.0      2017-04-17 cran (@1.0.0)                     
-#&amp;gt;  graphics     * 3.4.0      2017-04-21 local                             
-#&amp;gt;  grDevices    * 3.4.0      2017-04-21 local                             
-#&amp;gt;  grid           3.4.0      2017-04-21 local                             
+#&amp;gt;  dplyr        * 0.7.2      2017-07-20 CRAN (R 3.4.1)                    
+#&amp;gt;  evaluate       0.10.1     2017-06-24 cran (@0.10.1)                    
+#&amp;gt;  ggplot2      * 2.2.1      2016-12-30 CRAN (R 3.3.2)                    
+#&amp;gt;  glue           1.1.1      2017-06-21 cran (@1.1.1)                     
+#&amp;gt;  graphics     * 3.4.1      2017-07-07 local                             
+#&amp;gt;  grDevices    * 3.4.1      2017-07-07 local                             
+#&amp;gt;  grid           3.4.1      2017-07-07 local                             
 #&amp;gt;  gtable         0.2.0      2016-02-26 CRAN (R 3.4.0)                    
 #&amp;gt;  hms            0.3        2016-11-22 CRAN (R 3.4.0)                    
 #&amp;gt;  htmltools      0.3.6      2017-04-28 CRAN (R 3.4.0)                    
-#&amp;gt;  knitr        * 1.16       2017-05-18 CRAN (R 3.4.0)                    
+#&amp;gt;  knitr        * 1.17       2017-08-10 cran (@1.17)                      
 #&amp;gt;  lazyeval       0.2.0      2016-06-12 CRAN (R 3.4.0)                    
 #&amp;gt;  magrittr       1.5        2014-11-22 CRAN (R 3.4.0)                    
 #&amp;gt;  memoise        1.1.0      2017-04-21 CRAN (R 3.4.0)                    
-#&amp;gt;  methods        3.4.0      2017-04-21 local                             
+#&amp;gt;  methods      * 3.4.1      2017-07-07 local                             
 #&amp;gt;  munsell        0.4.3      2016-02-13 CRAN (R 3.4.0)                    
+#&amp;gt;  pkgconfig      2.0.1      2017-03-21 cran (@2.0.1)                     
 #&amp;gt;  plyr           1.8.4      2016-06-08 CRAN (R 3.4.0)                    
-#&amp;gt;  purrr        * 0.2.2.2    2017-05-11 CRAN (R 3.4.0)                    
-#&amp;gt;  R6             2.2.1      2017-05-10 cran (@2.2.1)                     
+#&amp;gt;  purrr        * 0.2.3      2017-08-02 cran (@0.2.3)                     
+#&amp;gt;  R6             2.2.2      2017-06-17 cran (@2.2.2)                     
 #&amp;gt;  RColorBrewer   1.1-2      2014-12-07 CRAN (R 3.4.0)                    
-#&amp;gt;  Rcpp           0.12.11    2017-05-22 CRAN (R 3.4.0)                    
-#&amp;gt;  readr        * 1.1.0      2017-03-22 CRAN (R 3.4.0)                    
-#&amp;gt;  rlang          0.1.1.9000 2017-05-23 Github (hadley/rlang@7c2f7e8)     
-#&amp;gt;  rmarkdown      1.5.9000   2017-05-23 Github (rstudio/rmarkdown@54bf8fc)
+#&amp;gt;  Rcpp           0.12.12    2017-07-15 CRAN (R 3.4.1)                    
+#&amp;gt;  readr        * 1.1.1      2017-05-16 CRAN (R 3.4.0)                    
+#&amp;gt;  rlang          0.1.2.9000 2017-08-30 Github (hadley/rlang@f20124b)     
+#&amp;gt;  rmarkdown      1.6.0.9001 2017-08-30 Github (rstudio/rmarkdown@e22703a)
 #&amp;gt;  rprojroot      1.2        2017-01-16 CRAN (R 3.4.0)                    
-#&amp;gt;  scales         0.4.1      2016-11-09 CRAN (R 3.4.0)                    
-#&amp;gt;  stats        * 3.4.0      2017-04-21 local                             
+#&amp;gt;  scales         0.5.0.9000 2017-08-30 Github (hadley/scales@d767915)    
+#&amp;gt;  stats        * 3.4.1      2017-07-07 local                             
 #&amp;gt;  stringi        1.1.5      2017-04-07 CRAN (R 3.4.0)                    
 #&amp;gt;  stringr        1.2.0      2017-02-18 CRAN (R 3.4.0)                    
-#&amp;gt;  tibble         1.3.1      2017-05-17 CRAN (R 3.4.0)                    
-#&amp;gt;  tools          3.4.0      2017-04-21 local                             
-#&amp;gt;  utils        * 3.4.0      2017-04-21 local                             
-#&amp;gt;  withr          1.0.2      2016-06-20 CRAN (R 3.4.0)                    
+#&amp;gt;  tibble         1.3.4      2017-08-22 cran (@1.3.4)                     
+#&amp;gt;  tools          3.4.1      2017-07-07 local                             
+#&amp;gt;  utils        * 3.4.1      2017-07-07 local                             
+#&amp;gt;  withr          2.0.0      2017-08-13 Github (jimhester/withr@190d293)  
 #&amp;gt;  yaml           2.1.14     2016-11-12 CRAN (R 3.4.0)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;/details&gt;&lt;/p&gt;
 &lt;/div&gt;
@@ -1572,11 +1562,7 @@ outcome
       <pubDate>Wed, 11 Jan 2017 00:00:00 +0000</pubDate>
       
       <guid>https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability/</guid>
-      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
-&lt;!-- /BLOGDOWN-HEAD --&gt;
-
-
-&lt;p&gt;Last week I premiered my in game win probabilities for KU basketball. These have been available for a while on &lt;a href=&#34;http://www.hawklytics.com/winprob17&#34;&gt;Hawklytics&lt;/a&gt;, but were always made after the game rather than in real time. Now that they are going live, I thought it would helpful to document how these are made using R and the &lt;code&gt;ggplot2&lt;/code&gt; package.&lt;/p&gt;
+      <description>&lt;p&gt;Last week I premiered my in game win probabilities for KU basketball. These have been available for a while on &lt;a href=&#34;http://www.hawklytics.com/winprob17&#34;&gt;Hawklytics&lt;/a&gt;, but were always made after the game rather than in real time. Now that they are going live, I thought it would helpful to document how these are made using R and the &lt;code&gt;ggplot2&lt;/code&gt; package.&lt;/p&gt;
 &lt;div id=&#34;calculating-win-probability&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Calculating Win Probability&lt;/h2&gt;
 &lt;p&gt;The win probabilities are based on the Elo ratings that I calculate for the &lt;a href=&#34;http://www.hawklytics.com/&#34;&gt;team ratings on Hawkytics&lt;/a&gt;. Elo ratings provide an estimate of team strength or ability &lt;em&gt;at the current point in time&lt;/em&gt;. This makes it straightforward to determine the ratings of each team on the day the game was played. For more about Elo ratings and how they are calculated go &lt;a href=&#34;https://en.wikipedia.org/wiki/Elo_rating_system&#34;&gt;here&lt;/a&gt;, or check out &lt;a href=&#34;http://fivethirtyeight.com/features/how-we-calculate-nba-elo-ratings/&#34;&gt;this explainer from FiveThirtyEight&lt;/a&gt;, which is what my Elo ratings are based off of.&lt;/p&gt;
@@ -1593,7 +1579,7 @@ data_frame(
   ggplot() +
   geom_ribbon(aes(x = x, ymin = 0, ymax = y, fill = winner)) +
   labs(x = &amp;quot;away team&amp;#39;s margin of victory&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability/figures/initial_dist-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability_files/figure-html/initial_dist-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The distribution peaks at -15, which is what we calculated as the most likely outcome. By convention, point spreads are given in terms of the home team, and a negative point spread means that team is the favorite. Because this game was played at Kansas, the point spread is &lt;strong&gt;Kansas -15&lt;/strong&gt;. If the game were being played at Kansas State, the point spread would be written as &lt;strong&gt;Kansas State + 15&lt;/strong&gt;. Because of this a negative margin of victory indicates a win for the home team. Therefore, a negative margin of victory is associated with Kansas winning, and a positive margin of victory is associated with Kansas State winning. To get the probability of Kansas winning, we can simply look at the proportion of the curve that is less than zero.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(0, mean = -15, sd = 11.36, lower.tail = TRUE)
 #&amp;gt; [1] 0.906653&lt;/code&gt;&lt;/pre&gt;
@@ -1718,7 +1704,7 @@ full_game
   gather(team, winprob, home_winprob:away_winprob) %&amp;gt;%
   ggplot(aes(x = min_played, y = winprob, color = team)) +
   geom_line()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability/figures/winprob_plot-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability_files/figure-html/winprob_plot-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Looks pretty good! We can see that even though Kansas wasn’t leading on the score board the whole game, they were always favored to win. Although Kansas State was able to make it close at the end of the game. Now we can add some formatting to make it look prettier.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;full_game %&amp;gt;%
   gather(team, winprob, home_winprob:away_winprob) %&amp;gt;%
@@ -1735,7 +1721,7 @@ full_game
   labs(y = &amp;quot;Win Probability&amp;quot;, x = &amp;quot;Minutes Remaining&amp;quot;) +
   theme_minimal() +
   theme(legend.position = &amp;quot;bottom&amp;quot;, legend.title = element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability/figures/final_plot-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability_files/figure-html/final_plot-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;And there you have our final product! For future Kansas games, I will be &lt;a href=&#34;https://twitter.com/jakethomp&#34;&gt;tweeting out&lt;/a&gt; real time win probability graphs, and as always, previous games can be found on &lt;a href=&#34;http://www.hawklytics.com/winprob17&#34;&gt;Hawklytics&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;bonus-animate-the-plots&#34; class=&#34;section level2&#34;&gt;
@@ -1762,7 +1748,7 @@ p &amp;lt;- full_game %&amp;gt;%
 
 gganimate(p, interval = 0.2, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure center&#34;&gt;
-&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability/figures/ani_win-.gif&#34;&gt;
+&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability_files/figure-html/ani_win-.gif&#34;&gt;
 &lt;/div&gt;
 &lt;p&gt;We could also animate the distribution to show exactly how the distribution is changing as we alter the mean and standard deviation.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(purrr)
@@ -1792,7 +1778,7 @@ d &amp;lt;- ggplot(dist, aes(frame = min_played)) +
 
 gganimate(d, interval = 0.2)&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;figure center&#34;&gt;
-&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability/figures/ani_dist-.gif&#34;&gt;
+&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability_files/figure-html/ani_dist-.gif&#34;&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;limitations&#34; class=&#34;section level2&#34;&gt;
@@ -1801,82 +1787,84 @@ gganimate(d, interval = 0.2)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;details&gt;&lt;summary&gt;Session info&lt;/summary&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::session_info()
 #&amp;gt;  setting  value                       
-#&amp;gt;  version  R version 3.4.0 (2017-04-21)
+#&amp;gt;  version  R version 3.4.1 (2017-06-30)
 #&amp;gt;  system   x86_64, darwin15.6.0        
 #&amp;gt;  ui       X11                         
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       America/Chicago             
-#&amp;gt;  date     2017-05-25                  
+#&amp;gt;  date     2017-08-30                  
 #&amp;gt; 
 #&amp;gt;  package    * version    date       source                            
-#&amp;gt;  animation  * 2.5        2017-05-25 Github (yihui/animation@98edc0d)  
+#&amp;gt;  animation  * 2.5        2017-06-06 Github (yihui/animation@21f635c)  
 #&amp;gt;  assertthat   0.2.0      2017-04-11 CRAN (R 3.4.0)                    
-#&amp;gt;  backports    1.0.5      2017-01-18 CRAN (R 3.4.0)                    
-#&amp;gt;  base       * 3.4.0      2017-04-21 local                             
+#&amp;gt;  backports    1.1.0      2017-05-22 CRAN (R 3.4.0)                    
+#&amp;gt;  base       * 3.4.1      2017-07-07 local                             
 #&amp;gt;  bindr        0.1        2016-11-13 cran (@0.1)                       
-#&amp;gt;  bindrcpp   * 0.1        2016-12-11 cran (@0.1)                       
-#&amp;gt;  blogdown     0.0.41     2017-05-23 Github (rstudio/blogdown@a367835) 
-#&amp;gt;  bookdown     0.4        2017-05-23 Github (rstudio/bookdown@b9f0e40) 
+#&amp;gt;  bindrcpp   * 0.2        2017-06-17 cran (@0.2)                       
+#&amp;gt;  blogdown     0.1.3      2017-08-30 Github (rstudio/blogdown@45860c7) 
+#&amp;gt;  bookdown     0.5        2017-08-20 CRAN (R 3.4.1)                    
 #&amp;gt;  broom        0.4.2      2017-02-13 CRAN (R 3.4.0)                    
 #&amp;gt;  cellranger   1.1.0      2016-07-27 CRAN (R 3.4.0)                    
-#&amp;gt;  codetools    0.2-15     2016-10-05 CRAN (R 3.4.0)                    
+#&amp;gt;  codetools    0.2-15     2016-10-05 CRAN (R 3.4.1)                    
 #&amp;gt;  colorspace   1.3-2      2016-12-14 CRAN (R 3.4.0)                    
-#&amp;gt;  compiler     3.4.0      2017-04-21 local                             
-#&amp;gt;  datasets   * 3.4.0      2017-04-21 local                             
-#&amp;gt;  devtools     1.13.1     2017-05-13 CRAN (R 3.4.0)                    
+#&amp;gt;  compiler     3.4.1      2017-07-07 local                             
+#&amp;gt;  datasets   * 3.4.1      2017-07-07 local                             
+#&amp;gt;  devtools     1.13.3     2017-08-02 cran (@1.13.3)                    
 #&amp;gt;  digest       0.6.12     2017-01-27 CRAN (R 3.4.0)                    
-#&amp;gt;  dplyr      * 0.6.0      2017-05-23 Github (tidyverse/dplyr@c7ca374)  
-#&amp;gt;  evaluate     0.10       2016-10-11 CRAN (R 3.4.0)                    
+#&amp;gt;  dplyr      * 0.7.2      2017-07-20 CRAN (R 3.4.1)                    
+#&amp;gt;  evaluate     0.10.1     2017-06-24 cran (@0.10.1)                    
 #&amp;gt;  forcats      0.2.0      2017-01-23 CRAN (R 3.4.0)                    
-#&amp;gt;  foreign      0.8-67     2016-09-13 CRAN (R 3.4.0)                    
-#&amp;gt;  gganimate  * 0.1.0.9000 2017-05-23 Github (dgrtwo/gganimate@bf82002) 
-#&amp;gt;  ggplot2    * 2.2.1      2016-12-30 CRAN (R 3.4.0)                    
-#&amp;gt;  glue         1.0.0      2017-04-17 cran (@1.0.0)                     
-#&amp;gt;  graphics   * 3.4.0      2017-04-21 local                             
-#&amp;gt;  grDevices  * 3.4.0      2017-04-21 local                             
-#&amp;gt;  grid         3.4.0      2017-04-21 local                             
+#&amp;gt;  foreign      0.8-69     2017-06-22 CRAN (R 3.4.1)                    
+#&amp;gt;  gganimate  * 0.1.0.9000 2017-06-06 Github (dgrtwo/gganimate@bf82002) 
+#&amp;gt;  ggplot2    * 2.2.1      2016-12-30 CRAN (R 3.3.2)                    
+#&amp;gt;  glue         1.1.1      2017-06-21 cran (@1.1.1)                     
+#&amp;gt;  graphics   * 3.4.1      2017-07-07 local                             
+#&amp;gt;  grDevices  * 3.4.1      2017-07-07 local                             
+#&amp;gt;  grid         3.4.1      2017-07-07 local                             
 #&amp;gt;  gtable       0.2.0      2016-02-26 CRAN (R 3.4.0)                    
-#&amp;gt;  haven        1.0.0      2016-09-23 CRAN (R 3.4.0)                    
+#&amp;gt;  haven        1.1.0      2017-07-09 CRAN (R 3.4.1)                    
 #&amp;gt;  hms          0.3        2016-11-22 CRAN (R 3.4.0)                    
 #&amp;gt;  htmltools    0.3.6      2017-04-28 CRAN (R 3.4.0)                    
-#&amp;gt;  httr         1.2.1      2016-07-03 CRAN (R 3.4.0)                    
-#&amp;gt;  jsonlite     1.4        2017-04-08 CRAN (R 3.4.0)                    
-#&amp;gt;  knitr      * 1.16       2017-05-18 CRAN (R 3.4.0)                    
+#&amp;gt;  httr         1.3.1      2017-08-20 CRAN (R 3.4.1)                    
+#&amp;gt;  jsonlite     1.5        2017-06-01 cran (@1.5)                       
+#&amp;gt;  knitr      * 1.17       2017-08-10 cran (@1.17)                      
 #&amp;gt;  labeling     0.3        2014-08-23 CRAN (R 3.4.0)                    
-#&amp;gt;  lattice      0.20-35    2017-03-25 CRAN (R 3.4.0)                    
+#&amp;gt;  lattice      0.20-35    2017-03-25 CRAN (R 3.4.1)                    
 #&amp;gt;  lazyeval     0.2.0      2016-06-12 CRAN (R 3.4.0)                    
 #&amp;gt;  lubridate    1.6.0      2016-09-13 CRAN (R 3.4.0)                    
 #&amp;gt;  magrittr     1.5        2014-11-22 CRAN (R 3.4.0)                    
 #&amp;gt;  memoise      1.1.0      2017-04-21 CRAN (R 3.4.0)                    
-#&amp;gt;  methods      3.4.0      2017-04-21 local                             
+#&amp;gt;  methods    * 3.4.1      2017-07-07 local                             
 #&amp;gt;  mnormt       1.5-5      2016-10-15 CRAN (R 3.4.0)                    
-#&amp;gt;  modelr       0.1.0      2016-08-31 CRAN (R 3.4.0)                    
+#&amp;gt;  modelr       0.1.1      2017-07-24 cran (@0.1.1)                     
 #&amp;gt;  munsell      0.4.3      2016-02-13 CRAN (R 3.4.0)                    
 #&amp;gt;  nlme         3.1-131    2017-02-06 CRAN (R 3.4.0)                    
-#&amp;gt;  parallel     3.4.0      2017-04-21 local                             
+#&amp;gt;  parallel     3.4.1      2017-07-07 local                             
+#&amp;gt;  pkgconfig    2.0.1      2017-03-21 cran (@2.0.1)                     
 #&amp;gt;  plyr         1.8.4      2016-06-08 CRAN (R 3.4.0)                    
-#&amp;gt;  psych        1.7.3.21   2017-03-22 CRAN (R 3.4.0)                    
-#&amp;gt;  purrr      * 0.2.2.2    2017-05-11 CRAN (R 3.4.0)                    
-#&amp;gt;  R6           2.2.1      2017-05-10 cran (@2.2.1)                     
-#&amp;gt;  Rcpp         0.12.11    2017-05-22 CRAN (R 3.4.0)                    
-#&amp;gt;  readr      * 1.1.0      2017-03-22 CRAN (R 3.4.0)                    
+#&amp;gt;  psych        1.7.5      2017-05-03 CRAN (R 3.4.1)                    
+#&amp;gt;  purrr      * 0.2.3      2017-08-02 cran (@0.2.3)                     
+#&amp;gt;  R6           2.2.2      2017-06-17 cran (@2.2.2)                     
+#&amp;gt;  Rcpp         0.12.12    2017-07-15 CRAN (R 3.4.1)                    
+#&amp;gt;  readr      * 1.1.1      2017-05-16 CRAN (R 3.4.0)                    
 #&amp;gt;  readxl       1.0.0      2017-04-18 CRAN (R 3.4.0)                    
 #&amp;gt;  reshape2     1.4.2      2016-10-22 CRAN (R 3.4.0)                    
-#&amp;gt;  rlang        0.1.1.9000 2017-05-23 Github (hadley/rlang@7c2f7e8)     
-#&amp;gt;  rmarkdown    1.5.9000   2017-05-23 Github (rstudio/rmarkdown@54bf8fc)
+#&amp;gt;  rlang        0.1.2.9000 2017-08-30 Github (hadley/rlang@f20124b)     
+#&amp;gt;  rmarkdown    1.6.0.9001 2017-08-30 Github (rstudio/rmarkdown@e22703a)
 #&amp;gt;  rprojroot    1.2        2017-01-16 CRAN (R 3.4.0)                    
 #&amp;gt;  rvest      * 0.3.2      2016-06-17 CRAN (R 3.4.0)                    
-#&amp;gt;  scales       0.4.1      2016-11-09 CRAN (R 3.4.0)                    
-#&amp;gt;  stats      * 3.4.0      2017-04-21 local                             
+#&amp;gt;  scales       0.5.0.9000 2017-08-30 Github (hadley/scales@d767915)    
+#&amp;gt;  stats      * 3.4.1      2017-07-07 local                             
 #&amp;gt;  stringi      1.1.5      2017-04-07 CRAN (R 3.4.0)                    
 #&amp;gt;  stringr      1.2.0      2017-02-18 CRAN (R 3.4.0)                    
-#&amp;gt;  tibble     * 1.3.1      2017-05-17 CRAN (R 3.4.0)                    
-#&amp;gt;  tidyr      * 0.6.3      2017-05-15 CRAN (R 3.4.0)                    
+#&amp;gt;  tibble     * 1.3.4      2017-08-22 cran (@1.3.4)                     
+#&amp;gt;  tidyr      * 0.7.0      2017-08-16 CRAN (R 3.4.1)                    
+#&amp;gt;  tidyselect   0.1.1      2017-07-24 CRAN (R 3.4.1)                    
 #&amp;gt;  tidyverse  * 1.1.1      2017-01-27 CRAN (R 3.4.0)                    
-#&amp;gt;  tools        3.4.0      2017-04-21 local                             
-#&amp;gt;  utils      * 3.4.0      2017-04-21 local                             
-#&amp;gt;  withr        1.0.2      2016-06-20 CRAN (R 3.4.0)                    
+#&amp;gt;  tools        3.4.1      2017-07-07 local                             
+#&amp;gt;  utils      * 3.4.1      2017-07-07 local                             
+#&amp;gt;  withr        2.0.0      2017-08-13 Github (jimhester/withr@190d293)  
 #&amp;gt;  xml2       * 1.1.1      2017-01-24 CRAN (R 3.4.0)                    
 #&amp;gt;  yaml         2.1.14     2016-11-12 CRAN (R 3.4.0)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;/details&gt;&lt;/p&gt;
@@ -1896,11 +1884,7 @@ gganimate(d, interval = 0.2)&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Tue, 08 Nov 2016 00:00:00 +0000</pubDate>
       
       <guid>https://wjakethompson.github.io/post/2016-11-08-election-forecast-performance/</guid>
-      <description>&lt;!-- BLOGDOWN-HEAD --&gt;
-&lt;!-- /BLOGDOWN-HEAD --&gt;
-
-
-&lt;p&gt;After more than a year and a half, the 2016 presidential election is finally over, with Donald Trump &lt;a href=&#34;http://www.nytimes.com/elections/results/president&#34;&gt;projected to win&lt;/a&gt;. This is in contrast to many of the election forecasts, which almost unanimously predicted a &lt;a href=&#34;http://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html&#34;&gt;victory for Hillary Clinton&lt;/a&gt;. Now that the results are in, we can finally answer the question of who did the best (or least worst?) job of forecasting the election.&lt;/p&gt;
+      <description>&lt;p&gt;After more than a year and a half, the 2016 presidential election is finally over, with Donald Trump &lt;a href=&#34;http://www.nytimes.com/elections/results/president&#34;&gt;projected to win&lt;/a&gt;. This is in contrast to many of the election forecasts, which almost unanimously predicted a &lt;a href=&#34;http://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html&#34;&gt;victory for Hillary Clinton&lt;/a&gt;. Now that the results are in, we can finally answer the question of who did the best (or least worst?) job of forecasting the election.&lt;/p&gt;
 &lt;p&gt;There are several ways we could look at this question, but for the purpose of this analysis we’ll focus on two. The first is prediciton accuracy: how close were a model’s probabilities of winning each state to what actually happened? The second is model accuracy: if we assume that the model estimated probabilities were correct, how likely is it that we would see the outcome that was observed?&lt;/p&gt;
 &lt;p&gt;Now, let’s see how some different forecasts performed.&lt;/p&gt;
 &lt;div id=&#34;the-forecasts&#34; class=&#34;section level2&#34;&gt;
@@ -2038,12 +2022,12 @@ BS = BS = \displaystyle\sum_{t=1}^{N}EV_t(f_t-o_t)^2
 &lt;div id=&#34;model-accuracy&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Model Accuracy&lt;/h2&gt;
 &lt;p&gt;To get an idea of the model accuracy, we can simulate the election thousands of times for each model, assuming that their estimated probabilities are the true probabilities in each case. For each simulation we will then get a distribution of the number of states each model should expect to predict incorrectly. We will then compare this expected number of incorrect picks to the observed number. A large discrepancy between the expected and observed mean that the model’s probabilites were not consistent with the observed data, indicating poor model accuracy.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2016-11-08-election-forecast-performance/figures/sim-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2016-11-08-election-forecast-performance_files/figure-html/sim-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In the plot above, the red line indicates the number of states the model actually predicted incorrectly. All of the model incorrectly predicted 5 states, with the exception of Princeton, which incorrectly predicted only 4 states. However, we see that we would expect most of the models to get less states incorrect than that, given their estimated probabilities. For example, we would expect Huffington Post to miss 1.25 states on average, and FiveThirtyEight to miss 5.37 states on average, given their probabilities in each state. So the Huffington Post’s model was not as accurate as FiveThirtyEight’s.&lt;/p&gt;
 &lt;p&gt;This occurs because Huffington Post had less uncertainty in their model, so there were fewer states that their model thought had a chance to flip, and thus result in an incorrect prediction. FiveThirtyEight had more uncertainty, meaning that on average, their model would expect to get more states wrong, because there was less certainty in who would win each state. As it turns out, this election was a lot more uncertain than people thought, which is why FiveThirtyEight’s expected value is closer to what was observed than other models that had less uncertainty.&lt;/p&gt;
 &lt;p&gt;We can quantify how wrong a model was by looking at the proportion of simualtions that resulted in more incorrect picks than what was observed (the p-value). This can be thought of as the probability of incorrectly picking the observed number, if your probabilities were correct. Traditionally, p-values less than 0.05 are used to indicate poor model fit. In the graphic, we can see that only FiveThirtyEight, the New York Times, Poll Savvy, and Princeton have p-values over 0.05. This means that we would conclude that the probabilities provided by these models are plausible, given the data we observed, whereas the other probabilities provided by the other models would be rejected.&lt;/p&gt;
 &lt;p&gt;There is one problem with this simulation that we could address to make our results more accurate. The simulation assumes that the results in each state are indepdent of each other. However, we know this is inaccurate, as many states tend to vote in the same way as other states with similar demographic characteristics. Practically, this means that the distributions in the above graphic aren’t as variable as they should be. The expected value won’t change much, but the distribution of plausible numbers of incorrect picks should get wider. Let’s test that and see if our conclusions are the same.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2016-11-08-election-forecast-performance/figures/corsim-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2016-11-08-election-forecast-performance_files/figure-html/corsim-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;As expected, the distributions are much wider once we allow for correlated prediction errors, especially for the models that have more uncertainty in their predictions. Using the correlated errors, Princeton, Crosstab, Poll Savvy, the New York Times, and FiveThirtyEight all have p-values greater than 0.05, indicating that their estimated probabilities fit our observed data.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;conclusion&#34; class=&#34;section level2&#34;&gt;
@@ -2053,64 +2037,64 @@ BS = BS = \displaystyle\sum_{t=1}^{N}EV_t(f_t-o_t)^2
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::session_info()
 #&amp;gt; Session info -------------------------------------------------------------
 #&amp;gt;  setting  value                       
-#&amp;gt;  version  R version 3.4.0 (2017-04-21)
+#&amp;gt;  version  R version 3.4.1 (2017-06-30)
 #&amp;gt;  system   x86_64, darwin15.6.0        
 #&amp;gt;  ui       X11                         
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       America/Chicago             
-#&amp;gt;  date     2017-05-25
+#&amp;gt;  date     2017-08-30
 #&amp;gt; Packages -----------------------------------------------------------------
 #&amp;gt;  package    * version    date       source                            
 #&amp;gt;  assertthat   0.2.0      2017-04-11 CRAN (R 3.4.0)                    
-#&amp;gt;  backports    1.0.5      2017-01-18 CRAN (R 3.4.0)                    
-#&amp;gt;  base       * 3.4.0      2017-04-21 local                             
+#&amp;gt;  backports    1.1.0      2017-05-22 CRAN (R 3.4.0)                    
+#&amp;gt;  base       * 3.4.1      2017-07-07 local                             
 #&amp;gt;  bindr        0.1        2016-11-13 cran (@0.1)                       
-#&amp;gt;  bindrcpp   * 0.1        2016-12-11 cran (@0.1)                       
-#&amp;gt;  blogdown     0.0.41     2017-05-23 Github (rstudio/blogdown@a367835) 
-#&amp;gt;  bookdown     0.4        2017-05-23 Github (rstudio/bookdown@b9f0e40) 
+#&amp;gt;  bindrcpp   * 0.2        2017-06-17 cran (@0.2)                       
+#&amp;gt;  blogdown     0.1.3      2017-08-30 Github (rstudio/blogdown@45860c7) 
+#&amp;gt;  bookdown     0.5        2017-08-20 CRAN (R 3.4.1)                    
 #&amp;gt;  cellranger   1.1.0      2016-07-27 CRAN (R 3.4.0)                    
-#&amp;gt;  codetools    0.2-15     2016-10-05 CRAN (R 3.4.0)                    
+#&amp;gt;  codetools    0.2-15     2016-10-05 CRAN (R 3.4.1)                    
 #&amp;gt;  colorspace   1.3-2      2016-12-14 CRAN (R 3.4.0)                    
-#&amp;gt;  compiler     3.4.0      2017-04-21 local                             
-#&amp;gt;  datasets   * 3.4.0      2017-04-21 local                             
-#&amp;gt;  devtools     1.13.1     2017-05-13 CRAN (R 3.4.0)                    
+#&amp;gt;  compiler     3.4.1      2017-07-07 local                             
+#&amp;gt;  datasets   * 3.4.1      2017-07-07 local                             
+#&amp;gt;  devtools     1.13.3     2017-08-02 cran (@1.13.3)                    
 #&amp;gt;  digest       0.6.12     2017-01-27 CRAN (R 3.4.0)                    
-#&amp;gt;  dplyr      * 0.6.0      2017-05-23 Github (tidyverse/dplyr@c7ca374)  
-#&amp;gt;  evaluate     0.10       2016-10-11 CRAN (R 3.4.0)                    
-#&amp;gt;  ggplot2    * 2.2.1      2016-12-30 CRAN (R 3.4.0)                    
-#&amp;gt;  glue         1.0.0      2017-04-17 cran (@1.0.0)                     
-#&amp;gt;  graphics   * 3.4.0      2017-04-21 local                             
-#&amp;gt;  grDevices  * 3.4.0      2017-04-21 local                             
-#&amp;gt;  grid         3.4.0      2017-04-21 local                             
+#&amp;gt;  dplyr      * 0.7.2      2017-07-20 CRAN (R 3.4.1)                    
+#&amp;gt;  evaluate     0.10.1     2017-06-24 cran (@0.10.1)                    
+#&amp;gt;  ggplot2    * 2.2.1      2016-12-30 CRAN (R 3.3.2)                    
+#&amp;gt;  glue         1.1.1      2017-06-21 cran (@1.1.1)                     
+#&amp;gt;  graphics   * 3.4.1      2017-07-07 local                             
+#&amp;gt;  grDevices  * 3.4.1      2017-07-07 local                             
+#&amp;gt;  grid         3.4.1      2017-07-07 local                             
 #&amp;gt;  gtable       0.2.0      2016-02-26 CRAN (R 3.4.0)                    
 #&amp;gt;  highr        0.6        2016-05-09 CRAN (R 3.4.0)                    
 #&amp;gt;  htmltools    0.3.6      2017-04-28 CRAN (R 3.4.0)                    
-#&amp;gt;  knitr      * 1.16       2017-05-18 CRAN (R 3.4.0)                    
+#&amp;gt;  knitr      * 1.17       2017-08-10 cran (@1.17)                      
 #&amp;gt;  labeling     0.3        2014-08-23 CRAN (R 3.4.0)                    
 #&amp;gt;  lazyeval     0.2.0      2016-06-12 CRAN (R 3.4.0)                    
 #&amp;gt;  magrittr     1.5        2014-11-22 CRAN (R 3.4.0)                    
-#&amp;gt;  MASS       * 7.3-47     2017-02-26 CRAN (R 3.4.0)                    
+#&amp;gt;  MASS       * 7.3-47     2017-02-26 CRAN (R 3.4.1)                    
 #&amp;gt;  memoise      1.1.0      2017-04-21 CRAN (R 3.4.0)                    
-#&amp;gt;  methods      3.4.0      2017-04-21 local                             
+#&amp;gt;  methods    * 3.4.1      2017-07-07 local                             
 #&amp;gt;  munsell      0.4.3      2016-02-13 CRAN (R 3.4.0)                    
 #&amp;gt;  pkgconfig    2.0.1      2017-03-21 cran (@2.0.1)                     
 #&amp;gt;  plyr         1.8.4      2016-06-08 CRAN (R 3.4.0)                    
-#&amp;gt;  purrr      * 0.2.2.2    2017-05-11 CRAN (R 3.4.0)                    
-#&amp;gt;  R6           2.2.1      2017-05-10 cran (@2.2.1)                     
-#&amp;gt;  Rcpp         0.12.11    2017-05-22 CRAN (R 3.4.0)                    
+#&amp;gt;  purrr      * 0.2.3      2017-08-02 cran (@0.2.3)                     
+#&amp;gt;  R6           2.2.2      2017-06-17 cran (@2.2.2)                     
+#&amp;gt;  Rcpp         0.12.12    2017-07-15 CRAN (R 3.4.1)                    
 #&amp;gt;  readxl     * 1.0.0      2017-04-18 CRAN (R 3.4.0)                    
-#&amp;gt;  rlang        0.1.1.9000 2017-05-23 Github (hadley/rlang@7c2f7e8)     
-#&amp;gt;  rmarkdown    1.5.9000   2017-05-23 Github (rstudio/rmarkdown@54bf8fc)
+#&amp;gt;  rlang        0.1.2.9000 2017-08-30 Github (hadley/rlang@f20124b)     
+#&amp;gt;  rmarkdown    1.6.0.9001 2017-08-30 Github (rstudio/rmarkdown@e22703a)
 #&amp;gt;  rprojroot    1.2        2017-01-16 CRAN (R 3.4.0)                    
-#&amp;gt;  scales       0.4.1      2016-11-09 CRAN (R 3.4.0)                    
-#&amp;gt;  stats      * 3.4.0      2017-04-21 local                             
+#&amp;gt;  scales       0.5.0.9000 2017-08-30 Github (hadley/scales@d767915)    
+#&amp;gt;  stats      * 3.4.1      2017-07-07 local                             
 #&amp;gt;  stringi      1.1.5      2017-04-07 CRAN (R 3.4.0)                    
 #&amp;gt;  stringr      1.2.0      2017-02-18 CRAN (R 3.4.0)                    
-#&amp;gt;  tibble       1.3.1      2017-05-17 CRAN (R 3.4.0)                    
-#&amp;gt;  tools        3.4.0      2017-04-21 local                             
-#&amp;gt;  utils      * 3.4.0      2017-04-21 local                             
-#&amp;gt;  withr        1.0.2      2016-06-20 CRAN (R 3.4.0)                    
+#&amp;gt;  tibble       1.3.4      2017-08-22 cran (@1.3.4)                     
+#&amp;gt;  tools        3.4.1      2017-07-07 local                             
+#&amp;gt;  utils      * 3.4.1      2017-07-07 local                             
+#&amp;gt;  withr        2.0.0      2017-08-13 Github (jimhester/withr@190d293)  
 #&amp;gt;  yaml         2.1.14     2016-11-12 CRAN (R 3.4.0)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;/details&gt;&lt;/p&gt;
 &lt;/div&gt;
