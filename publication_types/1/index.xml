@@ -7,8 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 W. Jake Thompson</copyright>
-    <lastBuildDate>Sat, 01 Jul 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 01 Sep 2017 00:00:00 +0000</lastBuildDate>
     <atom:link href="/publication_types/1/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A Hierarchical IRT Model for Identifying Group Level Aberrant Growth to Detect Cheating</title>
+      <link>https://wjakethompson.github.io/publication/2017-brussow-cots/</link>
+      <pubDate>Fri, 01 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/publication/2017-brussow-cots/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Creating an R package for a Reproducible Workflow in Educational Assessment.</title>
