@@ -25,11 +25,13 @@ defaultContentLanguageInSubdir = false
   organization_url = ""
   avatar = "profile.jpg"
   email = "jakethompson@ku.edu"
-  address = "Joseph R. Pearson Hall, 4th floor, University of Kansas, Lawrence, KS, 66045"
+  address = ""
   office_hours = ""
   phone = ""
   skype = "wjakethompson"
   telegram = ""
+  twitter = "jakethomp"
+  github = "wjakethompson"
 
   # Enable Keybase in Contact section by entering your keybase.io username.
   keybase = ""
@@ -85,7 +87,7 @@ defaultContentLanguageInSubdir = false
 
   # Link custom CSS and JS assets
   #   (relative to /static/css and /static/js respectively)
-  custom_css = []
+  custom_css = ["blue.css"]
   custom_js  = []
 
   # Publication types.
@@ -161,7 +163,7 @@ defaultContentLanguageInSubdir = false
 
 [[menu.main]]
   name = "Publications"
-  url = "#publications_selected"
+  url = "#publications"
   weight = 2
 
 [[menu.main]]
