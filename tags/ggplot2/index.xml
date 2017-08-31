@@ -131,7 +131,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       Etc/UTC                     
-#&amp;gt;  date     2017-08-30                  
+#&amp;gt;  date     2017-08-31                  
 #&amp;gt; 
 #&amp;gt;  package    * version    date       source                            
 #&amp;gt;  animation  * 2.5        2017-08-30 Github (yihui/animation@60f50e3)  
@@ -188,7 +188,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 #&amp;gt;  readxl       1.0.0      2017-04-18 cran (@1.0.0)                     
 #&amp;gt;  reshape2     1.4.2      2016-10-22 cran (@1.4.2)                     
 #&amp;gt;  rlang        0.1.2      2017-08-09 cran (@0.1.2)                     
-#&amp;gt;  rmarkdown    1.6.0.9001 2017-08-30 Github (rstudio/rmarkdown@e22703a)
+#&amp;gt;  rmarkdown    1.6.0.9002 2017-08-31 Github (rstudio/rmarkdown@059cc72)
 #&amp;gt;  rprojroot    1.2        2017-01-16 cran (@1.2)                       
 #&amp;gt;  rvest        0.3.2      2016-06-17 cran (@0.3.2)                     
 #&amp;gt;  scales       0.5.0      2017-08-24 cran (@0.5.0)                     

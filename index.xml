@@ -47,6 +47,175 @@
     </item>
     
     <item>
+      <title>Tidy Sports Analytics, Part 1: dplyr</title>
+      <link>https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/</link>
+      <pubDate>Fri, 09 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/</guid>
+      <description>&lt;p&gt;Welcome to the first in a series of blog posts where I’ll be using sports data to demonstrate the power of the &lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt; tools for sports analytics. The &lt;strong&gt;tidyverse&lt;/strong&gt; is a suite of packages developed mainly by &lt;a href=&#34;https://twitter.com/hadleywickham&#34;&gt;Hadley Wickham&lt;/a&gt;, with contributions from over 100 other people in the &lt;em&gt;R&lt;/em&gt; community. The goal of the &lt;strong&gt;tidyverse&lt;/strong&gt; is to provide easy to use &lt;em&gt;R&lt;/em&gt; packages for a data science workflow that all follow a consistent philosophy and APIs. In each post in this series, I’ll be focusing on one package within the &lt;strong&gt;tidyverse&lt;/strong&gt; in order to demonstrate how each of the major pieces of the &lt;strong&gt;tidyverse&lt;/strong&gt; works. In all of the posts, I’ll be exploring the play-by-play data for every game of the 2016 NFL season. This data comes from &lt;a href=&#34;http://armchairanalysis.com/&#34;&gt;Armchair Analysis&lt;/a&gt;, which is behind a paywall. However, for a very reasonable price you can have access to their historical database with yearly updates forever.&lt;/p&gt;
+&lt;p&gt;This post will focus on the &lt;a href=&#34;http://dplyr.tidyverse.org/&#34;&gt;&lt;strong&gt;dplyr&lt;/strong&gt;&lt;/a&gt; package, which is used for data manipulation.&lt;/p&gt;
+&lt;div id=&#34;dplyr&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;dplyr&lt;/h2&gt;
+&lt;p&gt;Before we get into how &lt;strong&gt;dplyr&lt;/strong&gt; works, let’s first load in our data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+
+nfl_pbp &amp;lt;- readRDS(&amp;quot;datafiles/nfl_pbp_2016.rds&amp;quot;)
+nfl_pbp
+#&amp;gt; # A tibble: 44,385 x 30
+#&amp;gt;      gid    pid   off   def  type  dseq   len   qtr   min   sec  ptso
+#&amp;gt;    &amp;lt;int&amp;gt;  &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;
+#&amp;gt;  1  4257 697181   DEN   CAR  KOFF     0     6     1    15     0     0
+#&amp;gt;  2  4257 697182   DEN   CAR  PASS     1    30     1    15     0     0
+#&amp;gt;  3  4257 697183   DEN   CAR  PASS     2     4     1    14    17     0
+#&amp;gt;  4  4257 697184   DEN   CAR  PASS     3     5     1    14    13     0
+#&amp;gt;  5  4257 697185   DEN   CAR  PASS     4    26     1    14     8     0
+#&amp;gt;  6  4257 697186   DEN   CAR  PASS     5    41     1    13    42     0
+#&amp;gt;  7  4257 697187   DEN   CAR  RUSH     6    38     1    13     1     0
+#&amp;gt;  8  4257 697188   DEN   CAR  RUSH     7    36     1    12    23     0
+#&amp;gt;  9  4257 697189   DEN   CAR  RUSH     8    10     1    11    47     0
+#&amp;gt; 10  4257 697190   CAR   DEN  RUSH     1    36     1    11    37     0
+#&amp;gt; # ... with 44,375 more rows, and 19 more variables: ptsd &amp;lt;int&amp;gt;,
+#&amp;gt; #   timo &amp;lt;int&amp;gt;, timd &amp;lt;int&amp;gt;, dwn &amp;lt;int&amp;gt;, ytg &amp;lt;int&amp;gt;, yfog &amp;lt;int&amp;gt;, zone &amp;lt;int&amp;gt;,
+#&amp;gt; #   fd &amp;lt;int&amp;gt;, sg &amp;lt;int&amp;gt;, nh &amp;lt;int&amp;gt;, pts &amp;lt;int&amp;gt;, tck &amp;lt;int&amp;gt;, sk &amp;lt;int&amp;gt;,
+#&amp;gt; #   pen &amp;lt;int&amp;gt;, ints &amp;lt;int&amp;gt;, fum &amp;lt;int&amp;gt;, saf &amp;lt;int&amp;gt;, blk &amp;lt;int&amp;gt;, yds &amp;lt;int&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here we can see that there were a total of 44,385 plays in the 2016 NFL season, and we have 30 variables for each play. The &lt;strong&gt;dplyr&lt;/strong&gt; package provides a way to manipulate this data so that we can easily answer questions. There are five main functions that &lt;strong&gt;dplyr&lt;/strong&gt; provides that take care of the majority of data manipulation tasks that you might have:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;arrange()&lt;/code&gt;: sort the data by a variable or set of variables;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;filter()&lt;/code&gt;: select which observations to include;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mutate()&lt;/code&gt;: create new variables as functions of existing variables;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;select()&lt;/code&gt;: choose variables by name;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;summarize()&lt;/code&gt;: calculate group level summaries.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To demonstrate how these functions work, I will calculate the rate of successful plays for each team. For the NFL, we’ll consider a play successful if the team gains 45 percent of the needed yards on 1st down, 60 percent on 2nd down, and 100 percent on 3rd or 4th down (this comes from Bob Carroll, Pete Palmer, and John Thorn in &lt;a href=&#34;https://www.amazon.com/Hidden-Game-Football-Bob-Carroll/dp/0446514144&#34;&gt;&lt;em&gt;The Hidden Game of Football&lt;/em&gt;&lt;/a&gt;).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;using-dplyr&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Using dplyr&lt;/h2&gt;
+&lt;p&gt;First I’ll pull out the variables that are needed using the &lt;code&gt;select()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- select(nfl_pbp, game_id = gid, play_id = pid, offense = off,
+  defense = def, play_type = type, down = dwn, to_go = ytg, gained = yds)
+success
+#&amp;gt; # A tibble: 44,385 x 8
+#&amp;gt;    game_id play_id offense defense play_type  down to_go gained
+#&amp;gt;      &amp;lt;int&amp;gt;   &amp;lt;int&amp;gt;   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;int&amp;gt;
+#&amp;gt;  1    4257  697181     DEN     CAR      KOFF     0     0     NA
+#&amp;gt;  2    4257  697182     DEN     CAR      PASS     1    10     11
+#&amp;gt;  3    4257  697183     DEN     CAR      PASS     1    10      0
+#&amp;gt;  4    4257  697184     DEN     CAR      PASS     2    10      0
+#&amp;gt;  5    4257  697185     DEN     CAR      PASS     3    10     12
+#&amp;gt;  6    4257  697186     DEN     CAR      PASS     1    10      5
+#&amp;gt;  7    4257  697187     DEN     CAR      RUSH     2     5     13
+#&amp;gt;  8    4257  697188     DEN     CAR      RUSH     1    10      5
+#&amp;gt;  9    4257  697189     DEN     CAR      RUSH     2     5      0
+#&amp;gt; 10    4257  697190     CAR     DEN      RUSH     1    10      6
+#&amp;gt; # ... with 44,375 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice that in the &lt;code&gt;select()&lt;/code&gt; statement I not only chose the variable I wanted, but also gave them new names that more clearly convey the information included in that variable. For example, I chose to keep the unique game identifier, but renamed it from &lt;code&gt;gid&lt;/code&gt; to &lt;code&gt;game_id&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Next, we need to filter out plays that don’t fall into our operational definition of success. For example, under the defintion above, how would we determine if a kickoff was successful? Therefore, I will use the &lt;code&gt;filter()&lt;/code&gt; function to select only passing or rushing plays.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- filter(success, play_type %in% c(&amp;quot;PASS&amp;quot;, &amp;quot;RUSH&amp;quot;))
+success
+#&amp;gt; # A tibble: 34,149 x 8
+#&amp;gt;    game_id play_id offense defense play_type  down to_go gained
+#&amp;gt;      &amp;lt;int&amp;gt;   &amp;lt;int&amp;gt;   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;int&amp;gt;
+#&amp;gt;  1    4257  697182     DEN     CAR      PASS     1    10     11
+#&amp;gt;  2    4257  697183     DEN     CAR      PASS     1    10      0
+#&amp;gt;  3    4257  697184     DEN     CAR      PASS     2    10      0
+#&amp;gt;  4    4257  697185     DEN     CAR      PASS     3    10     12
+#&amp;gt;  5    4257  697186     DEN     CAR      PASS     1    10      5
+#&amp;gt;  6    4257  697187     DEN     CAR      RUSH     2     5     13
+#&amp;gt;  7    4257  697188     DEN     CAR      RUSH     1    10      5
+#&amp;gt;  8    4257  697189     DEN     CAR      RUSH     2     5      0
+#&amp;gt;  9    4257  697190     CAR     DEN      RUSH     1    10      6
+#&amp;gt; 10    4257  697191     CAR     DEN      RUSH     2     4     11
+#&amp;gt; # ... with 34,139 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This leaves us with 34,149 plays. The next step is to calculate the number of yards needed in order for the play to be deemed successful. This can be done using the &lt;code&gt;mutate()&lt;/code&gt; function along with the &lt;code&gt;case_when()&lt;/code&gt; function. The &lt;code&gt;case_when()&lt;/code&gt; function acts like a series of if statements to determine the proper condition.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- mutate(success, needed = case_when(
+  down == 1 ~ to_go * 0.45,
+  down == 2 ~ to_go * 0.60,
+  TRUE ~ to_go * 1.00
+))
+success
+#&amp;gt; # A tibble: 34,149 x 9
+#&amp;gt;    game_id play_id offense defense play_type  down to_go gained needed
+#&amp;gt;      &amp;lt;int&amp;gt;   &amp;lt;int&amp;gt;   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;int&amp;gt;  &amp;lt;dbl&amp;gt;
+#&amp;gt;  1    4257  697182     DEN     CAR      PASS     1    10     11    4.5
+#&amp;gt;  2    4257  697183     DEN     CAR      PASS     1    10      0    4.5
+#&amp;gt;  3    4257  697184     DEN     CAR      PASS     2    10      0    6.0
+#&amp;gt;  4    4257  697185     DEN     CAR      PASS     3    10     12   10.0
+#&amp;gt;  5    4257  697186     DEN     CAR      PASS     1    10      5    4.5
+#&amp;gt;  6    4257  697187     DEN     CAR      RUSH     2     5     13    3.0
+#&amp;gt;  7    4257  697188     DEN     CAR      RUSH     1    10      5    4.5
+#&amp;gt;  8    4257  697189     DEN     CAR      RUSH     2     5      0    3.0
+#&amp;gt;  9    4257  697190     CAR     DEN      RUSH     1    10      6    4.5
+#&amp;gt; 10    4257  697191     CAR     DEN      RUSH     2     4     11    2.4
+#&amp;gt; # ... with 34,139 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this chunk, I’m saying if the down is equal to 1, then the yards needed is equal to 45 percent of the yards to go. If the down isn’t equal to 1, then we go to the second condition. Now, if the down is equal to 2, the yards needed is equal to 60 percent of the yards to go. Finally, if the down isn’t equal to 2, then we go to the final condition which says that for all other downs, yards needed is equal to 100 percent of the yards to go. We can then determine which plays were a success by using mutate again to calculate if the yards gained is greater than the yards needed.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- mutate(success, play_success = case_when(
+  gained &amp;gt;= needed ~ TRUE,
+  gained &amp;lt; needed ~ FALSE
+))
+success
+#&amp;gt; # A tibble: 34,149 x 10
+#&amp;gt;    game_id play_id offense defense play_type  down to_go gained needed
+#&amp;gt;      &amp;lt;int&amp;gt;   &amp;lt;int&amp;gt;   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;int&amp;gt;  &amp;lt;dbl&amp;gt;
+#&amp;gt;  1    4257  697182     DEN     CAR      PASS     1    10     11    4.5
+#&amp;gt;  2    4257  697183     DEN     CAR      PASS     1    10      0    4.5
+#&amp;gt;  3    4257  697184     DEN     CAR      PASS     2    10      0    6.0
+#&amp;gt;  4    4257  697185     DEN     CAR      PASS     3    10     12   10.0
+#&amp;gt;  5    4257  697186     DEN     CAR      PASS     1    10      5    4.5
+#&amp;gt;  6    4257  697187     DEN     CAR      RUSH     2     5     13    3.0
+#&amp;gt;  7    4257  697188     DEN     CAR      RUSH     1    10      5    4.5
+#&amp;gt;  8    4257  697189     DEN     CAR      RUSH     2     5      0    3.0
+#&amp;gt;  9    4257  697190     CAR     DEN      RUSH     1    10      6    4.5
+#&amp;gt; 10    4257  697191     CAR     DEN      RUSH     2     4     11    2.4
+#&amp;gt; # ... with 34,139 more rows, and 1 more variables: play_success &amp;lt;lgl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now that we’ve calculated whether each play was a success, we can calculate the overall success rate for each team. To do this, we need to group our data by team. This can be accomplished using the &lt;code&gt;group_by()&lt;/code&gt; function. This function do anything to the data, but will allow other functions to operate within each of the groups. Specifically, I will use the &lt;code&gt;summarize()&lt;/code&gt; function to calculate the rate of successful plays within each group.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- group_by(success, team = offense) %&amp;gt;%
+  summarize(success_rate = mean(play_success, na.rm = TRUE))
+success
+#&amp;gt; # A tibble: 32 x 2
+#&amp;gt;     team success_rate
+#&amp;gt;    &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;
+#&amp;gt;  1   ARI    0.4579350
+#&amp;gt;  2   ATL    0.4995587
+#&amp;gt;  3   BAL    0.4103053
+#&amp;gt;  4   BUF    0.4643226
+#&amp;gt;  5   CAR    0.4197044
+#&amp;gt;  6   CHI    0.4606383
+#&amp;gt;  7   CIN    0.4638256
+#&amp;gt;  8   CLE    0.4089422
+#&amp;gt;  9   DAL    0.5110048
+#&amp;gt; 10   DEN    0.4234694
+#&amp;gt; # ... with 22 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, I will use the &lt;code&gt;arrange()&lt;/code&gt; function to sort this data set by the success rate, allowing us to see which teams were the most successful on average. Note that I use the &lt;code&gt;desc()&lt;/code&gt; function to sort success rate in a descending manner, so that the teams with the highest success rates are first. By default the &lt;code&gt;arrange()&lt;/code&gt; function sorts ascending.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- arrange(success, desc(success_rate))
+success
+#&amp;gt; # A tibble: 32 x 2
+#&amp;gt;     team success_rate
+#&amp;gt;    &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;
+#&amp;gt;  1    NO    0.5176252
+#&amp;gt;  2   DAL    0.5110048
+#&amp;gt;  3   ATL    0.4995587
+#&amp;gt;  4   WAS    0.4776876
+#&amp;gt;  5    GB    0.4775614
+#&amp;gt;  6   IND    0.4707661
+#&amp;gt;  7   TEN    0.4688458
+#&amp;gt;  8   BUF    0.4643226
+#&amp;gt;  9   CIN    0.4638256
+#&amp;gt; 10   PIT    0.4613445
+#&amp;gt; # ... with 22 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;One consideration from these results is that I grouped by the offensive team. Thus, this represents how often the teams’ offenses were successful. To evaluate a team overall, you would also want to examine defensive success rates. However, these results do seem to make intuitive sense, as the top three teams (New Orleans, Dallas, and Atlanta), all had very good offenses last season.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusion&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;This post shows how the &lt;strong&gt;dplyr&lt;/strong&gt; package, which is main the data manipulation package in the &lt;strong&gt;tidyverse&lt;/strong&gt;, can be used to quickly manipulate and analyze data with just a few lines of code. In the upcoming posts I’ll be using the &lt;strong&gt;tidyr&lt;/strong&gt; package to help tidy data and &lt;strong&gt;ggplot2&lt;/strong&gt; to visualize data. For more &lt;strong&gt;dplyr&lt;/strong&gt; resources, check out:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://dplyr.tidyverse.org/&#34;&gt;dplyr.tidyverse.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://r4ds.had.co.nz/transform.html&#34;&gt;&lt;em&gt;R for Data Science&lt;/em&gt;, Data Transformation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Visualizing different levels of compensation in multidimensional item response theory models</title>
       <link>https://wjakethompson.github.io/publication/2017-emip-graphic/</link>
       <pubDate>Thu, 01 Jun 2017 00:00:00 +0000</pubDate>
@@ -318,7 +487,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       Etc/UTC                     
-#&amp;gt;  date     2017-08-30                  
+#&amp;gt;  date     2017-08-31                  
 #&amp;gt; 
 #&amp;gt;  package    * version    date       source                            
 #&amp;gt;  animation  * 2.5        2017-08-30 Github (yihui/animation@60f50e3)  
@@ -375,7 +544,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 #&amp;gt;  readxl       1.0.0      2017-04-18 cran (@1.0.0)                     
 #&amp;gt;  reshape2     1.4.2      2016-10-22 cran (@1.4.2)                     
 #&amp;gt;  rlang        0.1.2      2017-08-09 cran (@0.1.2)                     
-#&amp;gt;  rmarkdown    1.6.0.9001 2017-08-30 Github (rstudio/rmarkdown@e22703a)
+#&amp;gt;  rmarkdown    1.6.0.9002 2017-08-31 Github (rstudio/rmarkdown@059cc72)
 #&amp;gt;  rprojroot    1.2        2017-01-16 cran (@1.2)                       
 #&amp;gt;  rvest        0.3.2      2016-06-17 cran (@0.3.2)                     
 #&amp;gt;  scales       0.5.0      2017-08-24 cran (@0.5.0)                     
@@ -1957,229 +2126,6 @@ gganimate(d, interval = 0.2)&lt;/code&gt;&lt;/pre&gt;
       
       <guid>https://wjakethompson.github.io/publication/2016-iri/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title>Evaluating Election Forecasts</title>
-      <link>https://wjakethompson.github.io/post/2016-11-08-election-forecast-performance/</link>
-      <pubDate>Tue, 08 Nov 2016 00:00:00 +0000</pubDate>
-      
-      <guid>https://wjakethompson.github.io/post/2016-11-08-election-forecast-performance/</guid>
-      <description>&lt;p&gt;After more than a year and a half, the 2016 presidential election is finally over, with Donald Trump &lt;a href=&#34;http://www.nytimes.com/elections/results/president&#34;&gt;projected to win&lt;/a&gt;. This is in contrast to many of the election forecasts, which almost unanimously predicted a &lt;a href=&#34;http://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html&#34;&gt;victory for Hillary Clinton&lt;/a&gt;. Now that the results are in, we can finally answer the question of who did the best (or least worst?) job of forecasting the election.&lt;/p&gt;
-&lt;p&gt;There are several ways we could look at this question, but for the purpose of this analysis we’ll focus on two. The first is prediciton accuracy: how close were a model’s probabilities of winning each state to what actually happened? The second is model accuracy: if we assume that the model estimated probabilities were correct, how likely is it that we would see the outcome that was observed?&lt;/p&gt;
-&lt;p&gt;Now, let’s see how some different forecasts performed.&lt;/p&gt;
-&lt;div id=&#34;the-forecasts&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;The Forecasts&lt;/h2&gt;
-&lt;p&gt;For this analysis I’m going to focus on some of the more popular forecasts from this election cycle: the &lt;a href=&#34;http://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html&#34;&gt;New York Times&lt;/a&gt;, &lt;a href=&#34;http://projects.fivethirtyeight.com/2016-election-forecast/?ex_cid=rrpromo&#34;&gt;FiveThirtyEight&lt;/a&gt;, &lt;a href=&#34;http://elections.huffingtonpost.com/2016/forecast/president&#34;&gt;Huffington Post&lt;/a&gt;, &lt;a href=&#34;http://predictwise.com/&#34;&gt;PredictWise&lt;/a&gt;, the &lt;a href=&#34;http://election.princeton.edu/2012/09/29/the-short-term-presidential-predictor/&#34;&gt;Princeton Election Consortium&lt;/a&gt;, &lt;a href=&#34;https://twitter.com/PollSavvy&#34;&gt;Poll Savvy&lt;/a&gt;, &lt;a href=&#34;http://elections.dailykos.com/app/elections/2016&#34;&gt;Daily Kos&lt;/a&gt;, &lt;a href=&#34;http://www.thecrosstab.com/2016/11/07/final-2016-forecast/&#34;&gt;Crosstab&lt;/a&gt;, and &lt;a href=&#34;http://www.slate.com/features/pkremp_forecast/report.html&#34;&gt;Slate (Pierre-Antoine Kremp)&lt;/a&gt;. Additionally, I’ll include the 2012 electoral map as a baseline. A special thanks to &lt;a href=&#34;http://dannypage.github.io/&#34;&gt;Danny Page&lt;/a&gt; who compiled all of the &lt;a href=&#34;https://docs.google.com/spreadsheets/d/1WZdg3fcvK_J-XRtN8WpEb9nRB9nF-gi6DRDYINku_PU/edit#gid=0&#34;&gt;data&lt;/a&gt;, and whose analysis on the different forecasts can be found &lt;a href=&#34;https://twitter.com/dannypage&#34;&gt;here&lt;/a&gt;. As always, the code and data for this post can be found on &lt;a href=&#34;https://github.com/wjakethompson/wjakethompson.github.io&#34;&gt;my github&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;prediction-accuracy&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Prediction Accuracy&lt;/h2&gt;
-&lt;p&gt;For the first part of the analysis, we’ll look at how close the predictions were in each state for each model. To do this, we’ll use the &lt;a href=&#34;https://en.wikipedia.org/wiki/Brier_score&#34;&gt;Brier Score&lt;/a&gt;, which is a measure of how close predicted probabilities were to an observed event. The formula for the Brier Score is given as&lt;/p&gt;
-&lt;span class=&#34;math display&#34; id=&#34;eq:brier&#34;&gt;\[\begin{equation}
-BS = \frac{1}{N} \displaystyle\sum_{t=1}^{N}(f_t-o_t)^2
-\tag{1}
-\end{equation}\]&lt;/span&gt;
-&lt;p&gt;where “N” is the total number of predictions, “f” is the predicted probability of the event, and “o” is the observed outcome. Thus, a perfect prediction (e.g., a probability of 1.0 and the event actually occuring, or a probability of 0.0 and the event not occuring) would result in a Brier Score of 0, and the worst possible score is 1. For example if a model predicted Hillary Clinton had an 87 percent chance of winning a state, and she ended up winning that state, that part of the Brier score would be calculated as &lt;span class=&#34;math inline&#34;&gt;\((0.87 - 1)^2 = 0.0169\)&lt;/span&gt;. Because the probability is close to 1, and the event happened, the Brier Score is low, indicating high prediction accuracy. In contrast, if Clinton were to lose that state, the Brier score would be &lt;span class=&#34;math inline&#34;&gt;\((0.87 - 0)^2 = 0.7569\)&lt;/span&gt;, a relatively large number indicating a bad prediction. For any given model then, we can add up these prediction errors for each state, and then divide by the total number of predictions to get an overall Brier Score for each model:&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Forecast&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Brier Score&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;FiveThirtyEight&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.066&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Crosstab&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.070&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Slate&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.076&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;PredictWise&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.076&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;New York Times&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.076&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Princeton&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.077&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Poll Savvy&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.080&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Daily Kos&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.080&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Huffington Post&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.090&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;2012 Map&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.125&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;Using this method, all models out perform the 2012 map, as we would expect. Nate Silver and FiveThirtyEight come out on top, with the lowest average prediction error. However, we can also look at a weighted Brier Score. Maybe we care more about an error if there were a large number of electoral votes were at stake. For example, predicting Florida incorrectly has more implications for who wins the presidency than predicting North Dakota incorrectly. We can add a weight to the Brier Score formula by multiplying the electoral votes by the error.&lt;/p&gt;
-&lt;span class=&#34;math display&#34; id=&#34;eq:brier-wt&#34;&gt;\[\begin{equation}
-BS = BS = \displaystyle\sum_{t=1}^{N}EV_t(f_t-o_t)^2
-\tag{2}
-\end{equation}\]&lt;/span&gt;
-&lt;p&gt;For this method, we are just summing all of the weighted prediction errors, rather than taking the average. This means that the Brier score is equivalent to the number of electoral votes that were incorrectly predicted. Thus, a perfect score is still 0, but the worst possible score is 538, if every state were incorrectly predicted with a probability of 0 or 1.&lt;/p&gt;
-&lt;p&gt;Using the weighted Brier Score, we see similar results.&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Forecast&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Brier Score&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Weighted Brier&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;FiveThirtyEight&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.066&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;48.793&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Crosstab&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.070&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;59.601&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Princeton&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.077&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;62.813&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;New York Times&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.076&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;64.643&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Poll Savvy&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.080&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;64.668&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Slate&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.076&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;65.038&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;PredictWise&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.076&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;68.132&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Daily Kos&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.080&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;69.283&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Huffington Post&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.090&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;80.722&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;2012 Map&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0.125&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;100.000&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;FiveThirtyEight again performs the best, prediting the equivalent of about 49 electoral votes incorrectly, a full 11 electoral votes better than the second best performing model (Crosstab). Compare this to the 2012 map, which would have predicted 100 electoral votes incorrectly. So using either the raw or weighted Brier Score, all models performed better than our baseline of the 2012 map, and FiveThirtyEight performed better than all other models.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;model-accuracy&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Model Accuracy&lt;/h2&gt;
-&lt;p&gt;To get an idea of the model accuracy, we can simulate the election thousands of times for each model, assuming that their estimated probabilities are the true probabilities in each case. For each simulation we will then get a distribution of the number of states each model should expect to predict incorrectly. We will then compare this expected number of incorrect picks to the observed number. A large discrepancy between the expected and observed mean that the model’s probabilites were not consistent with the observed data, indicating poor model accuracy.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2016-11-08-election-forecast-performance_files/figure-html/sim-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In the plot above, the red line indicates the number of states the model actually predicted incorrectly. All of the model incorrectly predicted 5 states, with the exception of Princeton, which incorrectly predicted only 4 states. However, we see that we would expect most of the models to get less states incorrect than that, given their estimated probabilities. For example, we would expect Huffington Post to miss 1.25 states on average, and FiveThirtyEight to miss 5.37 states on average, given their probabilities in each state. So the Huffington Post’s model was not as accurate as FiveThirtyEight’s.&lt;/p&gt;
-&lt;p&gt;This occurs because Huffington Post had less uncertainty in their model, so there were fewer states that their model thought had a chance to flip, and thus result in an incorrect prediction. FiveThirtyEight had more uncertainty, meaning that on average, their model would expect to get more states wrong, because there was less certainty in who would win each state. As it turns out, this election was a lot more uncertain than people thought, which is why FiveThirtyEight’s expected value is closer to what was observed than other models that had less uncertainty.&lt;/p&gt;
-&lt;p&gt;We can quantify how wrong a model was by looking at the proportion of simualtions that resulted in more incorrect picks than what was observed (the p-value). This can be thought of as the probability of incorrectly picking the observed number, if your probabilities were correct. Traditionally, p-values less than 0.05 are used to indicate poor model fit. In the graphic, we can see that only FiveThirtyEight, the New York Times, Poll Savvy, and Princeton have p-values over 0.05. This means that we would conclude that the probabilities provided by these models are plausible, given the data we observed, whereas the other probabilities provided by the other models would be rejected.&lt;/p&gt;
-&lt;p&gt;There is one problem with this simulation that we could address to make our results more accurate. The simulation assumes that the results in each state are indepdent of each other. However, we know this is inaccurate, as many states tend to vote in the same way as other states with similar demographic characteristics. Practically, this means that the distributions in the above graphic aren’t as variable as they should be. The expected value won’t change much, but the distribution of plausible numbers of incorrect picks should get wider. Let’s test that and see if our conclusions are the same.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2016-11-08-election-forecast-performance_files/figure-html/corsim-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;As expected, the distributions are much wider once we allow for correlated prediction errors, especially for the models that have more uncertainty in their predictions. Using the correlated errors, Princeton, Crosstab, Poll Savvy, the New York Times, and FiveThirtyEight all have p-values greater than 0.05, indicating that their estimated probabilities fit our observed data.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;conclusion&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Conclusion&lt;/h2&gt;
-&lt;p&gt;Nate Silver and FiveThirtyEight received a lot of &lt;a href=&#34;http://www.huffingtonpost.com/entry/nate-silver-election-forecast_us_581e1c33e4b0d9ce6fbc6f7f?ncid=engmodushpmg00000004&#34;&gt;criticism&lt;/a&gt; for being bullish on Trump, but it looks like FiveThirtyEight gets to have the last laugh. Their model outperformed all of the other election forecasts that I analyzed: it had the best prediciton accuracy as measured by the raw and unweighted Brier Score, and it also had the best model accuracy, with simulations using their probabilities more closely matching the observed data than any other model. In an incredibly messing election, Nate Silver was the real winner.&lt;/p&gt;
-&lt;p&gt;&lt;details&gt;&lt;summary&gt;Session info&lt;/summary&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::session_info()
-#&amp;gt; Session info -------------------------------------------------------------
-#&amp;gt;  setting  value                       
-#&amp;gt;  version  R version 3.4.1 (2017-06-30)
-#&amp;gt;  system   x86_64, darwin15.6.0        
-#&amp;gt;  ui       X11                         
-#&amp;gt;  language (EN)                        
-#&amp;gt;  collate  en_US.UTF-8                 
-#&amp;gt;  tz       America/Chicago             
-#&amp;gt;  date     2017-08-30
-#&amp;gt; Packages -----------------------------------------------------------------
-#&amp;gt;  package    * version    date       source                            
-#&amp;gt;  assertthat   0.2.0      2017-04-11 CRAN (R 3.4.0)                    
-#&amp;gt;  backports    1.1.0      2017-05-22 CRAN (R 3.4.0)                    
-#&amp;gt;  base       * 3.4.1      2017-07-07 local                             
-#&amp;gt;  bindr        0.1        2016-11-13 cran (@0.1)                       
-#&amp;gt;  bindrcpp   * 0.2        2017-06-17 cran (@0.2)                       
-#&amp;gt;  blogdown     0.1.3      2017-08-30 Github (rstudio/blogdown@45860c7) 
-#&amp;gt;  bookdown     0.5        2017-08-20 CRAN (R 3.4.1)                    
-#&amp;gt;  cellranger   1.1.0      2016-07-27 CRAN (R 3.4.0)                    
-#&amp;gt;  codetools    0.2-15     2016-10-05 CRAN (R 3.4.1)                    
-#&amp;gt;  colorspace   1.3-2      2016-12-14 CRAN (R 3.4.0)                    
-#&amp;gt;  compiler     3.4.1      2017-07-07 local                             
-#&amp;gt;  datasets   * 3.4.1      2017-07-07 local                             
-#&amp;gt;  devtools     1.13.3     2017-08-02 cran (@1.13.3)                    
-#&amp;gt;  digest       0.6.12     2017-01-27 CRAN (R 3.4.0)                    
-#&amp;gt;  dplyr      * 0.7.2      2017-07-20 CRAN (R 3.4.1)                    
-#&amp;gt;  evaluate     0.10.1     2017-06-24 cran (@0.10.1)                    
-#&amp;gt;  ggplot2    * 2.2.1      2016-12-30 CRAN (R 3.3.2)                    
-#&amp;gt;  glue         1.1.1      2017-06-21 cran (@1.1.1)                     
-#&amp;gt;  graphics   * 3.4.1      2017-07-07 local                             
-#&amp;gt;  grDevices  * 3.4.1      2017-07-07 local                             
-#&amp;gt;  grid         3.4.1      2017-07-07 local                             
-#&amp;gt;  gtable       0.2.0      2016-02-26 CRAN (R 3.4.0)                    
-#&amp;gt;  highr        0.6        2016-05-09 CRAN (R 3.4.0)                    
-#&amp;gt;  htmltools    0.3.6      2017-04-28 CRAN (R 3.4.0)                    
-#&amp;gt;  knitr      * 1.17       2017-08-10 cran (@1.17)                      
-#&amp;gt;  labeling     0.3        2014-08-23 CRAN (R 3.4.0)                    
-#&amp;gt;  lazyeval     0.2.0      2016-06-12 CRAN (R 3.4.0)                    
-#&amp;gt;  magrittr     1.5        2014-11-22 CRAN (R 3.4.0)                    
-#&amp;gt;  MASS       * 7.3-47     2017-02-26 CRAN (R 3.4.1)                    
-#&amp;gt;  memoise      1.1.0      2017-04-21 CRAN (R 3.4.0)                    
-#&amp;gt;  methods    * 3.4.1      2017-07-07 local                             
-#&amp;gt;  munsell      0.4.3      2016-02-13 CRAN (R 3.4.0)                    
-#&amp;gt;  pkgconfig    2.0.1      2017-03-21 cran (@2.0.1)                     
-#&amp;gt;  plyr         1.8.4      2016-06-08 CRAN (R 3.4.0)                    
-#&amp;gt;  purrr      * 0.2.3      2017-08-02 cran (@0.2.3)                     
-#&amp;gt;  R6           2.2.2      2017-06-17 cran (@2.2.2)                     
-#&amp;gt;  Rcpp         0.12.12    2017-07-15 CRAN (R 3.4.1)                    
-#&amp;gt;  readxl     * 1.0.0      2017-04-18 CRAN (R 3.4.0)                    
-#&amp;gt;  rlang        0.1.2.9000 2017-08-30 Github (hadley/rlang@f20124b)     
-#&amp;gt;  rmarkdown    1.6.0.9001 2017-08-30 Github (rstudio/rmarkdown@e22703a)
-#&amp;gt;  rprojroot    1.2        2017-01-16 CRAN (R 3.4.0)                    
-#&amp;gt;  scales       0.5.0.9000 2017-08-30 Github (hadley/scales@d767915)    
-#&amp;gt;  stats      * 3.4.1      2017-07-07 local                             
-#&amp;gt;  stringi      1.1.5      2017-04-07 CRAN (R 3.4.0)                    
-#&amp;gt;  stringr      1.2.0      2017-02-18 CRAN (R 3.4.0)                    
-#&amp;gt;  tibble       1.3.4      2017-08-22 cran (@1.3.4)                     
-#&amp;gt;  tools        3.4.1      2017-07-07 local                             
-#&amp;gt;  utils      * 3.4.1      2017-07-07 local                             
-#&amp;gt;  withr        2.0.0      2017-08-13 Github (jimhester/withr@190d293)  
-#&amp;gt;  yaml         2.1.14     2016-11-12 CRAN (R 3.4.0)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;/details&gt;&lt;/p&gt;
-&lt;/div&gt;
-</description>
     </item>
     
   </channel>
