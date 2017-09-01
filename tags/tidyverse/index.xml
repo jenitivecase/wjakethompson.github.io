@@ -7,8 +7,203 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 W. Jake Thompson</copyright>
-    <lastBuildDate>Fri, 09 Jun 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 25 Jun 2017 00:00:00 +0000</lastBuildDate>
     <atom:link href="/tags/tidyverse/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Tidy Sports Analytics, Part 2: tidyr</title>
+      <link>https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/</link>
+      <pubDate>Sun, 25 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/</guid>
+      <description>&lt;p&gt;This is the second in a series of posts that demonstrates how the &lt;strong&gt;tidyverse&lt;/strong&gt; can be used to easily explore and analyze NFL play-by-play data. In &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.html&#34;&gt;part one&lt;/a&gt;, I used the &lt;strong&gt;dplyr&lt;/strong&gt; package to the success rate of each NFL offense in during the 2016 season. However, when we left off, I noted that really we should look at the success rate of offenses and defenses in order to get a better idea of which teams were the best overall. For this, I’ll use the &lt;strong&gt;tidyr&lt;/strong&gt; package, which is main &lt;strong&gt;tidyverse&lt;/strong&gt; package for tidying data. But first, let’s talk about the pipe operator.&lt;/p&gt;
+&lt;div id=&#34;embrace-the-pipe&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Embrace the pipe&lt;/h2&gt;
+&lt;p&gt;The pip operator (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) comes from the &lt;a href=&#34;http://magrittr.tidyverse.org/&#34;&gt;&lt;strong&gt;magrittr&lt;/strong&gt;&lt;/a&gt; package, and is used to make code more readable. Compare the following two chunks of code.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+
+nfl_pbp &amp;lt;- readRDS(&amp;quot;datafiles/nfl_pbp_2016.rds&amp;quot;)
+
+success &amp;lt;- filter(select(nfl_pbp, game_id = gid, play_id = pid, offense = off,
+                         defense = def, play_type = type, down = dwn,
+                         to_go = ytg, gained = yds),
+                  play_type %in% c(&amp;quot;PASS&amp;quot;, &amp;quot;RUSH&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+
+nfl_pbp &amp;lt;- readRDS(&amp;quot;datafiles/nfl_pbp_2016.rds&amp;quot;)
+
+success &amp;lt;- nfl_pbp %&amp;gt;%
+  select(game_id = gid, play_id = pid, offense = off, defense = def,
+         play_type = type, down = dwn, to_go = ytg, gained = yds) %&amp;gt;%
+  filter(play_type %in% c(&amp;quot;PASS&amp;quot;, &amp;quot;RUSH&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Both code chunks read in the data and do some initial manipulations to calculate success rate using the &lt;strong&gt;dplyr&lt;/strong&gt; package (see &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.html&#34;&gt;part one&lt;/a&gt; of this series for a more in depth explanation of how these functions work). In the first chunk, it is difficult to easily see what is going on. You have to read inside-out in order to see that I first select some variables from &lt;code&gt;nfl_pbp&lt;/code&gt; and then filter. However, in the second chunk, it is very clear that I start with the &lt;code&gt;nfl_pbp&lt;/code&gt; data, select some variables, and then filter to only passing and rushing plays.&lt;/p&gt;
+&lt;p&gt;The pipe works by passing the output of the function on the left as the first argument to the function on the right. So &lt;code&gt;a %&amp;gt;% f(x, y) %&amp;gt;% g(z)&lt;/code&gt; is interpreted by the computer as &lt;code&gt;g(f(a, x, y), z)&lt;/code&gt;. These two statements are equivalent, but in the first, it is much easier to see that &lt;code&gt;a&lt;/code&gt; is pass to function &lt;code&gt;f()&lt;/code&gt;, which also has arguments &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt;, and then the output of that is pass to function &lt;code&gt;g()&lt;/code&gt;, which also has argument &lt;code&gt;z&lt;/code&gt;. In the &lt;strong&gt;tidyverse&lt;/strong&gt;, the first argument is always the data frame that the operation is being performed on, and a data frame with the specified operation performed is returned. Thus, all of the &lt;strong&gt;tidyverse&lt;/strong&gt; functions are compatible with the &lt;code&gt;%&amp;gt;%&lt;/code&gt; operator.&lt;/p&gt;
+&lt;p&gt;Throughout the rest of this post, and the following posts in this series, we’ll use the &lt;code&gt;%&amp;gt;%&lt;/code&gt; to make the code more readable and straight forward.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;tidyr&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;tidyr&lt;/h2&gt;
+&lt;p&gt;In this post, I’ll be using the &lt;strong&gt;tidyr&lt;/strong&gt; package to calculate the success rate of the offense and defense of each team. Let’s remind ourselves what the data looks like.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success
+#&amp;gt; # A tibble: 34,149 x 8
+#&amp;gt;    game_id play_id offense defense play_type  down to_go gained
+#&amp;gt;      &amp;lt;int&amp;gt;   &amp;lt;int&amp;gt;   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;int&amp;gt;
+#&amp;gt;  1    4257  697182     DEN     CAR      PASS     1    10     11
+#&amp;gt;  2    4257  697183     DEN     CAR      PASS     1    10      0
+#&amp;gt;  3    4257  697184     DEN     CAR      PASS     2    10      0
+#&amp;gt;  4    4257  697185     DEN     CAR      PASS     3    10     12
+#&amp;gt;  5    4257  697186     DEN     CAR      PASS     1    10      5
+#&amp;gt;  6    4257  697187     DEN     CAR      RUSH     2     5     13
+#&amp;gt;  7    4257  697188     DEN     CAR      RUSH     1    10      5
+#&amp;gt;  8    4257  697189     DEN     CAR      RUSH     2     5      0
+#&amp;gt;  9    4257  697190     CAR     DEN      RUSH     1    10      6
+#&amp;gt; 10    4257  697191     CAR     DEN      RUSH     2     4     11
+#&amp;gt; # ... with 34,139 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the previous post, we grouped the data frame by offense in order to calculate success rate. Now, we want to group by team and offensive or defensive unit to calculate success rate. The problem we face is that there is no &lt;code&gt;unit&lt;/code&gt; variable. Instead, the unit information is split across two columns: &lt;code&gt;offense&lt;/code&gt; and &lt;code&gt;defense&lt;/code&gt;. This is where the &lt;strong&gt;tidyr&lt;/strong&gt; package comes into play. There are two main functions within &lt;strong&gt;tidyr&lt;/strong&gt; that are used for tidying data:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;gather&lt;/code&gt;: collapse multiple columns into key-value pairs;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;spread&lt;/code&gt;: split key-value pairs into multiple columns.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I’ll demonstrate how both of these functions are used in our analysis of NFL success rates.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;using-tidyr&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Using tidyr&lt;/h2&gt;
+&lt;p&gt;Before we start using the &lt;strong&gt;tidyr&lt;/strong&gt; package, let’s calculate whether each play was a success or not using the processes from the &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.html&#34;&gt;previous post&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- success %&amp;gt;%
+  mutate(
+    needed = case_when(
+      down == 1 ~ to_go * 0.45,
+      down == 2 ~ to_go * 0.60,
+      TRUE ~ to_go * 1.00
+    ),
+    play_success = case_when(
+      gained &amp;gt;= needed ~ TRUE,
+      gained &amp;lt; needed ~ FALSE
+    )
+  )
+success
+#&amp;gt; # A tibble: 34,149 x 10
+#&amp;gt;    game_id play_id offense defense play_type  down to_go gained needed
+#&amp;gt;      &amp;lt;int&amp;gt;   &amp;lt;int&amp;gt;   &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;int&amp;gt;  &amp;lt;dbl&amp;gt;
+#&amp;gt;  1    4257  697182     DEN     CAR      PASS     1    10     11    4.5
+#&amp;gt;  2    4257  697183     DEN     CAR      PASS     1    10      0    4.5
+#&amp;gt;  3    4257  697184     DEN     CAR      PASS     2    10      0    6.0
+#&amp;gt;  4    4257  697185     DEN     CAR      PASS     3    10     12   10.0
+#&amp;gt;  5    4257  697186     DEN     CAR      PASS     1    10      5    4.5
+#&amp;gt;  6    4257  697187     DEN     CAR      RUSH     2     5     13    3.0
+#&amp;gt;  7    4257  697188     DEN     CAR      RUSH     1    10      5    4.5
+#&amp;gt;  8    4257  697189     DEN     CAR      RUSH     2     5      0    3.0
+#&amp;gt;  9    4257  697190     CAR     DEN      RUSH     1    10      6    4.5
+#&amp;gt; 10    4257  697191     CAR     DEN      RUSH     2     4     11    2.4
+#&amp;gt; # ... with 34,139 more rows, and 1 more variables: play_success &amp;lt;lgl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In order to calculate the success rate for each team and unit combination, we first need to gather the unit information into key-value pairs using the &lt;code&gt;gather&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success %&amp;gt;%
+  gather(key = &amp;quot;team_unit&amp;quot;, value = &amp;quot;team&amp;quot;, offense:defense)
+#&amp;gt; # A tibble: 68,298 x 10
+#&amp;gt;    game_id play_id play_type  down to_go gained needed play_success
+#&amp;gt;      &amp;lt;int&amp;gt;   &amp;lt;int&amp;gt;     &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;int&amp;gt;  &amp;lt;dbl&amp;gt;        &amp;lt;lgl&amp;gt;
+#&amp;gt;  1    4257  697182      PASS     1    10     11    4.5         TRUE
+#&amp;gt;  2    4257  697183      PASS     1    10      0    4.5        FALSE
+#&amp;gt;  3    4257  697184      PASS     2    10      0    6.0        FALSE
+#&amp;gt;  4    4257  697185      PASS     3    10     12   10.0         TRUE
+#&amp;gt;  5    4257  697186      PASS     1    10      5    4.5         TRUE
+#&amp;gt;  6    4257  697187      RUSH     2     5     13    3.0         TRUE
+#&amp;gt;  7    4257  697188      RUSH     1    10      5    4.5         TRUE
+#&amp;gt;  8    4257  697189      RUSH     2     5      0    3.0        FALSE
+#&amp;gt;  9    4257  697190      RUSH     1    10      6    4.5         TRUE
+#&amp;gt; 10    4257  697191      RUSH     2     4     11    2.4         TRUE
+#&amp;gt; # ... with 68,288 more rows, and 2 more variables: team_unit &amp;lt;chr&amp;gt;,
+#&amp;gt; #   team &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When using the &lt;code&gt;gather&lt;/code&gt; function, the column names of the collapsed columns become the “key”, and the values are the “value”. In the function, I chose to name the column of keys &lt;code&gt;team_unit&lt;/code&gt; and the column of values &lt;code&gt;team&lt;/code&gt;. I then specified which columns should be collapsed. Each column can be named individually (i.e., &lt;code&gt;c(offense, defense)&lt;/code&gt;), or you can specify all columns in a range (i.e., &lt;code&gt;offense:defense&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;Next, as I noted last time, play success is calculated such that I measures whether the play was a success for the offense. This means that if a play was successful for an offense it was unsuccessful for the defense, and vice versa. Therefore we need to reverse the decision of whether or not a play was successful, if the unit is the defense.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success %&amp;gt;%
+  gather(key = &amp;quot;team_unit&amp;quot;, value = &amp;quot;team&amp;quot;, offense:defense) %&amp;gt;%
+  mutate(
+    play_success = case_when(
+      team_unit == &amp;quot;defense&amp;quot; ~ !play_success,
+      TRUE ~ play_success
+    )
+  )
+#&amp;gt; # A tibble: 68,298 x 10
+#&amp;gt;    game_id play_id play_type  down to_go gained needed play_success
+#&amp;gt;      &amp;lt;int&amp;gt;   &amp;lt;int&amp;gt;     &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;int&amp;gt;  &amp;lt;dbl&amp;gt;        &amp;lt;lgl&amp;gt;
+#&amp;gt;  1    4257  697182      PASS     1    10     11    4.5         TRUE
+#&amp;gt;  2    4257  697183      PASS     1    10      0    4.5        FALSE
+#&amp;gt;  3    4257  697184      PASS     2    10      0    6.0        FALSE
+#&amp;gt;  4    4257  697185      PASS     3    10     12   10.0         TRUE
+#&amp;gt;  5    4257  697186      PASS     1    10      5    4.5         TRUE
+#&amp;gt;  6    4257  697187      RUSH     2     5     13    3.0         TRUE
+#&amp;gt;  7    4257  697188      RUSH     1    10      5    4.5         TRUE
+#&amp;gt;  8    4257  697189      RUSH     2     5      0    3.0        FALSE
+#&amp;gt;  9    4257  697190      RUSH     1    10      6    4.5         TRUE
+#&amp;gt; 10    4257  697191      RUSH     2     4     11    2.4         TRUE
+#&amp;gt; # ... with 68,288 more rows, and 2 more variables: team_unit &amp;lt;chr&amp;gt;,
+#&amp;gt; #   team &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here, I’m saying if the &lt;code&gt;team_unit&lt;/code&gt; for the observation is equal to defense, &lt;code&gt;play_success&lt;/code&gt; is equal to the opposite of the current value of play success. If &lt;code&gt;play_success&lt;/code&gt; is not equal to defense, then the value is unchanged. We can now group by &lt;code&gt;team&lt;/code&gt; and &lt;code&gt;team_unit&lt;/code&gt; to calculate the success rate of each offense and defense.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success %&amp;gt;%
+  gather(key = &amp;quot;team_unit&amp;quot;, value = &amp;quot;team&amp;quot;, offense:defense) %&amp;gt;%
+  mutate(
+    play_success = case_when(
+      team_unit == &amp;quot;defense&amp;quot; ~ !play_success,
+      TRUE ~ play_success
+    )
+  ) %&amp;gt;%
+  group_by(team, team_unit) %&amp;gt;%
+  summarize(success_rate = mean(play_success, na.rm = TRUE))
+#&amp;gt; # A tibble: 64 x 3
+#&amp;gt; # Groups:   team [?]
+#&amp;gt;     team team_unit success_rate
+#&amp;gt;    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;
+#&amp;gt;  1   ARI   defense    0.5786228
+#&amp;gt;  2   ARI   offense    0.4579350
+#&amp;gt;  3   ATL   defense    0.5122349
+#&amp;gt;  4   ATL   offense    0.4995587
+#&amp;gt;  5   BAL   defense    0.5800416
+#&amp;gt;  6   BAL   offense    0.4103053
+#&amp;gt;  7   BUF   defense    0.5530612
+#&amp;gt;  8   BUF   offense    0.4643226
+#&amp;gt;  9   CAR   defense    0.5420466
+#&amp;gt; 10   CAR   offense    0.4197044
+#&amp;gt; # ... with 54 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, I want to spread the data frame back out so there is only one row per team. This is where the &lt;code&gt;spread&lt;/code&gt; function comes into play.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success %&amp;gt;%
+  gather(key = &amp;quot;team_unit&amp;quot;, value = &amp;quot;team&amp;quot;, offense:defense) %&amp;gt;%
+  mutate(
+    play_success = case_when(
+      team_unit == &amp;quot;defense&amp;quot; ~ !play_success,
+      TRUE ~ play_success
+    )
+  ) %&amp;gt;%
+  group_by(team, team_unit) %&amp;gt;%
+  summarize(success_rate = mean(play_success, na.rm = TRUE)) %&amp;gt;%
+  spread(key = team_unit, value = success_rate)
+#&amp;gt; # A tibble: 32 x 3
+#&amp;gt; # Groups:   team [32]
+#&amp;gt;     team   defense   offense
+#&amp;gt;  * &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+#&amp;gt;  1   ARI 0.5786228 0.4579350
+#&amp;gt;  2   ATL 0.5122349 0.4995587
+#&amp;gt;  3   BAL 0.5800416 0.4103053
+#&amp;gt;  4   BUF 0.5530612 0.4643226
+#&amp;gt;  5   CAR 0.5420466 0.4197044
+#&amp;gt;  6   CHI 0.5497436 0.4606383
+#&amp;gt;  7   CIN 0.5582090 0.4638256
+#&amp;gt;  8   CLE 0.5456292 0.4089422
+#&amp;gt;  9   DAL 0.5212766 0.5110048
+#&amp;gt; 10   DEN 0.5936293 0.4234694
+#&amp;gt; # ... with 22 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;spread&lt;/code&gt; function took the key-value pairs and spread them out into their own columns. Now we’re back to one row per team, so it’s easier to see the success rate of each unit for all of the teams.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusion&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;This post shows how the &lt;strong&gt;tidyr&lt;/strong&gt; package, which is main the data tidying package in the &lt;strong&gt;tidyverse&lt;/strong&gt;, can be used to quickly reshape data in order to perform. In the next post, I’m going to demonstrate how the &lt;strong&gt;ggplot2&lt;/strong&gt; package can be used to visualize these results. For more &lt;strong&gt;tidyr&lt;/strong&gt; resources, check out:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://tidyr.tidyverse.org/&#34;&gt;tidyr.tidyverse.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://r4ds.had.co.nz/tidy-data.html&#34;&gt;&lt;em&gt;R for Data Science&lt;/em&gt;, Tidy Data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://vita.had.co.nz/papers/tidy-data.html&#34;&gt;Tidy Data, &lt;em&gt;Journal of Statistical Software&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Tidy Sports Analytics, Part 1: dplyr</title>
@@ -16,7 +211,7 @@
       <pubDate>Fri, 09 Jun 2017 00:00:00 +0000</pubDate>
       
       <guid>https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/</guid>
-      <description>&lt;p&gt;Welcome to the first in a series of blog posts where I’ll be using sports data to demonstrate the power of the &lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt; tools for sports analytics. The &lt;strong&gt;tidyverse&lt;/strong&gt; is a suite of packages developed mainly by &lt;a href=&#34;https://twitter.com/hadleywickham&#34;&gt;Hadley Wickham&lt;/a&gt;, with contributions from over 100 other people in the &lt;em&gt;R&lt;/em&gt; community. The goal of the &lt;strong&gt;tidyverse&lt;/strong&gt; is to provide easy to use &lt;em&gt;R&lt;/em&gt; packages for a data science workflow that all follow a consistent philosophy and APIs. In each post in this series, I’ll be focusing on one package within the &lt;strong&gt;tidyverse&lt;/strong&gt; in order to demonstrate how each of the major pieces of the &lt;strong&gt;tidyverse&lt;/strong&gt; works. In all of the posts, I’ll be exploring the play-by-play data for every game of the 2016 NFL season. This data comes from &lt;a href=&#34;http://armchairanalysis.com/&#34;&gt;Armchair Analysis&lt;/a&gt;, which is behind a paywall. However, for a very reasonable price you can have access to their historical database with yearly updates forever.&lt;/p&gt;
+      <description>&lt;p&gt;Welcome to the first in a series of blog posts where I’ll be using sports data to demonstrate the power of the &lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt; tools for sports analytics. The &lt;strong&gt;tidyverse&lt;/strong&gt; is a suite of packages developed mainly by &lt;a href=&#34;https://twitter.com/hadleywickham&#34;&gt;Hadley Wickham&lt;/a&gt;, with contributions from over 100 other people in the &lt;em&gt;R&lt;/em&gt; community. The goal of the &lt;strong&gt;tidyverse&lt;/strong&gt; is to provide easy to use &lt;em&gt;R&lt;/em&gt; packages for a data science workflow that all follow a consistent philosophy and APIs. In each post in this series, I’ll be focusing on one package within the &lt;strong&gt;tidyverse&lt;/strong&gt; in order to demonstrate how each of the major pieces of the &lt;strong&gt;tidyverse&lt;/strong&gt; works. In all of the posts, I’ll be exploring the play-by-play data for every game of the 2016 NFL season. This data comes from &lt;a href=&#34;http://armchairanalysis.com/&#34;&gt;Armchair Analysis&lt;/a&gt;, which is behind a pay wall. However, for a a one time flat rate, you can have access to their historical database with yearly updates forever.&lt;/p&gt;
 &lt;p&gt;This post will focus on the &lt;a href=&#34;http://dplyr.tidyverse.org/&#34;&gt;&lt;strong&gt;dplyr&lt;/strong&gt;&lt;/a&gt; package, which is used for data manipulation.&lt;/p&gt;
 &lt;div id=&#34;dplyr&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;dplyr&lt;/h2&gt;
@@ -44,17 +239,17 @@ nfl_pbp
 #&amp;gt; #   pen &amp;lt;int&amp;gt;, ints &amp;lt;int&amp;gt;, fum &amp;lt;int&amp;gt;, saf &amp;lt;int&amp;gt;, blk &amp;lt;int&amp;gt;, yds &amp;lt;int&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Here we can see that there were a total of 44,385 plays in the 2016 NFL season, and we have 30 variables for each play. The &lt;strong&gt;dplyr&lt;/strong&gt; package provides a way to manipulate this data so that we can easily answer questions. There are five main functions that &lt;strong&gt;dplyr&lt;/strong&gt; provides that take care of the majority of data manipulation tasks that you might have:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;arrange()&lt;/code&gt;: sort the data by a variable or set of variables;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;filter()&lt;/code&gt;: select which observations to include;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;mutate()&lt;/code&gt;: create new variables as functions of existing variables;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;select()&lt;/code&gt;: choose variables by name;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;summarize()&lt;/code&gt;: calculate group level summaries.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;arrange&lt;/code&gt;: sort the data by a variable or set of variables;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;filter&lt;/code&gt;: select which observations to include;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mutate&lt;/code&gt;: create new variables as functions of existing variables;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;select&lt;/code&gt;: choose variables by name;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;summarize&lt;/code&gt;: calculate group level summaries.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;To demonstrate how these functions work, I will calculate the rate of successful plays for each team. For the NFL, we’ll consider a play successful if the team gains 45 percent of the needed yards on 1st down, 60 percent on 2nd down, and 100 percent on 3rd or 4th down (this comes from Bob Carroll, Pete Palmer, and John Thorn in &lt;a href=&#34;https://www.amazon.com/Hidden-Game-Football-Bob-Carroll/dp/0446514144&#34;&gt;&lt;em&gt;The Hidden Game of Football&lt;/em&gt;&lt;/a&gt;).&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;using-dplyr&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Using dplyr&lt;/h2&gt;
-&lt;p&gt;First I’ll pull out the variables that are needed using the &lt;code&gt;select()&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;First I’ll pull out the variables that are needed using the &lt;code&gt;select&lt;/code&gt; function.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- select(nfl_pbp, game_id = gid, play_id = pid, offense = off,
   defense = def, play_type = type, down = dwn, to_go = ytg, gained = yds)
 success
@@ -72,8 +267,8 @@ success
 #&amp;gt;  9    4257  697189     DEN     CAR      RUSH     2     5      0
 #&amp;gt; 10    4257  697190     CAR     DEN      RUSH     1    10      6
 #&amp;gt; # ... with 44,375 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Notice that in the &lt;code&gt;select()&lt;/code&gt; statement I not only chose the variable I wanted, but also gave them new names that more clearly convey the information included in that variable. For example, I chose to keep the unique game identifier, but renamed it from &lt;code&gt;gid&lt;/code&gt; to &lt;code&gt;game_id&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Next, we need to filter out plays that don’t fall into our operational definition of success. For example, under the defintion above, how would we determine if a kickoff was successful? Therefore, I will use the &lt;code&gt;filter()&lt;/code&gt; function to select only passing or rushing plays.&lt;/p&gt;
+&lt;p&gt;Notice that in the &lt;code&gt;select&lt;/code&gt; statement I not only chose the variable I wanted, but also gave them new names that more clearly convey the information included in that variable. For example, I chose to keep the unique game identifier, but renamed it from &lt;code&gt;gid&lt;/code&gt; to &lt;code&gt;game_id&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Next, we need to filter out plays that don’t fall into our operational definition of success. For example, under the definition above, how would we determine if a kickoff was successful? Therefore, I will use the &lt;code&gt;filter&lt;/code&gt; function to select only passing or rushing plays.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- filter(success, play_type %in% c(&amp;quot;PASS&amp;quot;, &amp;quot;RUSH&amp;quot;))
 success
 #&amp;gt; # A tibble: 34,149 x 8
@@ -90,7 +285,7 @@ success
 #&amp;gt;  9    4257  697190     CAR     DEN      RUSH     1    10      6
 #&amp;gt; 10    4257  697191     CAR     DEN      RUSH     2     4     11
 #&amp;gt; # ... with 34,139 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This leaves us with 34,149 plays. The next step is to calculate the number of yards needed in order for the play to be deemed successful. This can be done using the &lt;code&gt;mutate()&lt;/code&gt; function along with the &lt;code&gt;case_when()&lt;/code&gt; function. The &lt;code&gt;case_when()&lt;/code&gt; function acts like a series of if statements to determine the proper condition.&lt;/p&gt;
+&lt;p&gt;This leaves us with 34,149 plays. The next step is to calculate the number of yards needed in order for the play to be deemed successful. This can be done using the &lt;code&gt;mutate&lt;/code&gt; function along with the &lt;code&gt;case_when&lt;/code&gt; function. The &lt;code&gt;case_when&lt;/code&gt; function acts like a series of if statements to determine the proper condition.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- mutate(success, needed = case_when(
   down == 1 ~ to_go * 0.45,
   down == 2 ~ to_go * 0.60,
@@ -131,9 +326,9 @@ success
 #&amp;gt;  9    4257  697190     CAR     DEN      RUSH     1    10      6    4.5
 #&amp;gt; 10    4257  697191     CAR     DEN      RUSH     2     4     11    2.4
 #&amp;gt; # ... with 34,139 more rows, and 1 more variables: play_success &amp;lt;lgl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Now that we’ve calculated whether each play was a success, we can calculate the overall success rate for each team. To do this, we need to group our data by team. This can be accomplished using the &lt;code&gt;group_by()&lt;/code&gt; function. This function do anything to the data, but will allow other functions to operate within each of the groups. Specifically, I will use the &lt;code&gt;summarize()&lt;/code&gt; function to calculate the rate of successful plays within each group.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- group_by(success, team = offense) %&amp;gt;%
-  summarize(success_rate = mean(play_success, na.rm = TRUE))
+&lt;p&gt;Now that we’ve calculated whether each play was a success, we can calculate the overall success rate for each team. To do this, we need to group our data by team. This can be accomplished using the &lt;code&gt;group_by&lt;/code&gt; function. This function do anything to the data, but will allow other functions to operate within each of the groups. Specifically, I will use the &lt;code&gt;summarize&lt;/code&gt; function to calculate the rate of successful plays within each group.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- group_by(success, team = offense)
+success &amp;lt;- summarize(success, success_rate = mean(play_success, na.rm = TRUE))
 success
 #&amp;gt; # A tibble: 32 x 2
 #&amp;gt;     team success_rate
@@ -149,7 +344,7 @@ success
 #&amp;gt;  9   DAL    0.5110048
 #&amp;gt; 10   DEN    0.4234694
 #&amp;gt; # ... with 22 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Finally, I will use the &lt;code&gt;arrange()&lt;/code&gt; function to sort this data set by the success rate, allowing us to see which teams were the most successful on average. Note that I use the &lt;code&gt;desc()&lt;/code&gt; function to sort success rate in a descending manner, so that the teams with the highest success rates are first. By default the &lt;code&gt;arrange()&lt;/code&gt; function sorts ascending.&lt;/p&gt;
+&lt;p&gt;Finally, I will use the &lt;code&gt;arrange&lt;/code&gt; function to sort this data set by the success rate, allowing us to see which teams were the most successful on average. Note that I use the &lt;code&gt;desc&lt;/code&gt; function to sort success rate in a descending manner, so that the teams with the highest success rates are first. By default the &lt;code&gt;arrange&lt;/code&gt; function sorts ascending.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- arrange(success, desc(success_rate))
 success
 #&amp;gt; # A tibble: 32 x 2
