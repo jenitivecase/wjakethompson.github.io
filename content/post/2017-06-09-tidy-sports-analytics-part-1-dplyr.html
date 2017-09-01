@@ -13,7 +13,7 @@ tags:
 
 
 
-<p>Welcome to the first in a series of blog posts where I’ll be using sports data to demonstrate the power of the <a href="http://www.tidyverse.org/"><strong>tidyverse</strong></a> tools for sports analytics. The <strong>tidyverse</strong> is a suite of packages developed mainly by <a href="https://twitter.com/hadleywickham">Hadley Wickham</a>, with contributions from over 100 other people in the <em>R</em> community. The goal of the <strong>tidyverse</strong> is to provide easy to use <em>R</em> packages for a data science workflow that all follow a consistent philosophy and APIs. In each post in this series, I’ll be focusing on one package within the <strong>tidyverse</strong> in order to demonstrate how each of the major pieces of the <strong>tidyverse</strong> works. In all of the posts, I’ll be exploring the play-by-play data for every game of the 2016 NFL season. This data comes from <a href="http://armchairanalysis.com/">Armchair Analysis</a>, which is behind a paywall. However, for a very reasonable price you can have access to their historical database with yearly updates forever.</p>
+<p>Welcome to the first in a series of blog posts where I’ll be using sports data to demonstrate the power of the <a href="http://www.tidyverse.org/"><strong>tidyverse</strong></a> tools for sports analytics. The <strong>tidyverse</strong> is a suite of packages developed mainly by <a href="https://twitter.com/hadleywickham">Hadley Wickham</a>, with contributions from over 100 other people in the <em>R</em> community. The goal of the <strong>tidyverse</strong> is to provide easy to use <em>R</em> packages for a data science workflow that all follow a consistent philosophy and APIs. In each post in this series, I’ll be focusing on one package within the <strong>tidyverse</strong> in order to demonstrate how each of the major pieces of the <strong>tidyverse</strong> works. In all of the posts, I’ll be exploring the play-by-play data for every game of the 2016 NFL season. This data comes from <a href="http://armchairanalysis.com/">Armchair Analysis</a>, which is behind a pay wall. However, for a a one time flat rate, you can have access to their historical database with yearly updates forever.</p>
 <p>This post will focus on the <a href="http://dplyr.tidyverse.org/"><strong>dplyr</strong></a> package, which is used for data manipulation.</p>
 <div id="dplyr" class="section level2">
 <h2>dplyr</h2>
@@ -41,17 +41,17 @@ nfl_pbp
 #&gt; #   pen &lt;int&gt;, ints &lt;int&gt;, fum &lt;int&gt;, saf &lt;int&gt;, blk &lt;int&gt;, yds &lt;int&gt;</code></pre>
 <p>Here we can see that there were a total of 44,385 plays in the 2016 NFL season, and we have 30 variables for each play. The <strong>dplyr</strong> package provides a way to manipulate this data so that we can easily answer questions. There are five main functions that <strong>dplyr</strong> provides that take care of the majority of data manipulation tasks that you might have:</p>
 <ul>
-<li><code>arrange()</code>: sort the data by a variable or set of variables;</li>
-<li><code>filter()</code>: select which observations to include;</li>
-<li><code>mutate()</code>: create new variables as functions of existing variables;</li>
-<li><code>select()</code>: choose variables by name;</li>
-<li><code>summarize()</code>: calculate group level summaries.</li>
+<li><code>arrange</code>: sort the data by a variable or set of variables;</li>
+<li><code>filter</code>: select which observations to include;</li>
+<li><code>mutate</code>: create new variables as functions of existing variables;</li>
+<li><code>select</code>: choose variables by name;</li>
+<li><code>summarize</code>: calculate group level summaries.</li>
 </ul>
 <p>To demonstrate how these functions work, I will calculate the rate of successful plays for each team. For the NFL, we’ll consider a play successful if the team gains 45 percent of the needed yards on 1st down, 60 percent on 2nd down, and 100 percent on 3rd or 4th down (this comes from Bob Carroll, Pete Palmer, and John Thorn in <a href="https://www.amazon.com/Hidden-Game-Football-Bob-Carroll/dp/0446514144"><em>The Hidden Game of Football</em></a>).</p>
 </div>
 <div id="using-dplyr" class="section level2">
 <h2>Using dplyr</h2>
-<p>First I’ll pull out the variables that are needed using the <code>select()</code> function.</p>
+<p>First I’ll pull out the variables that are needed using the <code>select</code> function.</p>
 <pre class="r"><code>success &lt;- select(nfl_pbp, game_id = gid, play_id = pid, offense = off,
   defense = def, play_type = type, down = dwn, to_go = ytg, gained = yds)
 success
@@ -69,8 +69,8 @@ success
 #&gt;  9    4257  697189     DEN     CAR      RUSH     2     5      0
 #&gt; 10    4257  697190     CAR     DEN      RUSH     1    10      6
 #&gt; # ... with 44,375 more rows</code></pre>
-<p>Notice that in the <code>select()</code> statement I not only chose the variable I wanted, but also gave them new names that more clearly convey the information included in that variable. For example, I chose to keep the unique game identifier, but renamed it from <code>gid</code> to <code>game_id</code>.</p>
-<p>Next, we need to filter out plays that don’t fall into our operational definition of success. For example, under the defintion above, how would we determine if a kickoff was successful? Therefore, I will use the <code>filter()</code> function to select only passing or rushing plays.</p>
+<p>Notice that in the <code>select</code> statement I not only chose the variable I wanted, but also gave them new names that more clearly convey the information included in that variable. For example, I chose to keep the unique game identifier, but renamed it from <code>gid</code> to <code>game_id</code>.</p>
+<p>Next, we need to filter out plays that don’t fall into our operational definition of success. For example, under the definition above, how would we determine if a kickoff was successful? Therefore, I will use the <code>filter</code> function to select only passing or rushing plays.</p>
 <pre class="r"><code>success &lt;- filter(success, play_type %in% c(&quot;PASS&quot;, &quot;RUSH&quot;))
 success
 #&gt; # A tibble: 34,149 x 8
@@ -87,7 +87,7 @@ success
 #&gt;  9    4257  697190     CAR     DEN      RUSH     1    10      6
 #&gt; 10    4257  697191     CAR     DEN      RUSH     2     4     11
 #&gt; # ... with 34,139 more rows</code></pre>
-<p>This leaves us with 34,149 plays. The next step is to calculate the number of yards needed in order for the play to be deemed successful. This can be done using the <code>mutate()</code> function along with the <code>case_when()</code> function. The <code>case_when()</code> function acts like a series of if statements to determine the proper condition.</p>
+<p>This leaves us with 34,149 plays. The next step is to calculate the number of yards needed in order for the play to be deemed successful. This can be done using the <code>mutate</code> function along with the <code>case_when</code> function. The <code>case_when</code> function acts like a series of if statements to determine the proper condition.</p>
 <pre class="r"><code>success &lt;- mutate(success, needed = case_when(
   down == 1 ~ to_go * 0.45,
   down == 2 ~ to_go * 0.60,
@@ -128,9 +128,9 @@ success
 #&gt;  9    4257  697190     CAR     DEN      RUSH     1    10      6    4.5
 #&gt; 10    4257  697191     CAR     DEN      RUSH     2     4     11    2.4
 #&gt; # ... with 34,139 more rows, and 1 more variables: play_success &lt;lgl&gt;</code></pre>
-<p>Now that we’ve calculated whether each play was a success, we can calculate the overall success rate for each team. To do this, we need to group our data by team. This can be accomplished using the <code>group_by()</code> function. This function do anything to the data, but will allow other functions to operate within each of the groups. Specifically, I will use the <code>summarize()</code> function to calculate the rate of successful plays within each group.</p>
-<pre class="r"><code>success &lt;- group_by(success, team = offense) %&gt;%
-  summarize(success_rate = mean(play_success, na.rm = TRUE))
+<p>Now that we’ve calculated whether each play was a success, we can calculate the overall success rate for each team. To do this, we need to group our data by team. This can be accomplished using the <code>group_by</code> function. This function do anything to the data, but will allow other functions to operate within each of the groups. Specifically, I will use the <code>summarize</code> function to calculate the rate of successful plays within each group.</p>
+<pre class="r"><code>success &lt;- group_by(success, team = offense)
+success &lt;- summarize(success, success_rate = mean(play_success, na.rm = TRUE))
 success
 #&gt; # A tibble: 32 x 2
 #&gt;     team success_rate
@@ -146,7 +146,7 @@ success
 #&gt;  9   DAL    0.5110048
 #&gt; 10   DEN    0.4234694
 #&gt; # ... with 22 more rows</code></pre>
-<p>Finally, I will use the <code>arrange()</code> function to sort this data set by the success rate, allowing us to see which teams were the most successful on average. Note that I use the <code>desc()</code> function to sort success rate in a descending manner, so that the teams with the highest success rates are first. By default the <code>arrange()</code> function sorts ascending.</p>
+<p>Finally, I will use the <code>arrange</code> function to sort this data set by the success rate, allowing us to see which teams were the most successful on average. Note that I use the <code>desc</code> function to sort success rate in a descending manner, so that the teams with the highest success rates are first. By default the <code>arrange</code> function sorts ascending.</p>
 <pre class="r"><code>success &lt;- arrange(success, desc(success_rate))
 success
 #&gt; # A tibble: 32 x 2
