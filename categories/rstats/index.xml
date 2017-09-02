@@ -7,8 +7,130 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2017 W. Jake Thompson</copyright>
-    <lastBuildDate>Sun, 25 Jun 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 20 Jul 2017 00:00:00 +0000</lastBuildDate>
     <atom:link href="/categories/rstats/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Tidy Sports Analytics, Part 3: ggplot2</title>
+      <link>https://wjakethompson.github.io/post/tidy-sports-analytics-ggplot2/</link>
+      <pubDate>Thu, 20 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/post/tidy-sports-analytics-ggplot2/</guid>
+      <description>&lt;p&gt;This is the third post in the tidy sports analytics series. In this series, I’ve been demonstrating how the collection of &lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt; packages can be used to explore and analyze sports data. Specifically, I’ve been using the 2016 NFL play-by-play data from &lt;a href=&#34;http://armchairanalysis.com/&#34;&gt;Armchair Analysis&lt;/a&gt;. &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.hmtl&#34;&gt;Part one&lt;/a&gt; in the series showed how &lt;strong&gt;dplyr&lt;/strong&gt; can be used for data manipulation, and &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/index.html&#34;&gt;part two&lt;/a&gt; demonstrated reshaping and tidying data using &lt;strong&gt;tidyr&lt;/strong&gt;. This post focuses on data visualization using &lt;a href=&#34;http://ggplot2.tidyverse.org/&#34;&gt;&lt;strong&gt;ggplot2&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;ggplot2&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;ggplot2&lt;/h2&gt;
+&lt;p&gt;Data visualization is a key part to any data or sports analytics analysis. In the &lt;strong&gt;tidyverse&lt;/strong&gt; visualization is mainly handled through &lt;strong&gt;ggplot2&lt;/strong&gt;. There is an ongoing debate in the &lt;em&gt;R&lt;/em&gt; community as to whether base graphics or &lt;strong&gt;ggplot2&lt;/strong&gt; should be used (see &lt;a href=&#34;http://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/&#34;&gt;here&lt;/a&gt;, &lt;a href=&#34;http://varianceexplained.org/r/why-I-use-ggplot2/&#34;&gt;here&lt;/a&gt;, and &lt;a href=&#34;http://flowingdata.com/2016/03/22/comparing-ggplot2-and-r-base-graphics/&#34;&gt;here&lt;/a&gt;). In practice you, should use whichever tools are going to be effective you. Both sets of tools will be able to solve a wide variety of visualization tools, just in different ways. Given that this series of blog posts is focused on using the &lt;strong&gt;tidyverse&lt;/strong&gt;, it’s probably obvious that I prefer &lt;strong&gt;ggplot2&lt;/strong&gt;. But rather than try to compare and contrast these to systems, in this post, I’m going to point out a few features that I think make &lt;strong&gt;ggplot2&lt;/strong&gt; particularly appealing as I demonstrate how it can be used to visualize sports analytics data.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ggplot2&lt;/strong&gt; is built around the idea of a grammar of graphics. That is, rather than having a typology of visualizations (e.g., scatter plot, bar plot, histogram, etc.), the grammar of graphics focused on on the individual pieces of a plot, and a visualization is created by assembling the various parts that have been selected. &lt;strong&gt;ggplot2&lt;/strong&gt; works by mapping the data to different aesthetics in the plot, and then adding graphical elements, or geoms.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;using-ggplot2&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Using ggplot2&lt;/h2&gt;
+&lt;p&gt;First, let’s get our data to point where it was at the end of the &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/index.html&#34;&gt;previous post&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+
+success &amp;lt;- readRDS(&amp;quot;datafiles/nfl_pbp_2016.rds&amp;quot;) %&amp;gt;%
+  select(game_id = gid, play_id = pid, offense = off, defense = def,
+         play_type = type, down = dwn, to_go = ytg, gained = yds) %&amp;gt;%
+  filter(play_type %in% c(&amp;quot;PASS&amp;quot;, &amp;quot;RUSH&amp;quot;)) %&amp;gt;%
+  mutate(
+    needed = case_when(
+      down == 1 ~ to_go * 0.45,
+      down == 2 ~ to_go * 0.60,
+      TRUE ~ to_go * 1.00
+    ),
+    play_success = case_when(
+      gained &amp;gt;= needed ~ TRUE,
+      gained &amp;lt; needed ~ FALSE
+    )
+  ) %&amp;gt;%
+  gather(key = &amp;quot;team_unit&amp;quot;, value = &amp;quot;team&amp;quot;, offense:defense) %&amp;gt;%
+  mutate(
+    play_success = case_when(
+      team_unit == &amp;quot;defense&amp;quot; ~ !play_success,
+      TRUE ~ play_success
+    )
+  ) %&amp;gt;%
+  group_by(team, team_unit) %&amp;gt;%
+  summarize(success_rate = mean(play_success, na.rm = TRUE)) %&amp;gt;%
+  spread(key = team_unit, value = success_rate) %&amp;gt;%
+  ungroup()
+success
+#&amp;gt; # A tibble: 32 x 3
+#&amp;gt;     team   defense   offense
+#&amp;gt;  * &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+#&amp;gt;  1   ARI 0.5786228 0.4579350
+#&amp;gt;  2   ATL 0.5122349 0.4995587
+#&amp;gt;  3   BAL 0.5800416 0.4103053
+#&amp;gt;  4   BUF 0.5530612 0.4643226
+#&amp;gt;  5   CAR 0.5420466 0.4197044
+#&amp;gt;  6   CHI 0.5497436 0.4606383
+#&amp;gt;  7   CIN 0.5582090 0.4638256
+#&amp;gt;  8   CLE 0.5456292 0.4089422
+#&amp;gt;  9   DAL 0.5212766 0.5110048
+#&amp;gt; 10   DEN 0.5936293 0.4234694
+#&amp;gt; # ... with 22 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first plot we can make is a scatter plot of offensive success rate vs. defensive success rate.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = success, mapping = aes(x = defense, y = offense)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:scatter&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;https://wjakethompson.github.io/post/2017-07-20-tidy-sports-analytics-part-3-ggplot2_files/figure-html/scatter-1.png&#34; alt=&#34;Basic scatterplot&#34; width=&#34;80%&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 1: Basic scatterplot
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Here, I define the data that will be used for the plot, and then define how the variables in the data map to the plot. Specifically, I want defensive success rate on the x-axis, and offensive success rate on the y-axis. Finally, I use &lt;code&gt;geom_point&lt;/code&gt; to add points at each of (x, y) coordinates defined in the aesthetic mapping. In Figure &lt;a href=&#34;#fig:scatter&#34;&gt;1&lt;/a&gt;, it appears that there is a general trend of a more successful defense being associated with a less successful offense. We can look at this trend by using &lt;code&gt;geom_smooth&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = success, mapping = aes(x = defense, y = offense)) +
+  geom_point() +
+  geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:smooth&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;https://wjakethompson.github.io/post/2017-07-20-tidy-sports-analytics-part-3-ggplot2_files/figure-html/smooth-1.png&#34; alt=&#34;Scatterplot with linear best fit line&#34; width=&#34;80%&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 2: Scatterplot with linear best fit line
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;With &lt;strong&gt;ggplot&lt;/strong&gt;, it’s easy to add extra elements to customize the specific pieces needed for the visualization. Each geom also comes with its own options. For example in &lt;code&gt;geom_smooth&lt;/code&gt;, I’ve specified the &lt;code&gt;&amp;quot;lm&amp;quot;&lt;/code&gt; smoothing method. We can also specify groupings in the plots. For this, the data will need to be in long format, which can be accomplished using the &lt;code&gt;gather&lt;/code&gt; function as we did in &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/index.html&#34;&gt;part two&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- gather(success, key = &amp;quot;team_unit&amp;quot;, value = &amp;quot;success_rate&amp;quot;,
+  defense:offense)
+success
+#&amp;gt; # A tibble: 64 x 3
+#&amp;gt;     team team_unit success_rate
+#&amp;gt;    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;
+#&amp;gt;  1   ARI   defense    0.5786228
+#&amp;gt;  2   ATL   defense    0.5122349
+#&amp;gt;  3   BAL   defense    0.5800416
+#&amp;gt;  4   BUF   defense    0.5530612
+#&amp;gt;  5   CAR   defense    0.5420466
+#&amp;gt;  6   CHI   defense    0.5497436
+#&amp;gt;  7   CIN   defense    0.5582090
+#&amp;gt;  8   CLE   defense    0.5456292
+#&amp;gt;  9   DAL   defense    0.5212766
+#&amp;gt; 10   DEN   defense    0.5936293
+#&amp;gt; # ... with 54 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Figure &lt;a href=&#34;#fig:afc-west&#34;&gt;3&lt;/a&gt; shows how we can make a grouped bar plot. First we filter the data to only include teams in the AFC West. This limits the number of teams that will need to be fitted on the x-axis. The &lt;code&gt;success_rate&lt;/code&gt; is then mapped to the y-axis, and I specify that I want the fill of the bar to correspond to the offense and defense. Finally, &lt;code&gt;geom_col&lt;/code&gt; is uses to make the bars. By default, stacked bars are created, but &lt;code&gt;position = &amp;quot;dodge&amp;quot;&lt;/code&gt; instead groups them side by side. Notice the &lt;strong&gt;ggplot2&lt;/strong&gt; will automatically create the legend for you.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = filter(success, team %in% c(&amp;quot;DEN&amp;quot;, &amp;quot;KC&amp;quot;, &amp;quot;OAK&amp;quot;, &amp;quot;SD&amp;quot;)),
+       mapping = aes(x = team, y = success_rate, fill = team_unit)) +
+  geom_col(position = &amp;quot;dodge&amp;quot;) +
+  scale_fill_discrete(name = &amp;quot;Team Unit&amp;quot;) +
+  labs(x = NULL, y = &amp;quot;Success Rate&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:afc-west&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;https://wjakethompson.github.io/post/2017-07-20-tidy-sports-analytics-part-3-ggplot2_files/figure-html/afc-west-1.png&#34; alt=&#34;AFC West success rates&#34; width=&#34;80%&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 3: AFC West success rates
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;There is an almost &lt;a href=&#34;http://ggplot2.tidyverse.org/reference/index.html#section-layer-geoms&#34;&gt;endless series of geoms&lt;/a&gt; that can be combined to make the desired visualization. Everything in these plots can be customized. From colors, to titles and labels (as was done in Figure &lt;a href=&#34;#fig:afc-west&#34;&gt;3&lt;/a&gt;), and even fonts can be changed. However, this goes beyond the scope of this post. Instead, I wanted to show easy it can be to use &lt;strong&gt;ggplot2&lt;/strong&gt; to create professional looking graphics.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusion&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The &lt;strong&gt;ggplot2&lt;/strong&gt; package is a powerful tool for data visualization. Here I’ve provided a brief introduction to how this package works. Once you’ve mastered the basics, it becomes much simpler to create more complex graphics. Because of the grammar of graphics, the creation of plots can be reduced to the selection of relevant geoms, and mapping the data to the necessary aesthetics. In the next and final post in this series, I’ll pull everything together, and talk about the &lt;strong&gt;tidyverse&lt;/strong&gt; more generally, and some of the other benefits associated with its use. For more &lt;strong&gt;ggplot2&lt;/strong&gt; resources, check out:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://ggplot2.tidyverse.org/&#34;&gt;ggplot2.tidyverse.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://r4ds.had.co.nz/data-visualisation.html&#34;&gt;&lt;em&gt;R for Data Science&lt;/em&gt;, Data Visualization&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://r4ds.had.co.nz/graphics-for-communication.html&#34;&gt;&lt;em&gt;R for Data Science&lt;/em&gt;, Graphics for Communication&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/dp/331924275X/ref=as_li_ss_tl?ie=UTF8&amp;amp;linkCode=sl1&amp;amp;tag=ggplot2-20&amp;amp;linkId=4b4de5146fdafd09b8035e8aa656f300&#34;&gt;&lt;em&gt;ggplot2: Elegant Graphics for Data Analysis&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Tidy Sports Analytics, Part 2: tidyr</title>
@@ -16,7 +138,7 @@
       <pubDate>Sun, 25 Jun 2017 00:00:00 +0000</pubDate>
       
       <guid>https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/</guid>
-      <description>&lt;p&gt;This is the second in a series of posts that demonstrates how the &lt;strong&gt;tidyverse&lt;/strong&gt; can be used to easily explore and analyze NFL play-by-play data. In &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.html&#34;&gt;part one&lt;/a&gt;, I used the &lt;strong&gt;dplyr&lt;/strong&gt; package to the success rate of each NFL offense in during the 2016 season. However, when we left off, I noted that really we should look at the success rate of offenses and defenses in order to get a better idea of which teams were the best overall. For this, I’ll use the &lt;strong&gt;tidyr&lt;/strong&gt; package, which is main &lt;strong&gt;tidyverse&lt;/strong&gt; package for tidying data. But first, let’s talk about the pipe operator.&lt;/p&gt;
+      <description>&lt;p&gt;This is the second in a series of posts that demonstrates how the &lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt; can be used to easily explore and analyze NFL play-by-play data. In &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.html&#34;&gt;part one&lt;/a&gt;, I used the &lt;strong&gt;dplyr&lt;/strong&gt; package to the success rate of each NFL offense in during the 2016 season. However, when we left off, I noted that really we should look at the success rate of offenses and defenses in order to get a better idea of which teams were the best overall. For this, I’ll use the &lt;a href=&#34;http://tidyr.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyr&lt;/strong&gt;&lt;/a&gt; package, which is main &lt;strong&gt;tidyverse&lt;/strong&gt; package for tidying data. But first, let’s talk about the pipe operator.&lt;/p&gt;
 &lt;div id=&#34;embrace-the-pipe&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Embrace the pipe&lt;/h2&gt;
 &lt;p&gt;The pip operator (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) comes from the &lt;a href=&#34;http://magrittr.tidyverse.org/&#34;&gt;&lt;strong&gt;magrittr&lt;/strong&gt;&lt;/a&gt; package, and is used to make code more readable. Compare the following two chunks of code.&lt;/p&gt;
@@ -637,7 +759,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       UTC                         
-#&amp;gt;  date     2017-09-01                  
+#&amp;gt;  date     2017-09-02                  
 #&amp;gt; 
 #&amp;gt;  package    * version    date       source                            
 #&amp;gt;  animation  * 2.5        2017-09-01 Github (yihui/animation@60f50e3)  

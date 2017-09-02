@@ -6,8 +6,8 @@ slug: tidy-sports-analytics-tidyr
 categories:
   - rstats
 tags:
-  - sports
   - nfl
+  - sports
   - tidyverse
 ---
 
@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 library (tidyverse)
 ```
 
-This is the second in a series of posts that demonstrates how the **tidyverse** can be used to easily explore and analyze NFL play-by-play data. In [part one](/post/tidy-sports-analytics-dplyr/index.html), I used the **dplyr** package to the success rate of each NFL offense in during the 2016 season. However, when we left off, I noted that really we should look at the success rate of offenses and defenses in order to get a better idea of which teams were the best overall. For this, I'll use the **tidyr** package, which is main **tidyverse** package for tidying data. But first, let's talk about the pipe operator.
+This is the second in a series of posts that demonstrates how the [**tidyverse**](http://www.tidyverse.org/) can be used to easily explore and analyze NFL play-by-play data. In [part one](/post/tidy-sports-analytics-dplyr/index.html), I used the **dplyr** package to the success rate of each NFL offense in during the 2016 season. However, when we left off, I noted that really we should look at the success rate of offenses and defenses in order to get a better idea of which teams were the best overall. For this, I'll use the [**tidyr**](http://tidyr.tidyverse.org/) package, which is main **tidyverse** package for tidying data. But first, let's talk about the pipe operator.
 
 ## Embrace the pipe
 

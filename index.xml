@@ -38,6 +38,128 @@
     </item>
     
     <item>
+      <title>Tidy Sports Analytics, Part 3: ggplot2</title>
+      <link>https://wjakethompson.github.io/post/tidy-sports-analytics-ggplot2/</link>
+      <pubDate>Thu, 20 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/post/tidy-sports-analytics-ggplot2/</guid>
+      <description>&lt;p&gt;This is the third post in the tidy sports analytics series. In this series, I’ve been demonstrating how the collection of &lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt; packages can be used to explore and analyze sports data. Specifically, I’ve been using the 2016 NFL play-by-play data from &lt;a href=&#34;http://armchairanalysis.com/&#34;&gt;Armchair Analysis&lt;/a&gt;. &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.hmtl&#34;&gt;Part one&lt;/a&gt; in the series showed how &lt;strong&gt;dplyr&lt;/strong&gt; can be used for data manipulation, and &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/index.html&#34;&gt;part two&lt;/a&gt; demonstrated reshaping and tidying data using &lt;strong&gt;tidyr&lt;/strong&gt;. This post focuses on data visualization using &lt;a href=&#34;http://ggplot2.tidyverse.org/&#34;&gt;&lt;strong&gt;ggplot2&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;ggplot2&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;ggplot2&lt;/h2&gt;
+&lt;p&gt;Data visualization is a key part to any data or sports analytics analysis. In the &lt;strong&gt;tidyverse&lt;/strong&gt; visualization is mainly handled through &lt;strong&gt;ggplot2&lt;/strong&gt;. There is an ongoing debate in the &lt;em&gt;R&lt;/em&gt; community as to whether base graphics or &lt;strong&gt;ggplot2&lt;/strong&gt; should be used (see &lt;a href=&#34;http://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/&#34;&gt;here&lt;/a&gt;, &lt;a href=&#34;http://varianceexplained.org/r/why-I-use-ggplot2/&#34;&gt;here&lt;/a&gt;, and &lt;a href=&#34;http://flowingdata.com/2016/03/22/comparing-ggplot2-and-r-base-graphics/&#34;&gt;here&lt;/a&gt;). In practice you, should use whichever tools are going to be effective you. Both sets of tools will be able to solve a wide variety of visualization tools, just in different ways. Given that this series of blog posts is focused on using the &lt;strong&gt;tidyverse&lt;/strong&gt;, it’s probably obvious that I prefer &lt;strong&gt;ggplot2&lt;/strong&gt;. But rather than try to compare and contrast these to systems, in this post, I’m going to point out a few features that I think make &lt;strong&gt;ggplot2&lt;/strong&gt; particularly appealing as I demonstrate how it can be used to visualize sports analytics data.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ggplot2&lt;/strong&gt; is built around the idea of a grammar of graphics. That is, rather than having a typology of visualizations (e.g., scatter plot, bar plot, histogram, etc.), the grammar of graphics focused on on the individual pieces of a plot, and a visualization is created by assembling the various parts that have been selected. &lt;strong&gt;ggplot2&lt;/strong&gt; works by mapping the data to different aesthetics in the plot, and then adding graphical elements, or geoms.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;using-ggplot2&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Using ggplot2&lt;/h2&gt;
+&lt;p&gt;First, let’s get our data to point where it was at the end of the &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/index.html&#34;&gt;previous post&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+
+success &amp;lt;- readRDS(&amp;quot;datafiles/nfl_pbp_2016.rds&amp;quot;) %&amp;gt;%
+  select(game_id = gid, play_id = pid, offense = off, defense = def,
+         play_type = type, down = dwn, to_go = ytg, gained = yds) %&amp;gt;%
+  filter(play_type %in% c(&amp;quot;PASS&amp;quot;, &amp;quot;RUSH&amp;quot;)) %&amp;gt;%
+  mutate(
+    needed = case_when(
+      down == 1 ~ to_go * 0.45,
+      down == 2 ~ to_go * 0.60,
+      TRUE ~ to_go * 1.00
+    ),
+    play_success = case_when(
+      gained &amp;gt;= needed ~ TRUE,
+      gained &amp;lt; needed ~ FALSE
+    )
+  ) %&amp;gt;%
+  gather(key = &amp;quot;team_unit&amp;quot;, value = &amp;quot;team&amp;quot;, offense:defense) %&amp;gt;%
+  mutate(
+    play_success = case_when(
+      team_unit == &amp;quot;defense&amp;quot; ~ !play_success,
+      TRUE ~ play_success
+    )
+  ) %&amp;gt;%
+  group_by(team, team_unit) %&amp;gt;%
+  summarize(success_rate = mean(play_success, na.rm = TRUE)) %&amp;gt;%
+  spread(key = team_unit, value = success_rate) %&amp;gt;%
+  ungroup()
+success
+#&amp;gt; # A tibble: 32 x 3
+#&amp;gt;     team   defense   offense
+#&amp;gt;  * &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+#&amp;gt;  1   ARI 0.5786228 0.4579350
+#&amp;gt;  2   ATL 0.5122349 0.4995587
+#&amp;gt;  3   BAL 0.5800416 0.4103053
+#&amp;gt;  4   BUF 0.5530612 0.4643226
+#&amp;gt;  5   CAR 0.5420466 0.4197044
+#&amp;gt;  6   CHI 0.5497436 0.4606383
+#&amp;gt;  7   CIN 0.5582090 0.4638256
+#&amp;gt;  8   CLE 0.5456292 0.4089422
+#&amp;gt;  9   DAL 0.5212766 0.5110048
+#&amp;gt; 10   DEN 0.5936293 0.4234694
+#&amp;gt; # ... with 22 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first plot we can make is a scatter plot of offensive success rate vs. defensive success rate.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = success, mapping = aes(x = defense, y = offense)) +
+  geom_point()&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:scatter&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;https://wjakethompson.github.io/post/2017-07-20-tidy-sports-analytics-part-3-ggplot2_files/figure-html/scatter-1.png&#34; alt=&#34;Basic scatterplot&#34; width=&#34;80%&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 1: Basic scatterplot
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Here, I define the data that will be used for the plot, and then define how the variables in the data map to the plot. Specifically, I want defensive success rate on the x-axis, and offensive success rate on the y-axis. Finally, I use &lt;code&gt;geom_point&lt;/code&gt; to add points at each of (x, y) coordinates defined in the aesthetic mapping. In Figure &lt;a href=&#34;#fig:scatter&#34;&gt;1&lt;/a&gt;, it appears that there is a general trend of a more successful defense being associated with a less successful offense. We can look at this trend by using &lt;code&gt;geom_smooth&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = success, mapping = aes(x = defense, y = offense)) +
+  geom_point() +
+  geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:smooth&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;https://wjakethompson.github.io/post/2017-07-20-tidy-sports-analytics-part-3-ggplot2_files/figure-html/smooth-1.png&#34; alt=&#34;Scatterplot with linear best fit line&#34; width=&#34;80%&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 2: Scatterplot with linear best fit line
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;With &lt;strong&gt;ggplot&lt;/strong&gt;, it’s easy to add extra elements to customize the specific pieces needed for the visualization. Each geom also comes with its own options. For example in &lt;code&gt;geom_smooth&lt;/code&gt;, I’ve specified the &lt;code&gt;&amp;quot;lm&amp;quot;&lt;/code&gt; smoothing method. We can also specify groupings in the plots. For this, the data will need to be in long format, which can be accomplished using the &lt;code&gt;gather&lt;/code&gt; function as we did in &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/index.html&#34;&gt;part two&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;success &amp;lt;- gather(success, key = &amp;quot;team_unit&amp;quot;, value = &amp;quot;success_rate&amp;quot;,
+  defense:offense)
+success
+#&amp;gt; # A tibble: 64 x 3
+#&amp;gt;     team team_unit success_rate
+#&amp;gt;    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;
+#&amp;gt;  1   ARI   defense    0.5786228
+#&amp;gt;  2   ATL   defense    0.5122349
+#&amp;gt;  3   BAL   defense    0.5800416
+#&amp;gt;  4   BUF   defense    0.5530612
+#&amp;gt;  5   CAR   defense    0.5420466
+#&amp;gt;  6   CHI   defense    0.5497436
+#&amp;gt;  7   CIN   defense    0.5582090
+#&amp;gt;  8   CLE   defense    0.5456292
+#&amp;gt;  9   DAL   defense    0.5212766
+#&amp;gt; 10   DEN   defense    0.5936293
+#&amp;gt; # ... with 54 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Figure &lt;a href=&#34;#fig:afc-west&#34;&gt;3&lt;/a&gt; shows how we can make a grouped bar plot. First we filter the data to only include teams in the AFC West. This limits the number of teams that will need to be fitted on the x-axis. The &lt;code&gt;success_rate&lt;/code&gt; is then mapped to the y-axis, and I specify that I want the fill of the bar to correspond to the offense and defense. Finally, &lt;code&gt;geom_col&lt;/code&gt; is uses to make the bars. By default, stacked bars are created, but &lt;code&gt;position = &amp;quot;dodge&amp;quot;&lt;/code&gt; instead groups them side by side. Notice the &lt;strong&gt;ggplot2&lt;/strong&gt; will automatically create the legend for you.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data = filter(success, team %in% c(&amp;quot;DEN&amp;quot;, &amp;quot;KC&amp;quot;, &amp;quot;OAK&amp;quot;, &amp;quot;SD&amp;quot;)),
+       mapping = aes(x = team, y = success_rate, fill = team_unit)) +
+  geom_col(position = &amp;quot;dodge&amp;quot;) +
+  scale_fill_discrete(name = &amp;quot;Team Unit&amp;quot;) +
+  labs(x = NULL, y = &amp;quot;Success Rate&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:afc-west&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;https://wjakethompson.github.io/post/2017-07-20-tidy-sports-analytics-part-3-ggplot2_files/figure-html/afc-west-1.png&#34; alt=&#34;AFC West success rates&#34; width=&#34;80%&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 3: AFC West success rates
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;There is an almost &lt;a href=&#34;http://ggplot2.tidyverse.org/reference/index.html#section-layer-geoms&#34;&gt;endless series of geoms&lt;/a&gt; that can be combined to make the desired visualization. Everything in these plots can be customized. From colors, to titles and labels (as was done in Figure &lt;a href=&#34;#fig:afc-west&#34;&gt;3&lt;/a&gt;), and even fonts can be changed. However, this goes beyond the scope of this post. Instead, I wanted to show easy it can be to use &lt;strong&gt;ggplot2&lt;/strong&gt; to create professional looking graphics.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusion&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The &lt;strong&gt;ggplot2&lt;/strong&gt; package is a powerful tool for data visualization. Here I’ve provided a brief introduction to how this package works. Once you’ve mastered the basics, it becomes much simpler to create more complex graphics. Because of the grammar of graphics, the creation of plots can be reduced to the selection of relevant geoms, and mapping the data to the necessary aesthetics. In the next and final post in this series, I’ll pull everything together, and talk about the &lt;strong&gt;tidyverse&lt;/strong&gt; more generally, and some of the other benefits associated with its use. For more &lt;strong&gt;ggplot2&lt;/strong&gt; resources, check out:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://ggplot2.tidyverse.org/&#34;&gt;ggplot2.tidyverse.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://r4ds.had.co.nz/data-visualisation.html&#34;&gt;&lt;em&gt;R for Data Science&lt;/em&gt;, Data Visualization&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://r4ds.had.co.nz/graphics-for-communication.html&#34;&gt;&lt;em&gt;R for Data Science&lt;/em&gt;, Graphics for Communication&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/dp/331924275X/ref=as_li_ss_tl?ie=UTF8&amp;amp;linkCode=sl1&amp;amp;tag=ggplot2-20&amp;amp;linkId=4b4de5146fdafd09b8035e8aa656f300&#34;&gt;&lt;em&gt;ggplot2: Elegant Graphics for Data Analysis&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Creating an R package for a Reproducible Workflow in Educational Assessment.</title>
       <link>https://wjakethompson.github.io/publication/2017-user-dlmr/</link>
       <pubDate>Sat, 01 Jul 2017 00:00:00 +0000</pubDate>
@@ -52,7 +174,7 @@
       <pubDate>Sun, 25 Jun 2017 00:00:00 +0000</pubDate>
       
       <guid>https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/</guid>
-      <description>&lt;p&gt;This is the second in a series of posts that demonstrates how the &lt;strong&gt;tidyverse&lt;/strong&gt; can be used to easily explore and analyze NFL play-by-play data. In &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.html&#34;&gt;part one&lt;/a&gt;, I used the &lt;strong&gt;dplyr&lt;/strong&gt; package to the success rate of each NFL offense in during the 2016 season. However, when we left off, I noted that really we should look at the success rate of offenses and defenses in order to get a better idea of which teams were the best overall. For this, I’ll use the &lt;strong&gt;tidyr&lt;/strong&gt; package, which is main &lt;strong&gt;tidyverse&lt;/strong&gt; package for tidying data. But first, let’s talk about the pipe operator.&lt;/p&gt;
+      <description>&lt;p&gt;This is the second in a series of posts that demonstrates how the &lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt; can be used to easily explore and analyze NFL play-by-play data. In &lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.html&#34;&gt;part one&lt;/a&gt;, I used the &lt;strong&gt;dplyr&lt;/strong&gt; package to the success rate of each NFL offense in during the 2016 season. However, when we left off, I noted that really we should look at the success rate of offenses and defenses in order to get a better idea of which teams were the best overall. For this, I’ll use the &lt;a href=&#34;http://tidyr.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyr&lt;/strong&gt;&lt;/a&gt; package, which is main &lt;strong&gt;tidyverse&lt;/strong&gt; package for tidying data. But first, let’s talk about the pipe operator.&lt;/p&gt;
 &lt;div id=&#34;embrace-the-pipe&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Embrace the pipe&lt;/h2&gt;
 &lt;p&gt;The pip operator (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) comes from the &lt;a href=&#34;http://magrittr.tidyverse.org/&#34;&gt;&lt;strong&gt;magrittr&lt;/strong&gt;&lt;/a&gt; package, and is used to make code more readable. Compare the following two chunks of code.&lt;/p&gt;
@@ -682,7 +804,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       UTC                         
-#&amp;gt;  date     2017-09-01                  
+#&amp;gt;  date     2017-09-02                  
 #&amp;gt; 
 #&amp;gt;  package    * version    date       source                            
 #&amp;gt;  animation  * 2.5        2017-09-01 Github (yihui/animation@60f50e3)  
@@ -1987,328 +2109,6 @@ outcome
 &lt;hr /&gt;
 &lt;ol&gt;
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;The home team’s offense is increased by 30% and defense is decreased by 30%, and the reverse is done for the away team.&lt;a href=&#34;#fnref1&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Making Win Probability Plots with ggplot2</title>
-      <link>https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability/</link>
-      <pubDate>Wed, 11 Jan 2017 00:00:00 +0000</pubDate>
-      
-      <guid>https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability/</guid>
-      <description>&lt;p&gt;Last week I premiered my in game win probabilities for KU basketball. These have been available for a while on &lt;a href=&#34;http://www.hawklytics.com/winprob17&#34;&gt;Hawklytics&lt;/a&gt;, but were always made after the game rather than in real time. Now that they are going live, I thought it would helpful to document how these are made using R and the &lt;code&gt;ggplot2&lt;/code&gt; package.&lt;/p&gt;
-&lt;div id=&#34;calculating-win-probability&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Calculating Win Probability&lt;/h2&gt;
-&lt;p&gt;The win probabilities are based on the Elo ratings that I calculate for the &lt;a href=&#34;http://www.hawklytics.com/&#34;&gt;team ratings on Hawkytics&lt;/a&gt;. Elo ratings provide an estimate of team strength or ability &lt;em&gt;at the current point in time&lt;/em&gt;. This makes it straightforward to determine the ratings of each team on the day the game was played. For more about Elo ratings and how they are calculated go &lt;a href=&#34;https://en.wikipedia.org/wiki/Elo_rating_system&#34;&gt;here&lt;/a&gt;, or check out &lt;a href=&#34;http://fivethirtyeight.com/features/how-we-calculate-nba-elo-ratings/&#34;&gt;this explainer from FiveThirtyEight&lt;/a&gt;, which is what my Elo ratings are based off of.&lt;/p&gt;
-&lt;p&gt;For this example, we’ll use the Kansas vs. Kansas State game on January 3, 2017. After giving KU a boost for home court advantage Kansas had a pre-game Elo rating of 2163, and Kansas State had an Elo rating of 1761. This difference in Elo ratings translates to Kansas being favored by ~15 points.&lt;/p&gt;
-&lt;p&gt;We can likewise calculate the predicted point spread for every game in the data set (my data set includes all games between D1 opponents going back to 1980). This allows us to look at the difference between the predicted point spread, and the actual margin of victory. This prediction error is normally distributed with a mean of 0 and a standard deviation of 11.36. So the distribution of possible margins of victory for the Kansas vs. Kansas State game should look like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
-library(dplyr)
-
-data_frame(
-  x = seq(-50, 50, 0.5),
-  y = dnorm(seq(-50, 50, 0.5), mean = -15, sd = 11.36)
-) %&amp;gt;%
-  mutate(winner = ifelse(x &amp;lt;= 0, &amp;quot;Kansas&amp;quot;, &amp;quot;Kansas State&amp;quot;)) %&amp;gt;%
-  ggplot() +
-  geom_ribbon(aes(x = x, ymin = 0, ymax = y, fill = winner)) +
-  labs(x = &amp;quot;away team&amp;#39;s margin of victory&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability_files/figure-html/initial_dist-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The distribution peaks at -15, which is what we calculated as the most likely outcome. By convention, point spreads are given in terms of the home team, and a negative point spread means that team is the favorite. Because this game was played at Kansas, the point spread is &lt;strong&gt;Kansas -15&lt;/strong&gt;. If the game were being played at Kansas State, the point spread would be written as &lt;strong&gt;Kansas State + 15&lt;/strong&gt;. Because of this a negative margin of victory indicates a win for the home team. Therefore, a negative margin of victory is associated with Kansas winning, and a positive margin of victory is associated with Kansas State winning. To get the probability of Kansas winning, we can simply look at the proportion of the curve that is less than zero.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pnorm(0, mean = -15, sd = 11.36, lower.tail = TRUE)
-#&amp;gt; [1] 0.906653&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;So at the beginning of the game, we estimate Kansas to have a 90.7% chance of winning. As the game progresses, we calculate win probability in the exact same way, we just have to adjust for the current score and the amount of time remaining&lt;a href=&#34;#fn1&#34; class=&#34;footnoteRef&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;. The mean of the distribution gets defined as so that as the game progresses, the point spread gets less weight, and the current margin get more weight.&lt;/p&gt;
-&lt;span class=&#34;math display&#34; id=&#34;eq:mu&#34;&gt;\[\begin{equation}
-\mu = \left(point\_spread\  \times\ \frac{minutes\_remain}{40}\right) + \left(margin \times \frac{minutes\_played}{40}\right)
-\tag{1}
-\end{equation}\]&lt;/span&gt;
-&lt;p&gt;Similarly, the standard deviation is adjusted so that the distribution gets more narrow as the game progresses.&lt;/p&gt;
-&lt;span class=&#34;math display&#34; id=&#34;eq:sigma&#34;&gt;\[\begin{equation}
-\sigma = \frac{11.36}{\sqrt{\frac{40}{minutes\_remain}}}
-\tag{2}
-\end{equation}\]&lt;/span&gt;
-&lt;p&gt;As the time remaining approaches 0, the denominator increases, making the standard deviation smaller and smaller.&lt;/p&gt;
-&lt;p&gt;The only we need at this point is the score at each moment of the game, in order to calculate the mean and standard deviation. To get this information, we can scrape play-by-play data from the web.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;scraping-play-by-play-data&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Scraping Play-By-Play Data&lt;/h2&gt;
-&lt;p&gt;There are many places we could scrape play-by-play information from, and many different packages we could use, but I’ll use the &lt;code&gt;rvest&lt;/code&gt; package to scrape play-by-play data from &lt;a href=&#34;http://www.espn.com/&#34;&gt;ESPN&lt;/a&gt;. With &lt;code&gt;rvest&lt;/code&gt;, getting the data from ESPN is fairly straightforward.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(rvest)
-
-game_data &amp;lt;- read_html(&amp;quot;http://www.espn.com/mens-college-basketball/playbyplay?gameId=400916199&amp;quot;)
-tables &amp;lt;- html_nodes(game_data, css = &amp;quot;table&amp;quot;)
-tables &amp;lt;- html_table(tables, fill = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The data we want is in tables 2 and 3, so we can select those and do some formatting.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;half_1 &amp;lt;- tables[[2]]
-colnames(half_1) &amp;lt;- make.names(colnames(half_1))
-half_1 &amp;lt;- half_1 %&amp;gt;%
-  mutate(
-    minute = gsub(&amp;quot;:.*&amp;quot;, &amp;quot;&amp;quot;, time) %&amp;gt;% as.numeric(),
-    second = gsub(&amp;quot;.*:&amp;quot;, &amp;quot;&amp;quot;, time) %&amp;gt;% as.numeric(),
-    min_played = (20 - (minute + (second / 60))),
-    min_remain = 40 - min_played,
-    SCORE = gsub(&amp;quot; &amp;quot;, &amp;quot;&amp;quot;, SCORE),
-    away_score = gsub(&amp;quot;-.*&amp;quot;, &amp;quot;&amp;quot;, SCORE) %&amp;gt;% as.numeric(),
-    home_score = gsub(&amp;quot;.*-&amp;quot;, &amp;quot;&amp;quot;, SCORE) %&amp;gt;% as.numeric(),
-    period = &amp;quot;H1&amp;quot;
-  ) %&amp;gt;%
-  select(period, minute, second, min_played, min_remain, away_score,
-    home_score, play = PLAY)
-
-half_2 &amp;lt;- tables[[3]]
-colnames(half_2) &amp;lt;- make.names(colnames(half_2))
-half_2 &amp;lt;- half_2 %&amp;gt;%
-  mutate(
-    minute = gsub(&amp;quot;:.*&amp;quot;, &amp;quot;&amp;quot;, time) %&amp;gt;% as.numeric(),
-    second = gsub(&amp;quot;.*:&amp;quot;, &amp;quot;&amp;quot;, time) %&amp;gt;% as.numeric(),
-    min_played = 20 + (20 - (minute + (second / 60))),
-    min_remain = 40 - min_played,
-    SCORE = gsub(&amp;quot; &amp;quot;, &amp;quot;&amp;quot;, SCORE),
-    away_score = gsub(&amp;quot;-.*&amp;quot;, &amp;quot;&amp;quot;, SCORE) %&amp;gt;% as.numeric(),
-    home_score = gsub(&amp;quot;.*-&amp;quot;, &amp;quot;&amp;quot;, SCORE) %&amp;gt;% as.numeric(),
-    period = &amp;quot;H2&amp;quot;
-  ) %&amp;gt;%
-  select(period, minute, second, min_played, min_remain, away_score,
-    home_score, play = PLAY)
-
-full_pbp &amp;lt;- bind_rows(list(half_1, half_2))
-full_pbp&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;#&amp;gt; # A tibble: 336 x 8
-#&amp;gt;    period minute second min_played min_remain away_score home_score
-#&amp;gt;     &amp;lt;chr&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;
-#&amp;gt;  1     H1     20      0  0.0000000   40.00000          0          0
-#&amp;gt;  2     H1     19     50  0.1666667   39.83333          0          0
-#&amp;gt;  3     H1     19     50  0.1666667   39.83333          0          0
-#&amp;gt;  4     H1     19     43  0.2833333   39.71667          0          2
-#&amp;gt;  5     H1     19     27  0.5500000   39.45000          0          2
-#&amp;gt;  6     H1     19     27  0.5500000   39.45000          0          2
-#&amp;gt;  7     H1     19     12  0.8000000   39.20000          0          2
-#&amp;gt;  8     H1     19     12  0.8000000   39.20000          0          2
-#&amp;gt;  9     H1     18     48  1.2000000   38.80000          2          2
-#&amp;gt; 10     H1     18     33  1.4500000   38.55000          2          2
-#&amp;gt; # ... with 326 more rows, and 1 more variables: play &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Now we can create a data frame of all possible time points in the game, and fill in the scores.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyr)
-
-minute &amp;lt;- 0:40
-second &amp;lt;- 0:59
-full_game &amp;lt;- crossing(minute, second) %&amp;gt;%
-  arrange(desc(minute), desc(second)) %&amp;gt;%
-  mutate(min_remain = minute + (second / 60), min_played = 40 - min_remain,
-    home = 0, away = 0) %&amp;gt;%
-  filter(min_remain &amp;lt;= 40)
-
-for (i in seq_len(nrow(full_pbp))) {
-  cur_time &amp;lt;- round(full_pbp$min_remain[i], digits = 2)
-  cur_row &amp;lt;- which(round(full_game$min_remain, digits = 2) == cur_time)
-  full_game$home[cur_row:nrow(full_game)] &amp;lt;- full_pbp$home_score[i]
-  full_game$away[cur_row:nrow(full_game)] &amp;lt;- full_pbp$away_score[i]
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Now that we have the data we want in a workable form, we can move on to calculating the win probabilities and creating the plot.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;plotting-the-win-probabilities&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Plotting the Win Probabilities&lt;/h2&gt;
-&lt;p&gt;The first thing we have to do is calculate the mean and standard deviation of the distribution at every second of the game, and the corresponding win probability.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;full_game &amp;lt;- full_game %&amp;gt;%
-  mutate(
-    away_margin = away - home,
-    mean = (-15 * (min_remain / 40)) + (away_margin * (min_played / 40)),
-    sd = 11.36 / sqrt(40 / min_remain),
-    home_winprob = pnorm(0, mean = mean, sd = sd, lower.tail = TRUE),
-    away_winprob = 1 - home_winprob
-  )
-full_game
-#&amp;gt; # A tibble: 2,401 x 11
-#&amp;gt;    minute second min_remain min_played  home  away away_margin      mean
-#&amp;gt;     &amp;lt;int&amp;gt;  &amp;lt;int&amp;gt;      &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
-#&amp;gt;  1     40      0   40.00000 0.00000000     0     0           0 -15.00000
-#&amp;gt;  2     39     59   39.98333 0.01666667     0     0           0 -14.99375
-#&amp;gt;  3     39     58   39.96667 0.03333333     0     0           0 -14.98750
-#&amp;gt;  4     39     57   39.95000 0.05000000     0     0           0 -14.98125
-#&amp;gt;  5     39     56   39.93333 0.06666667     0     0           0 -14.97500
-#&amp;gt;  6     39     55   39.91667 0.08333333     0     0           0 -14.96875
-#&amp;gt;  7     39     54   39.90000 0.10000000     0     0           0 -14.96250
-#&amp;gt;  8     39     53   39.88333 0.11666667     0     0           0 -14.95625
-#&amp;gt;  9     39     52   39.86667 0.13333333     0     0           0 -14.95000
-#&amp;gt; 10     39     51   39.85000 0.15000000     0     0           0 -14.94375
-#&amp;gt; # ... with 2,391 more rows, and 3 more variables: sd &amp;lt;dbl&amp;gt;,
-#&amp;gt; #   home_winprob &amp;lt;dbl&amp;gt;, away_winprob &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We can then put the data into long format using the &lt;code&gt;gather&lt;/code&gt; function from the &lt;code&gt;tidyr&lt;/code&gt; package, and plot the probabilities!&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;full_game %&amp;gt;%
-  gather(team, winprob, home_winprob:away_winprob) %&amp;gt;%
-  ggplot(aes(x = min_played, y = winprob, color = team)) +
-  geom_line()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability_files/figure-html/winprob_plot-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Looks pretty good! We can see that even though Kansas wasn’t leading on the score board the whole game, they were always favored to win. Although Kansas State was able to make it close at the end of the game. Now we can add some formatting to make it look prettier.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;full_game %&amp;gt;%
-  gather(team, winprob, home_winprob:away_winprob) %&amp;gt;%
-  ggplot(aes(x = min_played, y = winprob, color = team)) +
-  geom_line(size = 1) +
-  scale_color_manual(values = c(&amp;quot;#512888&amp;quot;, &amp;quot;#0051BA&amp;quot;),
-    labels = c(&amp;quot;Kansas State&amp;quot;, &amp;quot;Kansas&amp;quot;)) +
-  geom_hline(aes(yintercept = 0.5), color = &amp;quot;#000000&amp;quot;, linetype = &amp;quot;dashed&amp;quot;,
-    size = 1) +
-  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.1),
-    labels = paste0(seq(0, 100, by = 10), &amp;quot;%&amp;quot;)) +
-  scale_x_continuous(limits = c(0, 40), breaks = seq(0, 40, 4),
-    labels = paste0(seq(40, 0, -4))) +
-  labs(y = &amp;quot;Win Probability&amp;quot;, x = &amp;quot;Minutes Remaining&amp;quot;) +
-  theme_minimal() +
-  theme(legend.position = &amp;quot;bottom&amp;quot;, legend.title = element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability_files/figure-html/final_plot-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;And there you have our final product! For future Kansas games, I will be &lt;a href=&#34;https://twitter.com/jakethomp&#34;&gt;tweeting out&lt;/a&gt; real time win probability graphs, and as always, previous games can be found on &lt;a href=&#34;http://www.hawklytics.com/winprob17&#34;&gt;Hawklytics&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;bonus-animate-the-plots&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Bonus: Animate the Plots&lt;/h2&gt;
-&lt;p&gt;We could go one step further and animate the win probability plot using David Robinson’s &lt;a href=&#34;https://github.com/dgrtwo/gganimate&#34;&gt;&lt;code&gt;gganimate&lt;/code&gt;&lt;/a&gt; package. Our code looks the same, except we add a &lt;code&gt;frame&lt;/code&gt; aesthetic and the &lt;code&gt;gg_animate&lt;/code&gt; function at the end.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gganimate)
-
-p &amp;lt;- full_game %&amp;gt;%
-  filter(second %% 20 == 0) %&amp;gt;%
-  gather(team, winprob, home_winprob:away_winprob) %&amp;gt;%
-  ggplot(aes(x = min_played, y = winprob, color = team, frame = min_played)) +
-  geom_line(aes(cumulative = TRUE), size = 1) +
-  scale_color_manual(values = c(&amp;quot;#512888&amp;quot;, &amp;quot;#0051BA&amp;quot;),
-    labels = c(&amp;quot;Kansas State&amp;quot;, &amp;quot;Kansas&amp;quot;)) +
-  geom_hline(aes(yintercept = 0.5), color = &amp;quot;#000000&amp;quot;, linetype = &amp;quot;dashed&amp;quot;,
-    size = 1) +
-  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.1),
-    labels = paste0(seq(0, 100, by = 10), &amp;quot;%&amp;quot;)) +
-  scale_x_continuous(limits = c(0, 40), breaks = seq(0, 40, 4),
-    labels = paste0(seq(40, 0, -4))) +
-  labs(y = &amp;quot;Win Probability&amp;quot;, x = &amp;quot;Minutes Remaining&amp;quot;) +
-  theme_minimal() +
-  theme(legend.position = &amp;quot;bottom&amp;quot;, legend.title = element_blank())
-
-gganimate(p, interval = 0.2, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure center&#34;&gt;
-&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability_files/figure-html/ani_win-.gif&#34;&gt;
-&lt;/div&gt;
-&lt;p&gt;We could also animate the distribution to show exactly how the distribution is changing as we alter the mean and standard deviation.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(purrr)
-
-dist &amp;lt;- full_game %&amp;gt;%
-  filter(second %% 20 == 0) %&amp;gt;%
-  select(min_played, mean, sd) %&amp;gt;%
-  as.list() %&amp;gt;%
-  pmap_df(.l = ., .f = function(min_played, mean, sd) {
-    data_frame(
-      min_played = min_played,
-      x = seq(-50, 50, 0.5),
-      y = dnorm(seq(-50, 50, 0.5), mean = mean, sd = sd)
-    ) %&amp;gt;%
-      mutate(winner = ifelse(x &amp;lt;= 0, &amp;quot;home_win&amp;quot;, &amp;quot;away_win&amp;quot;))
-  }) %&amp;gt;%
-  mutate(min_played = round(min_played, digits = 2))
-
-d &amp;lt;- ggplot(dist, aes(frame = min_played)) +
-  geom_ribbon(aes(x = x, ymin = 0, ymax = y, fill = winner)) +
-  scale_fill_manual(values = c(&amp;quot;#512888&amp;quot;, &amp;quot;#0051BA&amp;quot;),
-    labels = c(&amp;quot;Kansas State&amp;quot;, &amp;quot;Kansas&amp;quot;)) +
-  scale_x_continuous(breaks = seq(-50, 50, 10)) +
-  labs(x = &amp;quot;Kansas State Margin of Victory&amp;quot;, title = &amp;quot;Minutes Played: &amp;quot;) +
-  theme_minimal() +
-  theme(legend.position = &amp;quot;bottom&amp;quot;, legend.title = element_blank())
-
-gganimate(d, interval = 0.2)&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;figure center&#34;&gt;
-&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-11-basketball-win-probability_files/figure-html/ani_dist-.gif&#34;&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;limitations&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Limitations&lt;/h2&gt;
-&lt;p&gt;There are several limitations to the way these win probabilities are calculated. First, the calculations assume that each team has a 50% chance of winning if the game goes into overtime. This is entirely accurate, as a team favored before the game would still be favored in overtime (but not by as much). Secondly, I don’t factor in who has possession of the ball. For example, if a team is down by 1 with 25 seconds to go and the ball, the model probably underestimates their chance of winning. In reality, when calculating the mean of the distribution, expected points on the current possession should be factored into the current margin. However, this model provides a nice starting place, and I think provides a pretty good general idea of how a teams probability of winning changed throughout the game.&lt;/p&gt;
-&lt;p&gt;&lt;details&gt;&lt;summary&gt;Session info&lt;/summary&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::session_info()
-#&amp;gt;  setting  value                       
-#&amp;gt;  version  R version 3.4.1 (2017-06-30)
-#&amp;gt;  system   x86_64, darwin15.6.0        
-#&amp;gt;  ui       X11                         
-#&amp;gt;  language (EN)                        
-#&amp;gt;  collate  en_US.UTF-8                 
-#&amp;gt;  tz       America/Chicago             
-#&amp;gt;  date     2017-08-30                  
-#&amp;gt; 
-#&amp;gt;  package    * version    date       source                            
-#&amp;gt;  animation  * 2.5        2017-06-06 Github (yihui/animation@21f635c)  
-#&amp;gt;  assertthat   0.2.0      2017-04-11 CRAN (R 3.4.0)                    
-#&amp;gt;  backports    1.1.0      2017-05-22 CRAN (R 3.4.0)                    
-#&amp;gt;  base       * 3.4.1      2017-07-07 local                             
-#&amp;gt;  bindr        0.1        2016-11-13 cran (@0.1)                       
-#&amp;gt;  bindrcpp   * 0.2        2017-06-17 cran (@0.2)                       
-#&amp;gt;  blogdown     0.1.3      2017-08-30 Github (rstudio/blogdown@45860c7) 
-#&amp;gt;  bookdown     0.5        2017-08-20 CRAN (R 3.4.1)                    
-#&amp;gt;  broom        0.4.2      2017-02-13 CRAN (R 3.4.0)                    
-#&amp;gt;  cellranger   1.1.0      2016-07-27 CRAN (R 3.4.0)                    
-#&amp;gt;  codetools    0.2-15     2016-10-05 CRAN (R 3.4.1)                    
-#&amp;gt;  colorspace   1.3-2      2016-12-14 CRAN (R 3.4.0)                    
-#&amp;gt;  compiler     3.4.1      2017-07-07 local                             
-#&amp;gt;  datasets   * 3.4.1      2017-07-07 local                             
-#&amp;gt;  devtools     1.13.3     2017-08-02 cran (@1.13.3)                    
-#&amp;gt;  digest       0.6.12     2017-01-27 CRAN (R 3.4.0)                    
-#&amp;gt;  dplyr      * 0.7.2      2017-07-20 CRAN (R 3.4.1)                    
-#&amp;gt;  evaluate     0.10.1     2017-06-24 cran (@0.10.1)                    
-#&amp;gt;  forcats      0.2.0      2017-01-23 CRAN (R 3.4.0)                    
-#&amp;gt;  foreign      0.8-69     2017-06-22 CRAN (R 3.4.1)                    
-#&amp;gt;  gganimate  * 0.1.0.9000 2017-06-06 Github (dgrtwo/gganimate@bf82002) 
-#&amp;gt;  ggplot2    * 2.2.1      2016-12-30 CRAN (R 3.3.2)                    
-#&amp;gt;  glue         1.1.1      2017-06-21 cran (@1.1.1)                     
-#&amp;gt;  graphics   * 3.4.1      2017-07-07 local                             
-#&amp;gt;  grDevices  * 3.4.1      2017-07-07 local                             
-#&amp;gt;  grid         3.4.1      2017-07-07 local                             
-#&amp;gt;  gtable       0.2.0      2016-02-26 CRAN (R 3.4.0)                    
-#&amp;gt;  haven        1.1.0      2017-07-09 CRAN (R 3.4.1)                    
-#&amp;gt;  hms          0.3        2016-11-22 CRAN (R 3.4.0)                    
-#&amp;gt;  htmltools    0.3.6      2017-04-28 CRAN (R 3.4.0)                    
-#&amp;gt;  httr         1.3.1      2017-08-20 CRAN (R 3.4.1)                    
-#&amp;gt;  jsonlite     1.5        2017-06-01 cran (@1.5)                       
-#&amp;gt;  knitr      * 1.17       2017-08-10 cran (@1.17)                      
-#&amp;gt;  labeling     0.3        2014-08-23 CRAN (R 3.4.0)                    
-#&amp;gt;  lattice      0.20-35    2017-03-25 CRAN (R 3.4.1)                    
-#&amp;gt;  lazyeval     0.2.0      2016-06-12 CRAN (R 3.4.0)                    
-#&amp;gt;  lubridate    1.6.0      2016-09-13 CRAN (R 3.4.0)                    
-#&amp;gt;  magrittr     1.5        2014-11-22 CRAN (R 3.4.0)                    
-#&amp;gt;  memoise      1.1.0      2017-04-21 CRAN (R 3.4.0)                    
-#&amp;gt;  methods    * 3.4.1      2017-07-07 local                             
-#&amp;gt;  mnormt       1.5-5      2016-10-15 CRAN (R 3.4.0)                    
-#&amp;gt;  modelr       0.1.1      2017-07-24 cran (@0.1.1)                     
-#&amp;gt;  munsell      0.4.3      2016-02-13 CRAN (R 3.4.0)                    
-#&amp;gt;  nlme         3.1-131    2017-02-06 CRAN (R 3.4.0)                    
-#&amp;gt;  parallel     3.4.1      2017-07-07 local                             
-#&amp;gt;  pkgconfig    2.0.1      2017-03-21 cran (@2.0.1)                     
-#&amp;gt;  plyr         1.8.4      2016-06-08 CRAN (R 3.4.0)                    
-#&amp;gt;  psych        1.7.5      2017-05-03 CRAN (R 3.4.1)                    
-#&amp;gt;  purrr      * 0.2.3      2017-08-02 cran (@0.2.3)                     
-#&amp;gt;  R6           2.2.2      2017-06-17 cran (@2.2.2)                     
-#&amp;gt;  Rcpp         0.12.12    2017-07-15 CRAN (R 3.4.1)                    
-#&amp;gt;  readr      * 1.1.1      2017-05-16 CRAN (R 3.4.0)                    
-#&amp;gt;  readxl       1.0.0      2017-04-18 CRAN (R 3.4.0)                    
-#&amp;gt;  reshape2     1.4.2      2016-10-22 CRAN (R 3.4.0)                    
-#&amp;gt;  rlang        0.1.2.9000 2017-08-30 Github (hadley/rlang@f20124b)     
-#&amp;gt;  rmarkdown    1.6.0.9001 2017-08-30 Github (rstudio/rmarkdown@e22703a)
-#&amp;gt;  rprojroot    1.2        2017-01-16 CRAN (R 3.4.0)                    
-#&amp;gt;  rvest      * 0.3.2      2016-06-17 CRAN (R 3.4.0)                    
-#&amp;gt;  scales       0.5.0.9000 2017-08-30 Github (hadley/scales@d767915)    
-#&amp;gt;  stats      * 3.4.1      2017-07-07 local                             
-#&amp;gt;  stringi      1.1.5      2017-04-07 CRAN (R 3.4.0)                    
-#&amp;gt;  stringr      1.2.0      2017-02-18 CRAN (R 3.4.0)                    
-#&amp;gt;  tibble     * 1.3.4      2017-08-22 cran (@1.3.4)                     
-#&amp;gt;  tidyr      * 0.7.0      2017-08-16 CRAN (R 3.4.1)                    
-#&amp;gt;  tidyselect   0.1.1      2017-07-24 CRAN (R 3.4.1)                    
-#&amp;gt;  tidyverse  * 1.1.1      2017-01-27 CRAN (R 3.4.0)                    
-#&amp;gt;  tools        3.4.1      2017-07-07 local                             
-#&amp;gt;  utils      * 3.4.1      2017-07-07 local                             
-#&amp;gt;  withr        2.0.0      2017-08-13 Github (jimhester/withr@190d293)  
-#&amp;gt;  xml2       * 1.1.1      2017-01-24 CRAN (R 3.4.0)                    
-#&amp;gt;  yaml         2.1.14     2016-11-12 CRAN (R 3.4.0)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;/details&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;For details on the where these formulas come from, see Wayne Winston’s book, &lt;em&gt;&lt;a href=&#34;https://www.amazon.com/Mathletics-Gamblers-Enthusiasts-Mathematics-Basketball/dp/0691154589&#34;&gt;Mathletics&lt;/a&gt;&lt;/em&gt;, and &lt;a href=&#34;http://www.footballperspective.com/the-biggest-quarter-by-quarter-comebacks-since-1978/&#34;&gt;Neil Paine’s explainer&lt;/a&gt;.&lt;a href=&#34;#fnref1&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>

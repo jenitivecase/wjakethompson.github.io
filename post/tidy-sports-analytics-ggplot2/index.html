@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.26" />
+  <meta name="author" content="Jake Thompson">
+  <meta name="description" content="Doctoral Candidate">
+
+  
+  
+  
+    
+  
+  
+    
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css">
+    
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/academicons.min.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono">
+  <link rel="stylesheet" href="/css/hugo-academic.css">
+  
+  <link rel="stylesheet" href="/css/blue.css">
+  
+
+  <link rel="alternate" href="https://wjakethompson.github.io/index.xml" type="application/rss+xml" title="Jake Thompson">
+  <link rel="feed" href="https://wjakethompson.github.io/index.xml" type="application/rss+xml" title="Jake Thompson">
+
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/apple-touch-icon.png">
+
+  <link rel="canonical" href="https://wjakethompson.github.io/post/tidy-sports-analytics-ggplot2/">
+
+  
+
+  <title>Tidy Sports Analytics, Part 3: ggplot2 | Jake Thompson</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#navbar-main" data-offset="71">
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Jake Thompson</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/pdf/WJThompson_CV.pdf">
+            
+            <span>CV</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+  <div class="article-container">
+    <h1 itemprop="name">Tidy Sports Analytics, Part 3: ggplot2</h1>
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    <time datetime="2017-07-20 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+      July 20, 2017
+    </time>
+  </span>
+
+  
+  
+  
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/rstats">rstats</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+  
+  <span class="article-tags">
+    <i class="fa fa-tags"></i>
+    
+    <a href="/tags/ggplot2">ggplot2</a
+    >, 
+    
+    <a href="/tags/nfl">nfl</a
+    >, 
+    
+    <a href="/tags/sports">sports</a
+    >, 
+    
+    <a href="/tags/tidyverse">tidyverse</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwjakethompson.github.io%2fpost%2ftidy-sports-analytics-ggplot2%2f"
+         target="_blank">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Tidy%20Sports%20Analytics%2c%20Part%203%3a%20ggplot2&amp;url=https%3a%2f%2fwjakethompson.github.io%2fpost%2ftidy-sports-analytics-ggplot2%2f"
+         target="_blank">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fwjakethompson.github.io%2fpost%2ftidy-sports-analytics-ggplot2%2f&amp;title=Tidy%20Sports%20Analytics%2c%20Part%203%3a%20ggplot2"
+         target="_blank">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fwjakethompson.github.io%2fpost%2ftidy-sports-analytics-ggplot2%2f&amp;title=Tidy%20Sports%20Analytics%2c%20Part%203%3a%20ggplot2"
+         target="_blank">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Tidy%20Sports%20Analytics%2c%20Part%203%3a%20ggplot2&amp;body=https%3a%2f%2fwjakethompson.github.io%2fpost%2ftidy-sports-analytics-ggplot2%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    <div class="article-style" itemprop="articleBody">
+      <p>This is the third post in the tidy sports analytics series. In this series, I’ve been demonstrating how the collection of <a href="http://www.tidyverse.org/"><strong>tidyverse</strong></a> packages can be used to explore and analyze sports data. Specifically, I’ve been using the 2016 NFL play-by-play data from <a href="http://armchairanalysis.com/">Armchair Analysis</a>. <a href="/post/tidy-sports-analytics-dplyr/index.hmtl">Part one</a> in the series showed how <strong>dplyr</strong> can be used for data manipulation, and <a href="/post/tidy-sports-analytics-tidyr/index.html">part two</a> demonstrated reshaping and tidying data using <strong>tidyr</strong>. This post focuses on data visualization using <a href="http://ggplot2.tidyverse.org/"><strong>ggplot2</strong></a>.</p>
+<div id="ggplot2" class="section level2">
+<h2>ggplot2</h2>
+<p>Data visualization is a key part to any data or sports analytics analysis. In the <strong>tidyverse</strong> visualization is mainly handled through <strong>ggplot2</strong>. There is an ongoing debate in the <em>R</em> community as to whether base graphics or <strong>ggplot2</strong> should be used (see <a href="http://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/">here</a>, <a href="http://varianceexplained.org/r/why-I-use-ggplot2/">here</a>, and <a href="http://flowingdata.com/2016/03/22/comparing-ggplot2-and-r-base-graphics/">here</a>). In practice you, should use whichever tools are going to be effective you. Both sets of tools will be able to solve a wide variety of visualization tools, just in different ways. Given that this series of blog posts is focused on using the <strong>tidyverse</strong>, it’s probably obvious that I prefer <strong>ggplot2</strong>. But rather than try to compare and contrast these to systems, in this post, I’m going to point out a few features that I think make <strong>ggplot2</strong> particularly appealing as I demonstrate how it can be used to visualize sports analytics data.</p>
+<p><strong>ggplot2</strong> is built around the idea of a grammar of graphics. That is, rather than having a typology of visualizations (e.g., scatter plot, bar plot, histogram, etc.), the grammar of graphics focused on on the individual pieces of a plot, and a visualization is created by assembling the various parts that have been selected. <strong>ggplot2</strong> works by mapping the data to different aesthetics in the plot, and then adding graphical elements, or geoms.</p>
+</div>
+<div id="using-ggplot2" class="section level2">
+<h2>Using ggplot2</h2>
+<p>First, let’s get our data to point where it was at the end of the <a href="/post/tidy-sports-analytics-tidyr/index.html">previous post</a>.</p>
+<pre class="r"><code>library(tidyverse)
+
+success &lt;- readRDS(&quot;datafiles/nfl_pbp_2016.rds&quot;) %&gt;%
+  select(game_id = gid, play_id = pid, offense = off, defense = def,
+         play_type = type, down = dwn, to_go = ytg, gained = yds) %&gt;%
+  filter(play_type %in% c(&quot;PASS&quot;, &quot;RUSH&quot;)) %&gt;%
+  mutate(
+    needed = case_when(
+      down == 1 ~ to_go * 0.45,
+      down == 2 ~ to_go * 0.60,
+      TRUE ~ to_go * 1.00
+    ),
+    play_success = case_when(
+      gained &gt;= needed ~ TRUE,
+      gained &lt; needed ~ FALSE
+    )
+  ) %&gt;%
+  gather(key = &quot;team_unit&quot;, value = &quot;team&quot;, offense:defense) %&gt;%
+  mutate(
+    play_success = case_when(
+      team_unit == &quot;defense&quot; ~ !play_success,
+      TRUE ~ play_success
+    )
+  ) %&gt;%
+  group_by(team, team_unit) %&gt;%
+  summarize(success_rate = mean(play_success, na.rm = TRUE)) %&gt;%
+  spread(key = team_unit, value = success_rate) %&gt;%
+  ungroup()
+success
+#&gt; # A tibble: 32 x 3
+#&gt;     team   defense   offense
+#&gt;  * &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1   ARI 0.5786228 0.4579350
+#&gt;  2   ATL 0.5122349 0.4995587
+#&gt;  3   BAL 0.5800416 0.4103053
+#&gt;  4   BUF 0.5530612 0.4643226
+#&gt;  5   CAR 0.5420466 0.4197044
+#&gt;  6   CHI 0.5497436 0.4606383
+#&gt;  7   CIN 0.5582090 0.4638256
+#&gt;  8   CLE 0.5456292 0.4089422
+#&gt;  9   DAL 0.5212766 0.5110048
+#&gt; 10   DEN 0.5936293 0.4234694
+#&gt; # ... with 22 more rows</code></pre>
+<p>The first plot we can make is a scatter plot of offensive success rate vs. defensive success rate.</p>
+<pre class="r"><code>ggplot(data = success, mapping = aes(x = defense, y = offense)) +
+  geom_point()</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:scatter"></span>
+<img src="/post/2017-07-20-tidy-sports-analytics-part-3-ggplot2_files/figure-html/scatter-1.png" alt="Basic scatterplot" width="80%" />
+<p class="caption">
+Figure 1: Basic scatterplot
+</p>
+</div>
+<p>Here, I define the data that will be used for the plot, and then define how the variables in the data map to the plot. Specifically, I want defensive success rate on the x-axis, and offensive success rate on the y-axis. Finally, I use <code>geom_point</code> to add points at each of (x, y) coordinates defined in the aesthetic mapping. In Figure <a href="#fig:scatter">1</a>, it appears that there is a general trend of a more successful defense being associated with a less successful offense. We can look at this trend by using <code>geom_smooth</code>.</p>
+<pre class="r"><code>ggplot(data = success, mapping = aes(x = defense, y = offense)) +
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;)</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:smooth"></span>
+<img src="/post/2017-07-20-tidy-sports-analytics-part-3-ggplot2_files/figure-html/smooth-1.png" alt="Scatterplot with linear best fit line" width="80%" />
+<p class="caption">
+Figure 2: Scatterplot with linear best fit line
+</p>
+</div>
+<p>With <strong>ggplot</strong>, it’s easy to add extra elements to customize the specific pieces needed for the visualization. Each geom also comes with its own options. For example in <code>geom_smooth</code>, I’ve specified the <code>&quot;lm&quot;</code> smoothing method. We can also specify groupings in the plots. For this, the data will need to be in long format, which can be accomplished using the <code>gather</code> function as we did in <a href="/post/tidy-sports-analytics-tidyr/index.html">part two</a>.</p>
+<pre class="r"><code>success &lt;- gather(success, key = &quot;team_unit&quot;, value = &quot;success_rate&quot;,
+  defense:offense)
+success
+#&gt; # A tibble: 64 x 3
+#&gt;     team team_unit success_rate
+#&gt;    &lt;chr&gt;     &lt;chr&gt;        &lt;dbl&gt;
+#&gt;  1   ARI   defense    0.5786228
+#&gt;  2   ATL   defense    0.5122349
+#&gt;  3   BAL   defense    0.5800416
+#&gt;  4   BUF   defense    0.5530612
+#&gt;  5   CAR   defense    0.5420466
+#&gt;  6   CHI   defense    0.5497436
+#&gt;  7   CIN   defense    0.5582090
+#&gt;  8   CLE   defense    0.5456292
+#&gt;  9   DAL   defense    0.5212766
+#&gt; 10   DEN   defense    0.5936293
+#&gt; # ... with 54 more rows</code></pre>
+<p>Figure <a href="#fig:afc-west">3</a> shows how we can make a grouped bar plot. First we filter the data to only include teams in the AFC West. This limits the number of teams that will need to be fitted on the x-axis. The <code>success_rate</code> is then mapped to the y-axis, and I specify that I want the fill of the bar to correspond to the offense and defense. Finally, <code>geom_col</code> is uses to make the bars. By default, stacked bars are created, but <code>position = &quot;dodge&quot;</code> instead groups them side by side. Notice the <strong>ggplot2</strong> will automatically create the legend for you.</p>
+<pre class="r"><code>ggplot(data = filter(success, team %in% c(&quot;DEN&quot;, &quot;KC&quot;, &quot;OAK&quot;, &quot;SD&quot;)),
+       mapping = aes(x = team, y = success_rate, fill = team_unit)) +
+  geom_col(position = &quot;dodge&quot;) +
+  scale_fill_discrete(name = &quot;Team Unit&quot;) +
+  labs(x = NULL, y = &quot;Success Rate&quot;)</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:afc-west"></span>
+<img src="/post/2017-07-20-tidy-sports-analytics-part-3-ggplot2_files/figure-html/afc-west-1.png" alt="AFC West success rates" width="80%" />
+<p class="caption">
+Figure 3: AFC West success rates
+</p>
+</div>
+<p>There is an almost <a href="http://ggplot2.tidyverse.org/reference/index.html#section-layer-geoms">endless series of geoms</a> that can be combined to make the desired visualization. Everything in these plots can be customized. From colors, to titles and labels (as was done in Figure <a href="#fig:afc-west">3</a>), and even fonts can be changed. However, this goes beyond the scope of this post. Instead, I wanted to show easy it can be to use <strong>ggplot2</strong> to create professional looking graphics.</p>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>The <strong>ggplot2</strong> package is a powerful tool for data visualization. Here I’ve provided a brief introduction to how this package works. Once you’ve mastered the basics, it becomes much simpler to create more complex graphics. Because of the grammar of graphics, the creation of plots can be reduced to the selection of relevant geoms, and mapping the data to the necessary aesthetics. In the next and final post in this series, I’ll pull everything together, and talk about the <strong>tidyverse</strong> more generally, and some of the other benefits associated with its use. For more <strong>ggplot2</strong> resources, check out:</p>
+<ul>
+<li><a href="http://ggplot2.tidyverse.org/">ggplot2.tidyverse.org</a></li>
+<li><a href="http://r4ds.had.co.nz/data-visualisation.html"><em>R for Data Science</em>, Data Visualization</a></li>
+<li><a href="http://r4ds.had.co.nz/graphics-for-communication.html"><em>R for Data Science</em>, Graphics for Communication</a></li>
+<li><a href="https://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/dp/331924275X/ref=as_li_ss_tl?ie=UTF8&amp;linkCode=sl1&amp;tag=ggplot2-20&amp;linkId=4b4de5146fdafd09b8035e8aa656f300"><em>ggplot2: Elegant Graphics for Data Analysis</em></a></li>
+</ul>
+</div>
+
+    </div>
+  </div>
+
+</article>
+
+<div class="container">
+  <nav>
+  <ul class="pager">
+    
+    <li class="previous"><a href="https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/"><span
+      aria-hidden="true">&larr;</span> Tidy Sports Analytics, Part 2: tidyr</a></li>
+    
+
+    
+  </ul>
+</nav>
+
+</div>
+
+<div class="article-container">
+  
+
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2017 W. Jake Thompson &middot; 
+
+      Powered by the <a href="https://github.com/gcushen/hugo-academic" target="_blank">Academic
+      theme</a> for <a href="http://gohugo.io" target="_blank">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.4/TweenMax.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/ScrollToPlugin.min.js"></script>
+    <script src="/js/jquery-1.12.3.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/isotope.pkgd.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.1/imagesloaded.pkgd.min.js"></script>
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-86118070-1', 'auto');
+        ga('send', 'pageview');
+
+         
+        var links = document.querySelectorAll('a');
+        Array.prototype.map.call(links, function(item) {
+            if (item.host != document.location.host) {
+                item.addEventListener('click', function() {
+                    var action = item.getAttribute('data-action') || 'follow';
+                    ga('send', 'event', 'outbound', action, item.href);
+                });
+            }
+        });
+    </script>
+    
+
+    
+    
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/r.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/yaml.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/dcf.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+    
+
+  </body>
+</html>
+
