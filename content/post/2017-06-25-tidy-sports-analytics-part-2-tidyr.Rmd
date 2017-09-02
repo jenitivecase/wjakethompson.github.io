@@ -6,8 +6,8 @@ slug: tidy-sports-analytics-tidyr
 categories:
   - rstats
 tags:
-  - sports
   - nfl
+  - sports
   - tidyverse
 ---
 
