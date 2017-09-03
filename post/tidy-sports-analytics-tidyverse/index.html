@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.26" />
+  <meta name="author" content="Jake Thompson">
+  <meta name="description" content="Doctoral Candidate">
+
+  
+  
+  
+    
+  
+  
+    
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/github.min.css">
+    
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/academicons.min.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono">
+  <link rel="stylesheet" href="/css/hugo-academic.css">
+  
+  <link rel="stylesheet" href="/css/blue.css">
+  
+
+  <link rel="alternate" href="https://wjakethompson.github.io/index.xml" type="application/rss+xml" title="Jake Thompson">
+  <link rel="feed" href="https://wjakethompson.github.io/index.xml" type="application/rss+xml" title="Jake Thompson">
+
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/apple-touch-icon.png">
+
+  <link rel="canonical" href="https://wjakethompson.github.io/post/tidy-sports-analytics-tidyverse/">
+
+  
+
+  <title>Tidy Sports Analytics, Part 4: tidyverse | Jake Thompson</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#navbar-main" data-offset="71">
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Jake Thompson</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#publications">
+            
+            <span>Publications</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>Posts</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#projects">
+            
+            <span>Projects</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/#contact">
+            
+            <span>Contact</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        <li class="nav-item">
+          <a href="/pdf/WJThompson_CV.pdf">
+            
+            <span>CV</span>
+          </a>
+        </li>
+
+        
+        
+
+        
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+  <div class="article-container">
+    <h1 itemprop="name">Tidy Sports Analytics, Part 4: tidyverse</h1>
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    <time datetime="2017-08-25 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+      August 25, 2017
+    </time>
+  </span>
+
+  
+  
+  
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/rstats">rstats</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+  
+  <span class="article-tags">
+    <i class="fa fa-tags"></i>
+    
+    <a href="/tags/nfl">nfl</a
+    >, 
+    
+    <a href="/tags/sports">sports</a
+    >, 
+    
+    <a href="/tags/tidyverse">tidyverse</a
+    >
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fwjakethompson.github.io%2fpost%2ftidy-sports-analytics-tidyverse%2f"
+         target="_blank">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Tidy%20Sports%20Analytics%2c%20Part%204%3a%20tidyverse&amp;url=https%3a%2f%2fwjakethompson.github.io%2fpost%2ftidy-sports-analytics-tidyverse%2f"
+         target="_blank">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fwjakethompson.github.io%2fpost%2ftidy-sports-analytics-tidyverse%2f&amp;title=Tidy%20Sports%20Analytics%2c%20Part%204%3a%20tidyverse"
+         target="_blank">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fwjakethompson.github.io%2fpost%2ftidy-sports-analytics-tidyverse%2f&amp;title=Tidy%20Sports%20Analytics%2c%20Part%204%3a%20tidyverse"
+         target="_blank">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Tidy%20Sports%20Analytics%2c%20Part%204%3a%20tidyverse&amp;body=https%3a%2f%2fwjakethompson.github.io%2fpost%2ftidy-sports-analytics-tidyverse%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    <div class="article-style" itemprop="articleBody">
+      <p>This is the final post in the tidy sports analytics series, in which I’ve been using play-by-play from the 2016 NFL season to demonstrate the power of the <a href="http://www.tidyverse.org/"><strong>tidyverse</strong></a>. Previously, I’ve discussed:</p>
+<ul>
+<li><a href="/post/tidy-sports-analytics-dplyr/index.html">Part 1</a>: Data manipulation using <strong>dplyr</strong>;</li>
+<li><a href="/post/tidy-sports-analytics-tidyr/index.html">Part 2</a>: Data reshaping and tidying using <strong>tidyr</strong>;</li>
+<li><a href="/post/tidy-sports-analytics-ggplot2/index.html">Part 3</a>: Data visualization using <strong>ggplot2</strong>.</li>
+</ul>
+<p>In this post I want to talk about the <strong>tidyverse</strong> more generally, and some of other advantages of using these packages for data analysis.</p>
+<div id="tidyverse" class="section level2">
+<h2>tidyverse</h2>
+<p>Although I chose three of the main <strong>tidyverse</strong> packages to highlight in these posts, there are many more packages that fall under this umbrella. In addition to <a href="http://dplyr.tidyverse.org/"><strong>dplyr</strong></a>, <a href="http://tidyr.tidyverse.org/"><strong>tidyr</strong></a>, and <a href="http://ggplot2.tidyverse.org/"><strong>ggplot2</strong></a>, the core <strong>tidyverse</strong> also includes <a href="http://readr.tidyverse.org/"><strong>readr</strong></a> for reading in data, <a href="http://purrr.tidyverse.org/"><strong>purrr</strong></a> for functional programming, and <a href="http://tibble.tidyverse.org/"><strong>tibble</strong></a> for a new type of data frame. There are also packages <a href="http://www.tidyverse.org/packages/">outside of the core</a> <strong>tidyverse</strong> for importing data, wrangling data, programming, and modeling. These packages are all used for more specific use cases, rather than the general use of the core packages. For example, <a href="http://lubridate.tidyverse.org/"><strong>lubridate</strong></a> is used for date-time variables, <a href="http://magrittr.tidyverse.org/"><strong>magrittr</strong></a> provides the forward pipe (<code>%&gt;%</code>) along with other piping operations, and <a href="https://github.com/tidyverse/glue"><strong>glue</strong></a> makes it easier to combine string and date variables.</p>
+<p>Because all of these packages use a consistent API, they are all compatible with the pipe operator, making data analysis more stream lined and also more reproducible. By using the pipe operator, your code becomes more readable for others. This makes code reviews by others easier, and makes your research more reproducible if people external to the project can understand what you were doing.</p>
+</div>
+<div id="community-support" class="section level2">
+<h2>Community support</h2>
+<p>In addition to the programming benefits of the <strong>tidyverse</strong>, there is a supportive community that contributes to the development of the <strong>tidyverse</strong> packages and environment. The “tidyverse” tags on <a href="https://twitter.com/search?q=%23tidyverse&amp;src=typd">Twitter</a> and <a href="https://stackoverflow.com/questions/tagged/tidyverse">Stack Overflow</a> are great places to go for help. Here, you’ll be able to ask your questions and get feedback to help solve your problems, or clarify any questions you might have.</p>
+<p>In addition, there are many developers that are creating <strong>tidyverse</strong> adjacent packages. These packages aren’t technically part of the <strong>tidyverse</strong>, but enhance and further functionality. For example, there is a large development environment around <strong>ggplot2</strong>. These <a href="http://www.ggplot2-exts.org/">extensions to <strong>ggplot2</strong></a> provide additional compatible tools such as <a href="https://github.com/thomasp85/ggraph">network graphs</a>, <a href="https://github.com/clauswilke/ggjoy">joy plots</a>, and <a href="https://github.com/dgrtwo/gganimate">animation</a>. Another good example is the <a href="https://github.com/juliasilge/tidytext"><strong>tidytext</strong></a> package, which is used for analyzing text passages.</p>
+<p>However, these are not the only ways to <a href="http://www.tidyverse.org/contribute/">contribute to the <strong>tidyverse</strong></a>. You don’t have to be a developer or even be able to answer questions on Twitter or Stack Overflow in order to contribute. You can also contribute by using the <a href="http://reprex.tidyverse.org/"><strong>reprex</strong></a> package to report issues that you find, or contribute documentation to existing packages. No matter how advanced your <em>R</em> skills are, there are ways for you to not only use the <strong>tidyverse</strong>, but also contribute to the community!</p>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>The <strong>tidyverse</strong> is a great resource for the greater <em>R</em> community. This group of packages provide tools for data science that have a consistent API, and greatly improve the readability and reproducibility of your code. In these posts, I used NFL play-by-play data as a use case to show how the main components of the <strong>tidyverse</strong> work. With the huge amount of data that is now available for analyzing sports data, the <strong>tidyverse</strong> is able to efficiently wrangle and manipulate data with just a few lines of code, making it an invaluable resource. For more <strong>tidyverse</strong> resources, checkout:</p>
+<ul>
+<li><a href="http://www.tidyverse.org/">tidyverse.org</a></li>
+<li><a href="http://r4ds.had.co.nz/"><em>R for Data Science</em></a></li>
+<li><a href="https://www.rstudio.com/resources/cheatsheets/">RStudio cheatsheets</a></li>
+</ul>
+</div>
+
+    </div>
+  </div>
+
+</article>
+
+<div class="container">
+  <nav>
+  <ul class="pager">
+    
+    <li class="previous"><a href="https://wjakethompson.github.io/post/tidy-sports-analytics-ggplot2/"><span
+      aria-hidden="true">&larr;</span> Tidy Sports Analytics, Part 3: ggplot2</a></li>
+    
+
+    
+  </ul>
+</nav>
+
+</div>
+
+<div class="article-container">
+  
+
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2017 W. Jake Thompson &middot; 
+
+      Powered by the <a href="https://github.com/gcushen/hugo-academic" target="_blank">Academic
+      theme</a> for <a href="http://gohugo.io" target="_blank">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.4/TweenMax.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/ScrollToPlugin.min.js"></script>
+    <script src="/js/jquery-1.12.3.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/isotope.pkgd.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.1/imagesloaded.pkgd.min.js"></script>
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-86118070-1', 'auto');
+        ga('send', 'pageview');
+
+         
+        var links = document.querySelectorAll('a');
+        Array.prototype.map.call(links, function(item) {
+            if (item.host != document.location.host) {
+                item.addEventListener('click', function() {
+                    var action = item.getAttribute('data-action') || 'follow';
+                    ga('send', 'event', 'outbound', action, item.href);
+                });
+            }
+        });
+    </script>
+    
+
+    
+    
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/r.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/yaml.min.js"></script>
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/dcf.min.js"></script>
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+    
+
+  </body>
+</html>
+

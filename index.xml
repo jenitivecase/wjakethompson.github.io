@@ -38,6 +38,42 @@
     </item>
     
     <item>
+      <title>Tidy Sports Analytics, Part 4: tidyverse</title>
+      <link>https://wjakethompson.github.io/post/tidy-sports-analytics-tidyverse/</link>
+      <pubDate>Fri, 25 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/post/tidy-sports-analytics-tidyverse/</guid>
+      <description>&lt;p&gt;This is the final post in the tidy sports analytics series, in which I’ve been using play-by-play from the 2016 NFL season to demonstrate the power of the &lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt;. Previously, I’ve discussed:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.html&#34;&gt;Part 1&lt;/a&gt;: Data manipulation using &lt;strong&gt;dplyr&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/index.html&#34;&gt;Part 2&lt;/a&gt;: Data reshaping and tidying using &lt;strong&gt;tidyr&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-ggplot2/index.html&#34;&gt;Part 3&lt;/a&gt;: Data visualization using &lt;strong&gt;ggplot2&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In this post I want to talk about the &lt;strong&gt;tidyverse&lt;/strong&gt; more generally, and some of other advantages of using these packages for data analysis.&lt;/p&gt;
+&lt;div id=&#34;tidyverse&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;tidyverse&lt;/h2&gt;
+&lt;p&gt;Although I chose three of the main &lt;strong&gt;tidyverse&lt;/strong&gt; packages to highlight in these posts, there are many more packages that fall under this umbrella. In addition to &lt;a href=&#34;http://dplyr.tidyverse.org/&#34;&gt;&lt;strong&gt;dplyr&lt;/strong&gt;&lt;/a&gt;, &lt;a href=&#34;http://tidyr.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyr&lt;/strong&gt;&lt;/a&gt;, and &lt;a href=&#34;http://ggplot2.tidyverse.org/&#34;&gt;&lt;strong&gt;ggplot2&lt;/strong&gt;&lt;/a&gt;, the core &lt;strong&gt;tidyverse&lt;/strong&gt; also includes &lt;a href=&#34;http://readr.tidyverse.org/&#34;&gt;&lt;strong&gt;readr&lt;/strong&gt;&lt;/a&gt; for reading in data, &lt;a href=&#34;http://purrr.tidyverse.org/&#34;&gt;&lt;strong&gt;purrr&lt;/strong&gt;&lt;/a&gt; for functional programming, and &lt;a href=&#34;http://tibble.tidyverse.org/&#34;&gt;&lt;strong&gt;tibble&lt;/strong&gt;&lt;/a&gt; for a new type of data frame. There are also packages &lt;a href=&#34;http://www.tidyverse.org/packages/&#34;&gt;outside of the core&lt;/a&gt; &lt;strong&gt;tidyverse&lt;/strong&gt; for importing data, wrangling data, programming, and modeling. These packages are all used for more specific use cases, rather than the general use of the core packages. For example, &lt;a href=&#34;http://lubridate.tidyverse.org/&#34;&gt;&lt;strong&gt;lubridate&lt;/strong&gt;&lt;/a&gt; is used for date-time variables, &lt;a href=&#34;http://magrittr.tidyverse.org/&#34;&gt;&lt;strong&gt;magrittr&lt;/strong&gt;&lt;/a&gt; provides the forward pipe (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) along with other piping operations, and &lt;a href=&#34;https://github.com/tidyverse/glue&#34;&gt;&lt;strong&gt;glue&lt;/strong&gt;&lt;/a&gt; makes it easier to combine string and date variables.&lt;/p&gt;
+&lt;p&gt;Because all of these packages use a consistent API, they are all compatible with the pipe operator, making data analysis more stream lined and also more reproducible. By using the pipe operator, your code becomes more readable for others. This makes code reviews by others easier, and makes your research more reproducible if people external to the project can understand what you were doing.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;community-support&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Community support&lt;/h2&gt;
+&lt;p&gt;In addition to the programming benefits of the &lt;strong&gt;tidyverse&lt;/strong&gt;, there is a supportive community that contributes to the development of the &lt;strong&gt;tidyverse&lt;/strong&gt; packages and environment. The “tidyverse” tags on &lt;a href=&#34;https://twitter.com/search?q=%23tidyverse&amp;amp;src=typd&#34;&gt;Twitter&lt;/a&gt; and &lt;a href=&#34;https://stackoverflow.com/questions/tagged/tidyverse&#34;&gt;Stack Overflow&lt;/a&gt; are great places to go for help. Here, you’ll be able to ask your questions and get feedback to help solve your problems, or clarify any questions you might have.&lt;/p&gt;
+&lt;p&gt;In addition, there are many developers that are creating &lt;strong&gt;tidyverse&lt;/strong&gt; adjacent packages. These packages aren’t technically part of the &lt;strong&gt;tidyverse&lt;/strong&gt;, but enhance and further functionality. For example, there is a large development environment around &lt;strong&gt;ggplot2&lt;/strong&gt;. These &lt;a href=&#34;http://www.ggplot2-exts.org/&#34;&gt;extensions to &lt;strong&gt;ggplot2&lt;/strong&gt;&lt;/a&gt; provide additional compatible tools such as &lt;a href=&#34;https://github.com/thomasp85/ggraph&#34;&gt;network graphs&lt;/a&gt;, &lt;a href=&#34;https://github.com/clauswilke/ggjoy&#34;&gt;joy plots&lt;/a&gt;, and &lt;a href=&#34;https://github.com/dgrtwo/gganimate&#34;&gt;animation&lt;/a&gt;. Another good example is the &lt;a href=&#34;https://github.com/juliasilge/tidytext&#34;&gt;&lt;strong&gt;tidytext&lt;/strong&gt;&lt;/a&gt; package, which is used for analyzing text passages.&lt;/p&gt;
+&lt;p&gt;However, these are not the only ways to &lt;a href=&#34;http://www.tidyverse.org/contribute/&#34;&gt;contribute to the &lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt;. You don’t have to be a developer or even be able to answer questions on Twitter or Stack Overflow in order to contribute. You can also contribute by using the &lt;a href=&#34;http://reprex.tidyverse.org/&#34;&gt;&lt;strong&gt;reprex&lt;/strong&gt;&lt;/a&gt; package to report issues that you find, or contribute documentation to existing packages. No matter how advanced your &lt;em&gt;R&lt;/em&gt; skills are, there are ways for you to not only use the &lt;strong&gt;tidyverse&lt;/strong&gt;, but also contribute to the community!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusion&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The &lt;strong&gt;tidyverse&lt;/strong&gt; is a great resource for the greater &lt;em&gt;R&lt;/em&gt; community. This group of packages provide tools for data science that have a consistent API, and greatly improve the readability and reproducibility of your code. In these posts, I used NFL play-by-play data as a use case to show how the main components of the &lt;strong&gt;tidyverse&lt;/strong&gt; work. With the huge amount of data that is now available for analyzing sports data, the &lt;strong&gt;tidyverse&lt;/strong&gt; is able to efficiently wrangle and manipulate data with just a few lines of code, making it an invaluable resource. For more &lt;strong&gt;tidyverse&lt;/strong&gt; resources, checkout:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;tidyverse.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://r4ds.had.co.nz/&#34;&gt;&lt;em&gt;R for Data Science&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.rstudio.com/resources/cheatsheets/&#34;&gt;RStudio cheatsheets&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Tidy Sports Analytics, Part 3: ggplot2</title>
       <link>https://wjakethompson.github.io/post/tidy-sports-analytics-ggplot2/</link>
       <pubDate>Thu, 20 Jul 2017 00:00:00 +0000</pubDate>
@@ -804,7 +840,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       UTC                         
-#&amp;gt;  date     2017-09-02                  
+#&amp;gt;  date     2017-09-03                  
 #&amp;gt; 
 #&amp;gt;  package    * version    date       source                            
 #&amp;gt;  animation  * 2.5        2017-09-01 Github (yihui/animation@60f50e3)  
@@ -1912,204 +1948,6 @@ knitr::kable(head(seeding), digits = 3, align = &amp;quot;c&amp;quot;, booktabs 
 #&amp;gt;  withr        2.0.0      2017-08-13 Github (jimhester/withr@190d293)  
 #&amp;gt;  yaml         2.1.14     2016-11-12 CRAN (R 3.4.0)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;/details&gt;&lt;/p&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Predicting the Winner of the 2017 Big 12/SEC Challenge</title>
-      <link>https://wjakethompson.github.io/post/2017-01-27-big12-sec-simulation/</link>
-      <pubDate>Fri, 27 Jan 2017 00:00:00 +0000</pubDate>
-      
-      <guid>https://wjakethompson.github.io/post/2017-01-27-big12-sec-simulation/</guid>
-      <description>&lt;p&gt;The Big 12/SEC challenge tips off tomorrow. This will be the 4th year of this competition, and the Big 12 has &lt;a href=&#34;https://en.wikipedia.org/wiki/Big_12/SEC_Challenge#Series_History&#34;&gt;never lost&lt;/a&gt;. In this post, we’ll use a Monte Carlo simulation to estimate the Big 12’s chances of continuing this streak for another year.&lt;/p&gt;
-&lt;p&gt;As always, the code and data for this post are available on my &lt;a href=&#34;https://github.com/wjakethompson/wjakethompson.github.io&#34;&gt;Github&lt;/a&gt; page.&lt;/p&gt;
-&lt;div id=&#34;the-ratings&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;The Ratings&lt;/h2&gt;
-&lt;p&gt;The team ratings come from my sports analytics website, &lt;a href=&#34;http://www.hawklytics.com/&#34;&gt;Hawklytics&lt;/a&gt;. We first have to adjust these ratings for home court advantage&lt;a href=&#34;#fn1&#34; class=&#34;footnoteRef&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;, and then we can calculate the probability that the Big 12 will win each game using the &lt;a href=&#34;https://en.wikipedia.org/wiki/Log5&#34;&gt;Log-5 formula&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
-library(ggplot2)
-library(purrr)
-library(readr)
-
-big12sec &amp;lt;- read_csv(&amp;quot;datafiles/big12sec_2017.csv&amp;quot;, col_types = &amp;quot;ccn&amp;quot;)
-big12sec
-#&amp;gt; # A tibble: 10 x 3
-#&amp;gt;               Home            Away Big12_Win
-#&amp;gt;              &amp;lt;chr&amp;gt;           &amp;lt;chr&amp;gt;     &amp;lt;dbl&amp;gt;
-#&amp;gt;  1   West Virginia       Texas A&amp;amp;M 0.9435388
-#&amp;gt;  2        Oklahoma         Florida 0.2869581
-#&amp;gt;  3       Tennessee    Kansas State 0.4904035
-#&amp;gt;  4      Texas Tech Louisiana State 0.9121202
-#&amp;gt;  5         Georgia           Texas 0.3345746
-#&amp;gt;  6      Vanderbilt      Iowa State 0.6583537
-#&amp;gt;  7  Oklahoma State        Arkansas 0.7371545
-#&amp;gt;  8        Kentucky          Kansas 0.2822114
-#&amp;gt;  9     Mississippi          Baylor 0.8425315
-#&amp;gt; 10 Texas Christian          Auburn 0.8387957&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;After accounting for the location of each game, we can see, for example, that Kansas has around a 28% chance of beating Kentucky, and Oklahoma State has a 74% chance of beating Arkansas. To get the expected number of wins for the Big 12, we can sum the probabilities of the Big 12 winning each game. Doing this, we get an expected number of wins of 6.33. This means that if we repeated the Big 12/SEC challenge multiple times, on average, the Big 12 would get about 6.33 wins.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;monte-carlo-simulation&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Monte Carlo Simulation&lt;/h2&gt;
-&lt;p&gt;It’s not possible for us to repeat the Big 12/SEC challenge multiple times in real life, but we can do this through a process called Monte Carlo simulation. In a Monte Carlo simulation we can generate data for an event multiple times, and then average the results over all replications. To illustrate we can simulate the winner of the Kansas vs. Kentucky game. According to the model, Kansas has a 28% chance of winning. We generate a random number between 0 and 1. If that number is less than 0.28, then Kansas is the winner of the simulation, otherwise, Kentucky is the winner. We do this for every game, and then count the number of winners that come from the Big 12 to determine which conference won the challenge (or if it was a tie). We then repeat this process over and over again to simulate many replications of the challenge.&lt;/p&gt;
-&lt;p&gt;To enact this process in R, we’ll first need to define some functions. The first function will take in the probability of a team winning (in our case the Big 12 team), and return a 1 if that team wins, and a 0 otherwise.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sim_game &amp;lt;- function(prob) {
-  ifelse(runif(1, min = 0, max = 1) &amp;lt; prob, 1, 0)
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We can then define a function that takes in a vector of probabilities, and returns the number of wins.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sim_challenge &amp;lt;- function(prob_vec) {
-  map_dbl(.x = prob_vec, .f = sim_game) %&amp;gt;% sum()
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Finally, we can use the &lt;code&gt;purrr&lt;/code&gt; package to simulate the Big 12/SEC challenge 10,000 times. Importantly, we need to set the random seed generator in order to make this analysis replicable.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(71715)
-num_sim &amp;lt;- 10000
-
-challenge_wins &amp;lt;- map_dbl(.x = seq_len(num_sim), .f = function(x, prob_vec) {
-  sim_challenge(prob_vec)
-}, prob_vec = big12sec$Big12_Win)
-
-sim_results &amp;lt;- data_frame(big12_wins = challenge_wins) %&amp;gt;%
-  group_by(big12_wins) %&amp;gt;%
-  summarize(n = n())
-sim_results
-#&amp;gt; # A tibble: 10 x 2
-#&amp;gt;    big12_wins     n
-#&amp;gt;         &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt;
-#&amp;gt;  1          1     1
-#&amp;gt;  2          2    12
-#&amp;gt;  3          3   158
-#&amp;gt;  4          4   626
-#&amp;gt;  5          5  1785
-#&amp;gt;  6          6  2878
-#&amp;gt;  7          7  2755
-#&amp;gt;  8          8  1380
-#&amp;gt;  9          9   367
-#&amp;gt; 10         10    38&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;As we would expect, the most common outcome was the Big 12 winning 6 games. This occured 2,878 times. The second most common outcome was the Big 12 winning 7 games, which occured 2,755 times. Also note that although there were 38 simulations where the Big 12 went undefeated, there no simulations where the Big 12 failed to win a game, and only 1 simulation where the Big 12 won a single game.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;plotting-the-results&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Plotting the Results&lt;/h2&gt;
-&lt;p&gt;Now that we have a distribution for the number of wins for the Big 12, we can plot the distribution using &lt;code&gt;ggplot2&lt;/code&gt;. First we assign a conference winner to each number of wins.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sim_results$winner &amp;lt;- case_when(
-  sim_results$big12_wins &amp;lt; 5 ~ &amp;quot;SEC&amp;quot;,
-  sim_results$big12_wins &amp;gt; 5 ~ &amp;quot;Big 12&amp;quot;,
-  TRUE ~ &amp;quot;Tie&amp;quot;
-)
-sim_results
-#&amp;gt; # A tibble: 10 x 3
-#&amp;gt;    big12_wins     n winner
-#&amp;gt;         &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt;  &amp;lt;chr&amp;gt;
-#&amp;gt;  1          1     1    SEC
-#&amp;gt;  2          2    12    SEC
-#&amp;gt;  3          3   158    SEC
-#&amp;gt;  4          4   626    SEC
-#&amp;gt;  5          5  1785    Tie
-#&amp;gt;  6          6  2878 Big 12
-#&amp;gt;  7          7  2755 Big 12
-#&amp;gt;  8          8  1380 Big 12
-#&amp;gt;  9          9   367 Big 12
-#&amp;gt; 10         10    38 Big 12&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Then we can calulate the probability of each outcome.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;outcome &amp;lt;- sim_results %&amp;gt;%
-  group_by(winner) %&amp;gt;%
-  summarize(probability = sum(n) / num_sim) %&amp;gt;%
-  mutate(probability = paste0(sprintf(&amp;quot;%0.1f&amp;quot;, probability * 100), &amp;quot;%&amp;quot;))
-outcome
-#&amp;gt; # A tibble: 3 x 2
-#&amp;gt;   winner probability
-#&amp;gt;    &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;
-#&amp;gt; 1 Big 12       74.2%
-#&amp;gt; 2    SEC        8.0%
-#&amp;gt; 3    Tie       17.8%&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Finally, we put all of that information together and plot the distribution!&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sim_results %&amp;gt;%
-  mutate(n = n / num_sim) %&amp;gt;%
-  ggplot(aes(x = factor(big12_wins, levels = 0:10), y = n, fill = winner)) +
-  geom_col() +
-  scale_x_discrete(drop = FALSE) +
-  scale_y_continuous(breaks = seq(0, 1, 0.1),
-    labels = paste0(seq(0, 100, 10), &amp;quot;%&amp;quot;)) +
-  scale_fill_brewer(name = &amp;quot;Winner&amp;quot;, type = &amp;quot;qual&amp;quot;, palette = 7) +
-  labs(title = &amp;quot;Big 12/SEC Challenge Probabilities&amp;quot;,
-    subtitle = paste(paste0(outcome$winner, &amp;quot;: &amp;quot;, outcome$probability),
-      collapse = &amp;quot;  |  &amp;quot;), x = &amp;quot;Big 12 Wins&amp;quot;, y = &amp;quot;Probability&amp;quot;) +
-  theme_minimal() +
-  theme(legend.position = &amp;quot;bottom&amp;quot;) +
-  guides(fill = guide_legend(title.position = &amp;quot;top&amp;quot;, title.hjust = 0.5))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://wjakethompson.github.io/post/2017-01-27-big12-sec-simulation_files/figure-html/plot-1.png&#34; width=&#34;80%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;conclusion&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Conclusion&lt;/h2&gt;
-&lt;p&gt;The results of the simulation show that the Big 12 has about a 74% chance of winning the challenge and continuing their streak. I’ll be &lt;a href=&#34;https://twitter.com/jakethomp&#34;&gt;tweeting&lt;/a&gt; out updated probabilities throughout the day tomorrow as the games finish, so follow me there for updates!&lt;/p&gt;
-&lt;p&gt;&lt;details&gt;&lt;summary&gt;Session info&lt;/summary&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::session_info()
-#&amp;gt; Session info -------------------------------------------------------------
-#&amp;gt;  setting  value                       
-#&amp;gt;  version  R version 3.4.1 (2017-06-30)
-#&amp;gt;  system   x86_64, darwin15.6.0        
-#&amp;gt;  ui       X11                         
-#&amp;gt;  language (EN)                        
-#&amp;gt;  collate  en_US.UTF-8                 
-#&amp;gt;  tz       America/Chicago             
-#&amp;gt;  date     2017-08-30
-#&amp;gt; Packages -----------------------------------------------------------------
-#&amp;gt;  package      * version    date       source                            
-#&amp;gt;  animation    * 2.5        2017-06-06 Github (yihui/animation@21f635c)  
-#&amp;gt;  assertthat     0.2.0      2017-04-11 CRAN (R 3.4.0)                    
-#&amp;gt;  backports      1.1.0      2017-05-22 CRAN (R 3.4.0)                    
-#&amp;gt;  base         * 3.4.1      2017-07-07 local                             
-#&amp;gt;  bindr          0.1        2016-11-13 cran (@0.1)                       
-#&amp;gt;  bindrcpp     * 0.2        2017-06-17 cran (@0.2)                       
-#&amp;gt;  blogdown       0.1.3      2017-08-30 Github (rstudio/blogdown@45860c7) 
-#&amp;gt;  bookdown       0.5        2017-08-20 CRAN (R 3.4.1)                    
-#&amp;gt;  codetools      0.2-15     2016-10-05 CRAN (R 3.4.1)                    
-#&amp;gt;  colorspace     1.3-2      2016-12-14 CRAN (R 3.4.0)                    
-#&amp;gt;  compiler       3.4.1      2017-07-07 local                             
-#&amp;gt;  datasets     * 3.4.1      2017-07-07 local                             
-#&amp;gt;  devtools       1.13.3     2017-08-02 cran (@1.13.3)                    
-#&amp;gt;  digest         0.6.12     2017-01-27 CRAN (R 3.4.0)                    
-#&amp;gt;  dplyr        * 0.7.2      2017-07-20 CRAN (R 3.4.1)                    
-#&amp;gt;  evaluate       0.10.1     2017-06-24 cran (@0.10.1)                    
-#&amp;gt;  ggplot2      * 2.2.1      2016-12-30 CRAN (R 3.3.2)                    
-#&amp;gt;  glue           1.1.1      2017-06-21 cran (@1.1.1)                     
-#&amp;gt;  graphics     * 3.4.1      2017-07-07 local                             
-#&amp;gt;  grDevices    * 3.4.1      2017-07-07 local                             
-#&amp;gt;  grid           3.4.1      2017-07-07 local                             
-#&amp;gt;  gtable         0.2.0      2016-02-26 CRAN (R 3.4.0)                    
-#&amp;gt;  hms            0.3        2016-11-22 CRAN (R 3.4.0)                    
-#&amp;gt;  htmltools      0.3.6      2017-04-28 CRAN (R 3.4.0)                    
-#&amp;gt;  knitr        * 1.17       2017-08-10 cran (@1.17)                      
-#&amp;gt;  lazyeval       0.2.0      2016-06-12 CRAN (R 3.4.0)                    
-#&amp;gt;  magrittr       1.5        2014-11-22 CRAN (R 3.4.0)                    
-#&amp;gt;  memoise        1.1.0      2017-04-21 CRAN (R 3.4.0)                    
-#&amp;gt;  methods      * 3.4.1      2017-07-07 local                             
-#&amp;gt;  munsell        0.4.3      2016-02-13 CRAN (R 3.4.0)                    
-#&amp;gt;  pkgconfig      2.0.1      2017-03-21 cran (@2.0.1)                     
-#&amp;gt;  plyr           1.8.4      2016-06-08 CRAN (R 3.4.0)                    
-#&amp;gt;  purrr        * 0.2.3      2017-08-02 cran (@0.2.3)                     
-#&amp;gt;  R6             2.2.2      2017-06-17 cran (@2.2.2)                     
-#&amp;gt;  RColorBrewer   1.1-2      2014-12-07 CRAN (R 3.4.0)                    
-#&amp;gt;  Rcpp           0.12.12    2017-07-15 CRAN (R 3.4.1)                    
-#&amp;gt;  readr        * 1.1.1      2017-05-16 CRAN (R 3.4.0)                    
-#&amp;gt;  rlang          0.1.2.9000 2017-08-30 Github (hadley/rlang@f20124b)     
-#&amp;gt;  rmarkdown      1.6.0.9001 2017-08-30 Github (rstudio/rmarkdown@e22703a)
-#&amp;gt;  rprojroot      1.2        2017-01-16 CRAN (R 3.4.0)                    
-#&amp;gt;  scales         0.5.0.9000 2017-08-30 Github (hadley/scales@d767915)    
-#&amp;gt;  stats        * 3.4.1      2017-07-07 local                             
-#&amp;gt;  stringi        1.1.5      2017-04-07 CRAN (R 3.4.0)                    
-#&amp;gt;  stringr        1.2.0      2017-02-18 CRAN (R 3.4.0)                    
-#&amp;gt;  tibble         1.3.4      2017-08-22 cran (@1.3.4)                     
-#&amp;gt;  tools          3.4.1      2017-07-07 local                             
-#&amp;gt;  utils        * 3.4.1      2017-07-07 local                             
-#&amp;gt;  withr          2.0.0      2017-08-13 Github (jimhester/withr@190d293)  
-#&amp;gt;  yaml           2.1.14     2016-11-12 CRAN (R 3.4.0)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;/details&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class=&#34;footnotes&#34;&gt;
-&lt;hr /&gt;
-&lt;ol&gt;
-&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;The home team’s offense is increased by 30% and defense is decreased by 30%, and the reverse is done for the away team.&lt;a href=&#34;#fnref1&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
 &lt;/div&gt;
 </description>
     </item>

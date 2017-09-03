@@ -11,6 +11,42 @@
     <atom:link href="/post/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Tidy Sports Analytics, Part 4: tidyverse</title>
+      <link>https://wjakethompson.github.io/post/tidy-sports-analytics-tidyverse/</link>
+      <pubDate>Fri, 25 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://wjakethompson.github.io/post/tidy-sports-analytics-tidyverse/</guid>
+      <description>&lt;p&gt;This is the final post in the tidy sports analytics series, in which I’ve been using play-by-play from the 2016 NFL season to demonstrate the power of the &lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt;. Previously, I’ve discussed:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-dplyr/index.html&#34;&gt;Part 1&lt;/a&gt;: Data manipulation using &lt;strong&gt;dplyr&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-tidyr/index.html&#34;&gt;Part 2&lt;/a&gt;: Data reshaping and tidying using &lt;strong&gt;tidyr&lt;/strong&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://wjakethompson.github.io/post/tidy-sports-analytics-ggplot2/index.html&#34;&gt;Part 3&lt;/a&gt;: Data visualization using &lt;strong&gt;ggplot2&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In this post I want to talk about the &lt;strong&gt;tidyverse&lt;/strong&gt; more generally, and some of other advantages of using these packages for data analysis.&lt;/p&gt;
+&lt;div id=&#34;tidyverse&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;tidyverse&lt;/h2&gt;
+&lt;p&gt;Although I chose three of the main &lt;strong&gt;tidyverse&lt;/strong&gt; packages to highlight in these posts, there are many more packages that fall under this umbrella. In addition to &lt;a href=&#34;http://dplyr.tidyverse.org/&#34;&gt;&lt;strong&gt;dplyr&lt;/strong&gt;&lt;/a&gt;, &lt;a href=&#34;http://tidyr.tidyverse.org/&#34;&gt;&lt;strong&gt;tidyr&lt;/strong&gt;&lt;/a&gt;, and &lt;a href=&#34;http://ggplot2.tidyverse.org/&#34;&gt;&lt;strong&gt;ggplot2&lt;/strong&gt;&lt;/a&gt;, the core &lt;strong&gt;tidyverse&lt;/strong&gt; also includes &lt;a href=&#34;http://readr.tidyverse.org/&#34;&gt;&lt;strong&gt;readr&lt;/strong&gt;&lt;/a&gt; for reading in data, &lt;a href=&#34;http://purrr.tidyverse.org/&#34;&gt;&lt;strong&gt;purrr&lt;/strong&gt;&lt;/a&gt; for functional programming, and &lt;a href=&#34;http://tibble.tidyverse.org/&#34;&gt;&lt;strong&gt;tibble&lt;/strong&gt;&lt;/a&gt; for a new type of data frame. There are also packages &lt;a href=&#34;http://www.tidyverse.org/packages/&#34;&gt;outside of the core&lt;/a&gt; &lt;strong&gt;tidyverse&lt;/strong&gt; for importing data, wrangling data, programming, and modeling. These packages are all used for more specific use cases, rather than the general use of the core packages. For example, &lt;a href=&#34;http://lubridate.tidyverse.org/&#34;&gt;&lt;strong&gt;lubridate&lt;/strong&gt;&lt;/a&gt; is used for date-time variables, &lt;a href=&#34;http://magrittr.tidyverse.org/&#34;&gt;&lt;strong&gt;magrittr&lt;/strong&gt;&lt;/a&gt; provides the forward pipe (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) along with other piping operations, and &lt;a href=&#34;https://github.com/tidyverse/glue&#34;&gt;&lt;strong&gt;glue&lt;/strong&gt;&lt;/a&gt; makes it easier to combine string and date variables.&lt;/p&gt;
+&lt;p&gt;Because all of these packages use a consistent API, they are all compatible with the pipe operator, making data analysis more stream lined and also more reproducible. By using the pipe operator, your code becomes more readable for others. This makes code reviews by others easier, and makes your research more reproducible if people external to the project can understand what you were doing.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;community-support&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Community support&lt;/h2&gt;
+&lt;p&gt;In addition to the programming benefits of the &lt;strong&gt;tidyverse&lt;/strong&gt;, there is a supportive community that contributes to the development of the &lt;strong&gt;tidyverse&lt;/strong&gt; packages and environment. The “tidyverse” tags on &lt;a href=&#34;https://twitter.com/search?q=%23tidyverse&amp;amp;src=typd&#34;&gt;Twitter&lt;/a&gt; and &lt;a href=&#34;https://stackoverflow.com/questions/tagged/tidyverse&#34;&gt;Stack Overflow&lt;/a&gt; are great places to go for help. Here, you’ll be able to ask your questions and get feedback to help solve your problems, or clarify any questions you might have.&lt;/p&gt;
+&lt;p&gt;In addition, there are many developers that are creating &lt;strong&gt;tidyverse&lt;/strong&gt; adjacent packages. These packages aren’t technically part of the &lt;strong&gt;tidyverse&lt;/strong&gt;, but enhance and further functionality. For example, there is a large development environment around &lt;strong&gt;ggplot2&lt;/strong&gt;. These &lt;a href=&#34;http://www.ggplot2-exts.org/&#34;&gt;extensions to &lt;strong&gt;ggplot2&lt;/strong&gt;&lt;/a&gt; provide additional compatible tools such as &lt;a href=&#34;https://github.com/thomasp85/ggraph&#34;&gt;network graphs&lt;/a&gt;, &lt;a href=&#34;https://github.com/clauswilke/ggjoy&#34;&gt;joy plots&lt;/a&gt;, and &lt;a href=&#34;https://github.com/dgrtwo/gganimate&#34;&gt;animation&lt;/a&gt;. Another good example is the &lt;a href=&#34;https://github.com/juliasilge/tidytext&#34;&gt;&lt;strong&gt;tidytext&lt;/strong&gt;&lt;/a&gt; package, which is used for analyzing text passages.&lt;/p&gt;
+&lt;p&gt;However, these are not the only ways to &lt;a href=&#34;http://www.tidyverse.org/contribute/&#34;&gt;contribute to the &lt;strong&gt;tidyverse&lt;/strong&gt;&lt;/a&gt;. You don’t have to be a developer or even be able to answer questions on Twitter or Stack Overflow in order to contribute. You can also contribute by using the &lt;a href=&#34;http://reprex.tidyverse.org/&#34;&gt;&lt;strong&gt;reprex&lt;/strong&gt;&lt;/a&gt; package to report issues that you find, or contribute documentation to existing packages. No matter how advanced your &lt;em&gt;R&lt;/em&gt; skills are, there are ways for you to not only use the &lt;strong&gt;tidyverse&lt;/strong&gt;, but also contribute to the community!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conclusion&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The &lt;strong&gt;tidyverse&lt;/strong&gt; is a great resource for the greater &lt;em&gt;R&lt;/em&gt; community. This group of packages provide tools for data science that have a consistent API, and greatly improve the readability and reproducibility of your code. In these posts, I used NFL play-by-play data as a use case to show how the main components of the &lt;strong&gt;tidyverse&lt;/strong&gt; work. With the huge amount of data that is now available for analyzing sports data, the &lt;strong&gt;tidyverse&lt;/strong&gt; is able to efficiently wrangle and manipulate data with just a few lines of code, making it an invaluable resource. For more &lt;strong&gt;tidyverse&lt;/strong&gt; resources, checkout:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.tidyverse.org/&#34;&gt;tidyverse.org&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://r4ds.had.co.nz/&#34;&gt;&lt;em&gt;R for Data Science&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.rstudio.com/resources/cheatsheets/&#34;&gt;RStudio cheatsheets&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Tidy Sports Analytics, Part 3: ggplot2</title>
       <link>https://wjakethompson.github.io/post/tidy-sports-analytics-ggplot2/</link>
       <pubDate>Thu, 20 Jul 2017 00:00:00 +0000</pubDate>
@@ -759,7 +795,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       UTC                         
-#&amp;gt;  date     2017-09-02                  
+#&amp;gt;  date     2017-09-03                  
 #&amp;gt; 
 #&amp;gt;  package    * version    date       source                            
 #&amp;gt;  animation  * 2.5        2017-09-01 Github (yihui/animation@60f50e3)  

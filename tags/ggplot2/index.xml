@@ -253,7 +253,7 @@ gganimate(p, title_frame = FALSE)&lt;/code&gt;&lt;/pre&gt;
 #&amp;gt;  language (EN)                        
 #&amp;gt;  collate  en_US.UTF-8                 
 #&amp;gt;  tz       UTC                         
-#&amp;gt;  date     2017-09-02                  
+#&amp;gt;  date     2017-09-03                  
 #&amp;gt; 
 #&amp;gt;  package    * version    date       source                            
 #&amp;gt;  animation  * 2.5        2017-09-01 Github (yihui/animation@60f50e3)  
