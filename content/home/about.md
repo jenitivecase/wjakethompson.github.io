@@ -34,6 +34,4 @@ weight = 1
 
 I am a Psychometrician Assistant at the [Center for Educational Testing and Evaluation](https://cete.ku.edu) where I work on the [Dynamic Learning Maps](http://dynamiclearningmaps.org/) alternate assessment. I'm also a graduate student at the University of Kansas, pursuing a PhD in [Research, Evaluation, Measurement, and Statistics](http://epsy.ku.edu/academics/educational-psychology-research/doctorate/overview-benefits). My research interests are in the areas of psychometrics, specifically diagnostic classification models, and R programming.
 
-I love the Cubs, Royals, Chiefs, and above all else, KU basketball. I also run a sports analytics website ([Hawklytics](http://www.hawklytics.com/)) where I use [#rstats](https://twitter.com/search?src=typd&q=%23rstats) to predict college basketball and football games.
-
-I currently live in Kansas City, Kansas, with my amazing [wife](https://www.linkedin.com/in/juliachasen) and our rescue dog [Larry](https://www.instagram.com/lyfewithlarry/?hl=en).
+I love the Cubs, Royals, Chiefs, and above all else, KU basketball. I currently live in Kansas City, Kansas, with my amazing [wife](https://www.linkedin.com/in/juliachasen) and our rescue dog [Larry](https://www.instagram.com/lyfewithlarry/?hl=en).

@@ -4,6 +4,7 @@ copyright = "&copy; 2017 W. Jake Thompson"
 theme = "hugo-academic"
 enableEmoji = true
 footnotereturnlinkcontents = "<sup>^</sup>"
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 # Enable comments by entering your Disqus shortname
 disqusShortname = ""
@@ -149,6 +150,11 @@ defaultContentLanguageInSubdir = false
     icon = "github"
     icon_pack = "fa"
     link = "//github.com/wjakethompson"
+  
+  [[params.social]]
+    icon = "stack-overflow"
+    icon_pack = "fa"
+    link = "//stackoverflow.com/users/6692499/jake-thompson"
 
 
 # Navigation Links
