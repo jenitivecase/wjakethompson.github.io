@@ -78,7 +78,7 @@ ggplot(data = success, mapping = aes(x = defense, y = offense)) +
   geom_point()
 ```
 
-Here, I define the data that will be used for the plot, and then define how the variables in the data map to the plot. Specifically, I want defensive success rate on the x-axis, and offensive success rate on the y-axis. Finally, I use `geom_point` to add points at each of (x, y) coordinates defined in the aesthetic mapping. In Figure \@ref(fig:scatter), it appears that there is a general trend of a more successful defense being associated with a less successful offense. We can look at this trend by using `geom_smooth`.
+Here, we define the data that will be used for the plot, then define how the variables in the data map to the plot. Specifically, we want defensive success rate on the x-axis, and offensive success rate on the y-axis. Finally, we use `geom_point` to add points at each of (x, y) coordinates defined in the aesthetic mapping. In Figure \@ref(fig:scatter), it appears that there is a general trend of a more successful defense being associated with a less successful offense. We can look at this trend by using `geom_smooth`.
 
 <!-- JB: how did you select these axes? What is success rate here? A quick sentence would go a long way. I'd also talk briefly about what geom_smooth() represents statistically - show you know what regression is!-->
 
@@ -88,7 +88,7 @@ ggplot(data = success, mapping = aes(x = defense, y = offense)) +
   geom_smooth(method = "lm")
 ```
 
-With **ggplot**, it's easy to add extra elements to customize the specific pieces needed for the visualization. Each geom also comes with its own options. For example in `geom_smooth`, I've specified the `"lm"` smoothing method. <!-- JB: tell what lm stands for and why you chose it. --> We can also specify groupings in the plots. <!-- JB: Why is grouping an important strategy here? Explain and/or refer back to earlier posts.--> For effective grouping, the data will need to be in long format, which can be accomplished using the `gather` function. A more detailed example and explanation of using the `gather` function can be found in [part two](/post/tidy-sports-analytics-tidyr/index.html).
+With **ggplot**, it's easy to add extra elements to customize the specific pieces needed for the visualization. Each geom also comes with its own options. For example, in `geom_smooth`, er've specified the `"lm"` smoothing method. <!-- JB: tell what lm stands for and why you chose it. --> We can also specify groupings in the plots. <!-- JB: Why is grouping an important strategy here? Explain and/or refer back to earlier posts.--> For effective grouping, the data will need to be in long format, which can be accomplished using the `gather` function. A more detailed example and explanation of using the `gather` function can be found in [part two](/post/tidy-sports-analytics-tidyr/index.html).
 
 ```{r gather}
 success <- gather(success, key = "team_unit", value = "success_rate",
@@ -96,7 +96,7 @@ success <- gather(success, key = "team_unit", value = "success_rate",
 success
 ```
 
-Figure \@ref(fig:afc-west) shows how we can make a grouped bar plot. First, we filter the data to only include teams in the AFC West. This limits the number of teams that will need to be displayed on the x-axis. The `success_rate` is then mapped to the y-axis, and I specify that I want the fill of the bar to correspond to the offense and defense. <!-- JB: What does this mean, really? --> Finally, `geom_col` is uses to make the bars. By default, stacked bars are created, but specifying `position = "dodge"` instead tells **ggplot2** to group them side by side. Notice that **ggplot2** will automatically create the legend for you.
+Figure \@ref(fig:afc-west) shows how we can make a grouped bar plot. First, we filter the data to only include teams in the AFC West. This limits the number of teams that will need to be displayed on the x-axis. The `success_rate` is then mapped to the y-axis, and we specify that we want the fill of the bar to correspond to the offense and defense. <!-- JB: What does this mean, really? --> Finally, `geom_col` is uses to make the bars. By default, stacked bars are created, but specifying `position = "dodge"` instead tells **ggplot2** to group them side by side. Notice that **ggplot2** will automatically create the legend for you.
 
 ```{r afc-west, fig.cap = "AFC West success rates"}
 ggplot(data = filter(success, team %in% c("DEN", "KC", "OAK", "SD")),
