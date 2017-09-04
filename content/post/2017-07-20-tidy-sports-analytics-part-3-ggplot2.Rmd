@@ -106,7 +106,7 @@ ggplot(data = filter(success, team %in% c("DEN", "KC", "OAK", "SD")),
   labs(x = NULL, y = "Success Rate")
 ```
 
-There is an almost [endless series of geoms](http://ggplot2.tidyverse.org/reference/index.html#section-layer-geoms) that can be combined to make your desired visualization. Everything in these plots can be customized: colors, titles and labels (as was done in Figure \@ref(fig:afc-west)), and even fonts can be changed. However, this goes beyond the scope of this post. Instead, I wanted to show easy it can be to use **ggplot2** to create professional looking graphics.
+There is an almost [endless series of geoms](http://ggplot2.tidyverse.org/reference/index.html#section-layer-geoms) that can be combined to make your desired visualization. Everything in these plots can be customized: colors, titles and labels (as was done in Figure \@ref(fig:afc-west)), and even fonts can be changed. However, this goes beyond the scope of this post. Instead, I wanted to show easy it can be to use **ggplot2** to create professional looking graphics. <!-- JB: I'd say something about what these plots MEAN for the reader. Too many guides like this don't explain why you might want to make graphics that look like this or convey this information. -->
 
 ## Conclusion
 
