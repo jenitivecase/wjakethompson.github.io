@@ -31,13 +31,13 @@ This is the third post in the tidy sports analytics series. In this series, I've
 
 ## ggplot2
 
-Data visualization is a key part to any data or sports analytics analysis. In the **tidyverse** visualization is mainly handled through **ggplot2**. There is an ongoing debate in the *R* community as to whether base graphics or **ggplot2** should be used (see [here](http://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/), [here](http://varianceexplained.org/r/why-I-use-ggplot2/), and [here](http://flowingdata.com/2016/03/22/comparing-ggplot2-and-r-base-graphics/)). In practice you, should use whichever tools are going to be effective you. Both sets of tools will be able to solve a wide variety of visualization tools, just in different ways. Given that this series of blog posts is focused on using the **tidyverse**, it's probably obvious that I prefer **ggplot2**. But rather than try to compare and contrast these to systems, in this post, I'm going to point out a few features that I think make **ggplot2** particularly appealing as I demonstrate how it can be used to visualize sports analytics data.
+Data visualization is a key part to any data or sports analytics analysis. In the **tidyverse**, visualization is mainly handled through **ggplot2**. There is an ongoing debate in the *R* community as to whether base graphics or **ggplot2** should be used (see [here](http://simplystatistics.org/2016/02/11/why-i-dont-use-ggplot2/), [here](http://varianceexplained.org/r/why-I-use-ggplot2/), and [here](http://flowingdata.com/2016/03/22/comparing-ggplot2-and-r-base-graphics/)). In practice, you should use whichever tools are going to be effective. Both sets of tools will be able to solve a wide variety of visualization issues, just in different ways. Given that this series of blog posts is focused on using the **tidyverse**, it's probably obvious that I prefer **ggplot2**. But rather than try to compare and contrast these two systems, I'm going to point out a few features that I think make **ggplot2** particularly appealing as I demonstrate how it can be used to visualize sports analytics data.
 
-**ggplot2** is built around the idea of a grammar of graphics. That is, rather than having a typology of visualizations (e.g., scatter plot, bar plot, histogram, etc.), the grammar of graphics focused on on the individual pieces of a plot, and a visualization is created by assembling the various parts that have been selected. **ggplot2** works by mapping the data to different aesthetics in the plot, and then adding graphical elements, or geoms.
+**ggplot2** is built around the idea of a *grammar of graphics*. That is, rather than having a typology of visualizations (e.g., scatter plot, bar plot, histogram, etc.), the grammar of graphics focuses on on the individual pieces of a plot. A visualization is created by assembling your various graphical parameters. **ggplot2** works by mapping the data to different aesthetics in the plot, and then adding graphical elements, or geoms.
 
 ## Using ggplot2
 
-First, let's get our data to point where it was at the end of the [previous post](/post/tidy-sports-analytics-tidyr/index.html).
+First, let's get our data to the point where it was at the end of the [previous post](/post/tidy-sports-analytics-tidyr/index.html).
 
 ```{r catch-up, message = FALSE, warning = FALSE}
 library(tidyverse)
@@ -80,13 +80,15 @@ ggplot(data = success, mapping = aes(x = defense, y = offense)) +
 
 Here, I define the data that will be used for the plot, and then define how the variables in the data map to the plot. Specifically, I want defensive success rate on the x-axis, and offensive success rate on the y-axis. Finally, I use `geom_point` to add points at each of (x, y) coordinates defined in the aesthetic mapping. In Figure \@ref(fig:scatter), it appears that there is a general trend of a more successful defense being associated with a less successful offense. We can look at this trend by using `geom_smooth`.
 
+<!-- JB: how did you select these axes? What is success rate here? A quick sentence would go a long way. I'd also talk briefly about what geom_smooth() represents statistically - show you know what regression is!-->
+
 ```{r smooth, fig.cap = "Scatterplot with linear best fit line"}
 ggplot(data = success, mapping = aes(x = defense, y = offense)) +
   geom_point() +
   geom_smooth(method = "lm")
 ```
 
-With **ggplot**, it's easy to add extra elements to customize the specific pieces needed for the visualization. Each geom also comes with its own options. For example in `geom_smooth`, I've specified the `"lm"` smoothing method. We can also specify groupings in the plots. For this, the data will need to be in long format, which can be accomplished using the `gather` function as we did in [part two](/post/tidy-sports-analytics-tidyr/index.html).
+With **ggplot**, it's easy to add extra elements to customize the specific pieces needed for the visualization. Each geom also comes with its own options. For example in `geom_smooth`, I've specified the `"lm"` smoothing method. <!-- JB: tell what lm stands for and why you chose it. --> We can also specify groupings in the plots. <!-- JB: Why is grouping an important strategy here? Explain and/or refer back to earlier posts.--> For effective grouping, the data will need to be in long format, which can be accomplished using the `gather` function. A more detailed example and explanation of using the `gather` function can be found in [part two](/post/tidy-sports-analytics-tidyr/index.html).
 
 ```{r gather}
 success <- gather(success, key = "team_unit", value = "success_rate",
@@ -94,7 +96,7 @@ success <- gather(success, key = "team_unit", value = "success_rate",
 success
 ```
 
-Figure \@ref(fig:afc-west) shows how we can make a grouped bar plot. First we filter the data to only include teams in the AFC West. This limits the number of teams that will need to be fitted on the x-axis. The `success_rate` is then mapped to the y-axis, and I specify that I want the fill of the bar to correspond to the offense and defense. Finally, `geom_col` is uses to make the bars. By default, stacked bars are created, but `position = "dodge"` instead groups them side by side. Notice the **ggplot2** will automatically create the legend for you.
+Figure \@ref(fig:afc-west) shows how we can make a grouped bar plot. First, we filter the data to only include teams in the AFC West. This limits the number of teams that will need to be displayed on the x-axis. The `success_rate` is then mapped to the y-axis, and I specify that I want the fill of the bar to correspond to the offense and defense. <!-- JB: What does this mean, really? --> Finally, `geom_col` is uses to make the bars. By default, stacked bars are created, but specifying `position = "dodge"` instead tells **ggplot2** to group them side by side. Notice that **ggplot2** will automatically create the legend for you.
 
 ```{r afc-west, fig.cap = "AFC West success rates"}
 ggplot(data = filter(success, team %in% c("DEN", "KC", "OAK", "SD")),
@@ -104,11 +106,11 @@ ggplot(data = filter(success, team %in% c("DEN", "KC", "OAK", "SD")),
   labs(x = NULL, y = "Success Rate")
 ```
 
-There is an almost [endless series of geoms](http://ggplot2.tidyverse.org/reference/index.html#section-layer-geoms) that can be combined to make the desired visualization. Everything in these plots can be customized. From colors, to titles and labels (as was done in Figure \@ref(fig:afc-west)), and even fonts can be changed. However, this goes beyond the scope of this post. Instead, I wanted to show easy it can be to use **ggplot2** to create professional looking graphics.
+There is an almost [endless series of geoms](http://ggplot2.tidyverse.org/reference/index.html#section-layer-geoms) that can be combined to make your desired visualization. Everything in these plots can be customized: colors, titles and labels (as was done in Figure \@ref(fig:afc-west)), and even fonts can be changed. However, this goes beyond the scope of this post. Instead, I wanted to show easy it can be to use **ggplot2** to create professional looking graphics.
 
 ## Conclusion
 
-The **ggplot2** package is a powerful tool for data visualization. Here I've provided a brief introduction to how this package works. Once you've mastered the basics, it becomes much simpler to create more complex graphics. Because of the grammar of graphics, the creation of plots can be reduced to the selection of relevant geoms, and mapping the data to the necessary aesthetics. In the next and final post in this series, I'll pull everything together, and talk about the **tidyverse** more generally, and some of the other benefits associated with its use. For more **ggplot2** resources, check out:
+The **ggplot2** package is a powerful tool for data visualization. Here, I've provided a brief introduction to the package's mechanics. Once you've mastered the basics, it becomes much simpler to create more complex graphics. Because of the grammar of graphics, the creation of plots can be reduced to two steps: 1. select relevant geoms, and 2. map the data to the necessary aesthetics. In the next and final post in this series, I'll pull everything together, talk about the **tidyverse** more generally, and describe some of the other benefits associated with its use. For more **ggplot2** resources, check out:
 
 - [ggplot2.tidyverse.org](http://ggplot2.tidyverse.org/)
 - [*R for Data Science*, Data Visualization](http://r4ds.had.co.nz/data-visualisation.html)
