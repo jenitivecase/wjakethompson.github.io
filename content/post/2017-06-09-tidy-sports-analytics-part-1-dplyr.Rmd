@@ -26,9 +26,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-Welcome to the first in a series of blog posts where I'll be using sports data to demonstrate the power of the [**tidyverse**](http://www.tidyverse.org/) tools for sports analytics. The **tidyverse** is a suite of packages developed mainly by [Hadley Wickham](https://twitter.com/hadleywickham), with contributions from over 100 other people in the *R* community. The goal of the **tidyverse** is to provide easy to use *R* packages for a data science workflow that all follow a consistent philosophy and APIs. In each post in this series, I'll be focusing on one package within the **tidyverse** in order to demonstrate how each of the major pieces of the **tidyverse** works. In all of the posts, I'll be exploring the play-by-play data for every game of the 2016 NFL season. This data comes from [Armchair Analysis](http://armchairanalysis.com/), which is behind a pay wall. However, for a a one time flat rate, you can have access to their historical database with yearly updates forever.
+Welcome to the first in a series of blog posts where I'll be using sports data to demonstrate the power of the [**tidyverse**](http://www.tidyverse.org/) tools in the context of sports analytics. The **tidyverse** is a suite of packages developed mainly by [Hadley Wickham](https://twitter.com/hadleywickham), with contributions from over 100 other people in the *R* community. The goal of the **tidyverse** is to provide easy to use *R* packages for a data science workflow that all follow a consistent philosophy and APIs <!-- JB: Should it be APIs or just API? -->. In each post in this series, I'll be focusing on one package within the **tidyverse** in order to demonstrate how each of the major pieces of the **tidyverse** works. In all of the posts, I'll be exploring the play-by-play data for every game of the 2016 NFL season. This data comes from [Armchair Analysis](http://armchairanalysis.com/), which is paywalled. However, for a a one time flat rate, you can have access to their historical database with yearly updates forever.
 
-This post will focus on the [**dplyr**](http://dplyr.tidyverse.org/) package, which is used for data manipulation.
+This post will focus on the [**dplyr**](http://dplyr.tidyverse.org/) package, which is used for data manipulation. <!-- JB: I really appreciate your dedication to linking to outside sources throughout these guides. -->
 
 ## dplyr
 
@@ -41,19 +41,19 @@ nfl_pbp <- readRDS("datafiles/nfl_pbp_2016.rds")
 nfl_pbp
 ```
 
-Here we can see that there were a total of `r format(nrow(nfl_pbp), big.mark = ",")` plays in the 2016 NFL season, and we have `r ncol(nfl_pbp)` variables for each play. The **dplyr** package provides a way to manipulate this data so that we can easily answer questions. There are five main functions that **dplyr** provides that take care of the majority of data manipulation tasks that you might have:
+Here we can see that there were a total of `r format(nrow(nfl_pbp), big.mark = ",")` plays in the 2016 NFL season, and we have `r ncol(nfl_pbp)` variables for each play. The **dplyr** package provides a way to manipulate this data so that we can easily answer research questions. There are five main functions in **dplyr** that take care of the majority of data manipulation tasks:
 
 - `arrange`: sort the data by a variable or set of variables;
-- `filter`: select which observations to include;
+- `filter`: filter observations based on one or more criteria <!-- JB: I edited this to avoid using select, which is another function name, in the filter definition -->;
 - `mutate`: create new variables as functions of existing variables;
-- `select`: choose variables by name;
-- `summarize`: calculate group level summaries.
+- `select`: choose variables by name <!-- JB: Or rename variables!-->;
+- `summarize`: calculate summary statistics according to one or more grouping variables.
 
-To demonstrate how these functions work, I will calculate the rate of successful plays for each team. For the NFL, we'll consider a play successful if the team gains 45 percent of the needed yards on 1st down, 60 percent on 2nd down, and 100 percent on 3rd or 4th down (this comes from Bob Carroll, Pete Palmer, and John Thorn in [*The Hidden Game of Football*](https://www.amazon.com/Hidden-Game-Football-Bob-Carroll/dp/0446514144)).
+To demonstrate how these functions work, let's calculate the rate of successful plays for each team. For the NFL, we'll consider a play successful if the team gains 45 percent of the needed yards on 1st down, 60 percent on 2nd down, and 100 percent on 3rd or 4th down (this comes from Bob Carroll, Pete Palmer, and John Thorn in [*The Hidden Game of Football*](https://www.amazon.com/Hidden-Game-Football-Bob-Carroll/dp/0446514144)). <!-- JB: I don't get this definition, and I definitely understand how yards and downs work. Perhaps it's the "and" preceding "100 percent" that is throwing me off. Are you considering a play to be a single play or a collection or up to four downs until first down or a score or turnover is attained? -->
 
 ## Using dplyr
 
-First I'll pull out the variables that are needed using the `select` function.
+First I'll pull out the needed variables using the `select` function.
 
 ```{r select}
 success <- select(nfl_pbp, game_id = gid, play_id = pid, offense = off,
@@ -61,9 +61,9 @@ success <- select(nfl_pbp, game_id = gid, play_id = pid, offense = off,
 success
 ```
 
-Notice that in the `select` statement I not only chose the variable I wanted, but also gave them new names that more clearly convey the information included in that variable. For example, I chose to keep the unique game identifier, but renamed it from `gid` to `game_id`.
+Notice that in the `select` statement, we not only chose the variables we wanted, but we also gave them new names that more clearly convey the information included in that variable. For example, we <!-- JB: I am changing first person singular to second person plural throughout in an attempt to make the guides feel more inclusive. I think second person singular would also be okay. Second person is more accessible than first. You might want to reread these to ensure I got all the instances. --> chose to keep the unique game identifier, but we renamed it from `gid` to `game_id`.
 
-Next, we need to filter out plays that don't fall into our operational definition of success. For example, under the definition above, how would we determine if a kickoff was successful? Therefore, I will use the `filter` function to select only passing or rushing plays.
+Next, we need to filter out plays that don't fall into our operational definition of success. For example, under the definition above, how would we determine if a kickoff was successful? Since only passing or rushing plays have criteria for success, we will use the `filter` function to select only passing or rushing plays.
 
 ```{r filter}
 success <- filter(success, play_type %in% c("PASS", "RUSH"))
@@ -81,7 +81,7 @@ success <- mutate(success, needed = case_when(
 success
 ```
 
-In this chunk, I'm saying if the down is equal to 1, then the yards needed is equal to 45 percent of the yards to go. If the down isn't equal to 1, then we go to the second condition. Now, if the down is equal to 2, the yards needed is equal to 60 percent of the yards to go. Finally, if the down isn't equal to 2, then we go to the final condition which says that for all other downs, yards needed is equal to 100 percent of the yards to go. We can then determine which plays were a success by using mutate again to calculate if the yards gained is greater than the yards needed.
+In this chunk, I'm saying if the down is equal to 1, then the yards needed is equal to 45 percent of the yards to go. If the down isn't equal to 1, then we go to the second condition. If the down is equal to 2, the yards needed is equal to 60 percent of the yards to go. Finally, if the down isn't equal to 2, then we go to the final condition which says that for all other downs, yards needed is equal to 100 percent of the yards to go. We can then determine which plays were a success by using mutate again to calculate if the yards gained is greater than the yards needed. <!-- JB: This is still confusing to me. Add more explanation.-->
 
 ```{r calc-success}
 success <- mutate(success, play_success = case_when(
@@ -91,7 +91,7 @@ success <- mutate(success, play_success = case_when(
 success
 ```
 
-Now that we've calculated whether each play was a success, we can calculate the overall success rate for each team. To do this, we need to group our data by team. This can be accomplished using the `group_by` function. This function do anything to the data, but will allow other functions to operate within each of the groups. Specifically, I will use the `summarize` function to calculate the rate of successful plays within each group.
+Now that we've calculated whether each play was a success, we can calculate the overall success rate for each team. To do this, we need to group our data by team. This can be accomplished using the `group_by` function. This function doesn't do anything to the data, but it will allow other functions to operate within each of the groups. Specifically, we will use the `summarize` function to calculate the rate of successful plays within each group.
 
 ```{r summarize}
 success <- group_by(success, team = offense)
@@ -106,11 +106,11 @@ success <- arrange(success, desc(success_rate))
 success
 ```
 
-One consideration from these results is that I grouped by the offensive team. Thus, this represents how often the teams' offenses were successful. To evaluate a team overall, you would also want to examine defensive success rates. However, these results do seem to make intuitive sense, as the top three teams (New Orleans, Dallas, and Atlanta), all had very good offenses last season.
+One consideration from these results is that I grouped by the offensive team. Thus, this analysis tells us how often the teams' offenses were successful. To evaluate a team overall, you would also want to examine defensive success rates. However, these results do seem to make intuitive sense, as the top three teams (New Orleans, Dallas, and Atlanta), all had very good offenses last season.
 
 ## Conclusion
 
-This post shows how the **dplyr** package, which is main the data manipulation package in the **tidyverse**, can be used to quickly manipulate and analyze data with just a few lines of code. In the upcoming posts I'll be using the **tidyr** package to help tidy data and **ggplot2** to visualize data. For more **dplyr** resources, check out:
+This post shows how the **dplyr** package, which is the main data manipulation package in the **tidyverse**, can be used to quickly manipulate and analyze data with just a few lines of code. In the upcoming posts I'll be using the **tidyr** package to help tidy data and **ggplot2** to visualize data. <!-- JB: When will you cover the pipe? It was really tough to read tidyverse code with no piping. You should at least mention it in each post. --> For more **dplyr** resources, check out:
 
 - [dplyr.tidyverse.org](http://dplyr.tidyverse.org/)
 - [*R for Data Science*, Data Transformation](http://r4ds.had.co.nz/transform.html)
